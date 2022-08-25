@@ -1,0 +1,14 @@
+[
+	{
+		"datasource": "doublescalar",
+		"transformers": ["dataValueToJson", "jsonataExtractValue"],
+		"datasinks": ["ConnectedSubmodel/ConnectedPropertyA"],
+		"trigger": "event"
+	},
+	{
+		"datasource": "integerscalar",
+		"transformers": ["dataValueToJson", "jsonataExtractValue"],
+		"datasinks": ["ConnectedSubmodel/ConnectedPropertyB"],
+		"trigger": "event"
+	}
+]

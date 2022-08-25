@@ -1,0 +1,8 @@
+[
+	{
+		"datasource": "property1",
+		"transformers": ["jsonataA"],
+		"datasinks": ["ConnectedSubmodel/ConnectedPropertyA"],
+		"trigger": "event"
+	}
+]
