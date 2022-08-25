@@ -295,31 +295,10 @@ public class HonoConsumer extends DefaultConsumer {
      * @param notification The notification that was received for the device.
      */
     private void sendCommand(final TimeUntilDisconnectNotification notification) {
-
-        final long commandTimeout = calculateCommandTimeout(notification);
-        // TODO set request timeout
-
         if (SEND_ONE_WAY_COMMANDS) {
             sendOneWayCommandToAdapter(notification.getTenantId(), notification.getDeviceId(), notification);
         } else {
             sendCommandToAdapter(notification.getTenantId(), notification.getDeviceId(), notification);
-        }
-    }
-    
-    /**
-     * Calculate the timeout for a command that is tried to be sent to a device for which a {@link TimeUntilDisconnectNotification}
-     * was received.
-     *
-     * @param notification The notification that was received for the device.
-     * @return The timeout to be set for the command.
-     */
-    private long calculateCommandTimeout(final TimeUntilDisconnectNotification notification) {
-        if (notification.getTtd() == -1) {
-            // let the command expire directly before the next periodic timer is started
-            return COMMAND_INTERVAL_FOR_DEVICES_CONNECTED_WITH_UNLIMITED_EXPIRY * 1000;
-        } else {
-            // let the command expire when the notification expires
-            return notification.getMillisecondsUntilExpiry();
         }
     }
     
