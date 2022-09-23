@@ -27,6 +27,8 @@ import org.slf4j.LoggerFactory;
 /**
  * AAS component which can connect to Asset Administration Shells via a given
  * registry
+ * 
+ * @author haque, mateusmolina-iese
  */
 @UriEndpoint(firstVersion = "1.0.0-SNAPSHOT", scheme = "aas", title = "AAS", syntax = "aas:name",
              category = {Category.JAVA})
@@ -54,7 +56,9 @@ public class AASEndpoint extends DefaultEndpoint {
 
 	@Override
 	public Consumer createConsumer(Processor processor) throws Exception {
-		return null;
+		AASConsumer consumer = new AASConsumer(this, processor);
+		configureConsumer(consumer);
+		return consumer;
 	}
 
 	/**
@@ -82,8 +86,16 @@ public class AASEndpoint extends DefaultEndpoint {
 	}
 	
 	public String getFullProxyUrl() {
-		String elemUrl = String.format("%s/submodels/%s/submodel/submodelElements/%s", this.getAASEndpoint(), this.getSubmodelId(), this.getSubmodelElementId());
-		logger.info("Proxy URL: " + elemUrl);
+		String elemUrl;
+		if (!getSubmodelElementId().isEmpty()) {
+			elemUrl = String.format("%s/submodels/%s/submodel/submodelElements/%s", this.getAASEndpoint(), this.getSubmodelId(), this.getSubmodelElementId());
+		} else if (!getSubmodelId().isEmpty()) {
+			elemUrl = String.format("%s/submodels/%s/submodel", this.getAASEndpoint(), this.getSubmodelId());
+		} else {
+			elemUrl = this.getAASEndpoint();
+		}
+
+		logger.debug("Proxy URL: " + elemUrl);
 		return elemUrl;
 	}
 	
@@ -93,7 +105,7 @@ public class AASEndpoint extends DefaultEndpoint {
 	 */
 	private String getAASEndpoint() {
 		String onlyEndpoint = this.getEndpointBaseUri().substring(6); 
-    	logger.info("only url " + onlyEndpoint);
+		logger.debug("only url " + onlyEndpoint);
 		return onlyEndpoint;
 	}
 	
@@ -101,9 +113,13 @@ public class AASEndpoint extends DefaultEndpoint {
 	 * Gets the Submodel ID for data dump
 	 * @return
 	 */
-	private String getSubmodelId() {
-		String submodelId = VABPathTools.getEntry(getPropertyPath(), 0);
-    	logger.info("Submodel ID: " + submodelId);
+	protected String getSubmodelId() {
+		String submodelId = "";
+		try {
+			submodelId = VABPathTools.getEntry(getPropertyPath(), 0);
+			logger.debug("Submodel:" + submodelId);
+		} catch (Exception e) {
+		}
 		return submodelId;
 	}
 	
@@ -111,9 +127,13 @@ public class AASEndpoint extends DefaultEndpoint {
 	 * Gets the submodel element id for data dump
 	 * @return 
 	 */
-	private String getSubmodelElementId() {
-		String submodelElementId = VABPathTools.skipEntries(getPropertyPath(), 1);
-    	logger.info("Submodel Element ID: " + submodelElementId);
+	protected String getSubmodelElementId() {
+		String submodelElementId = "";
+		try {
+			submodelElementId = VABPathTools.getEntry(getPropertyPath(), 1);
+			logger.debug("Submodel Element ID: " + submodelElementId);
+		} catch (Exception e) {
+		}
 		return submodelElementId;
 	}
 	
