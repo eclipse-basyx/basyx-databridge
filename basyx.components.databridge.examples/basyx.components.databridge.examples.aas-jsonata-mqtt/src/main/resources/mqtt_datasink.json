@@ -1,0 +1,11 @@
+[
+	{
+		"uniqueId": "exampleMQTT",
+		"serverUrl": "localhost",
+		"serverPort": 1884,
+		"topic": "Properties",
+		"clientId": "testClient",
+		"userName": "",
+		"password": ""
+	}
+]

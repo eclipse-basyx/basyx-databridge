@@ -1,0 +1,8 @@
+[
+	{
+		"uniqueId": "ConnectedSubmodel/ConnectedPropertyA",
+		"serverUrl": "http://localhost:4001/shells/TestUpdatedDeviceAAS/aas",
+		"serverPort": 4001,
+		"path": "ConnectedSubmodel"
+	}
+]

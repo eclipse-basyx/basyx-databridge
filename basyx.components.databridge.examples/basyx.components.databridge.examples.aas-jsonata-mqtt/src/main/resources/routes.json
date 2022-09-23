@@ -1,0 +1,8 @@
+[
+	{
+		"datasource": "ConnectedSubmodel/ConnectedPropertyA",
+		"transformers": ["jsonataA"],
+		"datasinks": ["exampleMQTT"],
+		"trigger": "event"
+	}
+]

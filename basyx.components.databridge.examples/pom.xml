@@ -21,6 +21,7 @@
 		<module>basyx.components.databridge.examples.hono-jsonata-aas</module>
 		<module>basyx.components.databridge.examples.kafka-jsonatamultiple-aas</module>
 		<module>basyx.components.databridge.examples.activemq-jsonata-aas</module>
+		<module>basyx.components.databridge.examples.aas-jsonata-mqtt</module>
 		<module>basyx.components.databridge.examples.mqtt-jsonata-aas</module>
 		<module>basyx.components.databridge.examples.httpserver</module>
 		<module>basyx.components.databridge.examples.opcua-jsonata-aas</module>
