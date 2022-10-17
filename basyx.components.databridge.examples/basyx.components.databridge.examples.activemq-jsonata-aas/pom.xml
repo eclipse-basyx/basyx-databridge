@@ -77,7 +77,7 @@
 		<dependency>
 			<groupId>org.eclipse.basyx</groupId>
 			<artifactId>basyx.sdk</artifactId>
-			<version>1.1.0</version>
+			<version>1.2.0</version>
 			<classifier>tests</classifier>
 			<scope>test</scope>
 		</dependency>
