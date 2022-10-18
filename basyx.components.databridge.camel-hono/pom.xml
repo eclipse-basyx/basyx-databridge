@@ -67,7 +67,7 @@
 		<dependency>
 			<groupId>org.eclipse.hono</groupId>
 			<artifactId>hono-client-application-amqp</artifactId>
-			<version>1.10.0</version>
+			<version>1.12.3</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.eclipse.hono/hono-client-application-kafka -->
 		<dependency>
