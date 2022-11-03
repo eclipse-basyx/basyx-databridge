@@ -1,0 +1,175 @@
+# To get started with Dependabot version updates, you'll need to specify which
+# package ecosystems to update and where the package manifests are located.
+# Please see the documentation for all configuration options:
+# https://docs.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
+
+version: 2
+updates:
+
+  # Maintain dependencies for GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+
+  # Maintain dependencies for Maven
+  - package-ecosystem: "maven"
+    directory: "/basyx.components.databridge.camel-aas/"
+    schedule:
+      interval: "daily"
+
+  # Maintain dependencies for Maven
+  - package-ecosystem: "maven"
+    directory: "/basyx.components.databridge.camel-activemq/"
+    schedule:
+      interval: "daily"
+
+  # Maintain dependencies for Maven
+  - package-ecosystem: "maven"
+    directory: "/basyx.components.databridge.camel-hono/"
+    schedule:
+      interval: "daily"
+
+  # Maintain dependencies for Maven
+  - package-ecosystem: "maven"
+    directory: "/basyx.components.databridge.camel-http/"
+    schedule:
+      interval: "daily"
+
+        # Maintain dependencies for Maven
+  - package-ecosystem: "maven"
+    directory: "/basyx.components.databridge.camel-httppolling/"
+    schedule:
+      interval: "daily"
+
+  # Maintain dependencies for Maven
+  - package-ecosystem: "maven"
+    directory: "/basyx.components.databridge.camel-kafka/"
+    schedule:
+      interval: "daily"
+
+  # Maintain dependencies for Maven
+  - package-ecosystem: "maven"
+    directory: "/basyx.components.databridge.camel-opcua/"
+    schedule:
+      interval: "daily"
+
+  # Maintain dependencies for Maven
+  - package-ecosystem: "maven"
+    directory: "/basyx.components.databridge.camel-paho/"
+    schedule:
+      interval: "daily"
+
+    # Maintain dependencies for Maven
+  - package-ecosystem: "maven"
+    directory: "/basyx.components.databridge.camel-prometheus/"
+    schedule:
+      interval: "daily"
+
+  # Maintain dependencies for Maven
+  - package-ecosystem: "maven"
+    directory: "/basyx.components.databridge.camel-timer/"
+    schedule:
+      interval: "daily"
+
+  # Maintain dependencies for Maven
+  - package-ecosystem: "maven"
+    directory: "/basyx.components.databridge.core/"
+    schedule:
+      interval: "daily"
+
+  # Maintain dependencies for Maven
+  - package-ecosystem: "maven"
+    directory: "/basyx.components.databridge.examples/"
+    schedule:
+      interval: "daily"
+
+  # Maintain dependencies for Maven
+  - package-ecosystem: "maven"
+    directory: "/basyx.components.databridge.examples.aasserver/"
+    schedule:
+      interval: "daily"
+  
+  # Maintain dependencies for Maven
+  - package-ecosystem: "maven"
+    directory: "/basyx.components.databridge.examples.activemq-jsonata-aas/"
+    schedule:
+      interval: "daily"
+  
+  # Maintain dependencies for Maven
+  - package-ecosystem: "maven"
+    directory: "/basyx.components.databridge.examples.activemqproducer/"
+    schedule:
+      interval: "daily"
+
+  # Maintain dependencies for Maven
+  - package-ecosystem: "maven"
+    directory: "/basyx.components.databridge.examples.debsdatagenerator/"
+    schedule:
+      interval: "daily"
+
+  # Maintain dependencies for Maven
+  - package-ecosystem: "maven"
+    directory: "/basyx.components.databridge.examples.hono-jsonata-aas/"
+    schedule:
+      interval: "daily"
+  
+  # Maintain dependencies for Maven
+  - package-ecosystem: "maven"
+    directory: "/basyx.components.databridge.examples.httppolling-jsonata-aas/"
+    schedule:
+      interval: "daily"
+
+  # Maintain dependencies for Maven
+  - package-ecosystem: "maven"
+    directory: "/basyx.components.databridge.examples.httpserver/"
+    schedule:
+      interval: "daily"
+
+  # Maintain dependencies for Maven
+  - package-ecosystem: "maven"
+    directory: "/basyx.components.databridge.examples.kafka-jsonata-aas/"
+    schedule:
+      interval: "daily"
+
+  # Maintain dependencies for Maven
+  - package-ecosystem: "maven"
+    directory: "/basyx.components.databridge.examples.kafka-jsonatamultiple-aas/"
+    schedule:
+      interval: "daily"
+
+  # Maintain dependencies for Maven
+  - package-ecosystem: "maven"
+    directory: "/basyx.components.databridge.examples.kafkaproducer/"
+    schedule:
+      interval: "daily"
+
+  # Maintain dependencies for Maven
+  - package-ecosystem: "maven"
+    directory: "/basyx.components.databridge.examples.mqtt-jsonata-aas/"
+    schedule:
+      interval: "daily"
+
+  # Maintain dependencies for Maven
+  - package-ecosystem: "maven"
+    directory: "/basyx.components.databridge.examples.opcua-jsonata-aas/"
+    schedule:
+      interval: "daily"
+
+  # Maintain dependencies for Maven
+  - package-ecosystem: "maven"
+    directory: "/basyx.components.databridge.examples.prometheus-jsonata-aas/"
+    schedule:
+      interval: "daily"
+
+  # Maintain dependencies for Maven
+  - package-ecosystem: "maven"
+    directory: "/basyx.components.databridge.transformer.camel-jsonata/"
+    schedule:
+      interval: "daily"
+
+  # Maintain dependencies for Maven
+  - package-ecosystem: "maven"
+    directory: "/basyx.components.databridge.transformer.camel-jsonjackson/"
+    schedule:
+      interval: "daily"
