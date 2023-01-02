@@ -20,7 +20,7 @@ import basyx.components.databridge.core.configuration.factory.DataSinkConfigurat
  *
  */
 public class AASProducerDefaultConfigurationFactory extends DataSinkConfigurationFactory {
-	private static final String FILE_PATH = "aasserver.json";
+	public static final String FILE_PATH = "aasserver.json";
 	
 	public AASProducerDefaultConfigurationFactory(ClassLoader loader) {
 		super(FILE_PATH, loader, AASDatasinkConfiguration.class);

@@ -20,7 +20,7 @@ import basyx.components.databridge.transformer.cameljsonata.configuration.Jsonat
  *
  */
 public class JsonataDefaultConfigurationFactory extends DataTransformerConfigurationFactory {
-	private static final String FILE_PATH = "jsonatatransformer.json";
+	public static final String FILE_PATH = "jsonatatransformer.json";
 	
 	public JsonataDefaultConfigurationFactory(ClassLoader loader) {
 		super(FILE_PATH, loader, JsonataTransformerConfiguration.class);

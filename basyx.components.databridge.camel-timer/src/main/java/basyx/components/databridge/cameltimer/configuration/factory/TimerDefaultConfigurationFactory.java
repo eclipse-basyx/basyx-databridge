@@ -20,7 +20,7 @@ import basyx.components.databridge.core.configuration.factory.DataSourceConfigur
  *
  */
 public class TimerDefaultConfigurationFactory extends DataSourceConfigurationFactory {
-	private static final String FILE_PATH = "timerconsumer.json";
+	public static final String FILE_PATH = "timerconsumer.json";
 	
 	public TimerDefaultConfigurationFactory(ClassLoader loader) {
 		super(FILE_PATH, loader, TimerConsumerConfiguration.class);

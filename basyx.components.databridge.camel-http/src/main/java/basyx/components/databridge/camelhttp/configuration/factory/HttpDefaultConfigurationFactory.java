@@ -20,7 +20,7 @@ import basyx.components.databridge.core.configuration.factory.DataSourceConfigur
  *
  */
 public class HttpDefaultConfigurationFactory extends DataSourceConfigurationFactory {
-	private static final String FILE_PATH = "httpconsumer.json";
+	public static final String FILE_PATH = "httpconsumer.json";
 	
 	public HttpDefaultConfigurationFactory(ClassLoader loader) {
 		super(FILE_PATH, loader, HttpConsumerConfiguration.class);

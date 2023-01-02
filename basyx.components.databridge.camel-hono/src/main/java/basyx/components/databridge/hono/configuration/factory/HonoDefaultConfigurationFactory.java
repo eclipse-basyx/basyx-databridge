@@ -20,7 +20,7 @@ import basyx.components.databridge.hono.configuration.HonoConsumerConfiguration;
  *
  */
 public class HonoDefaultConfigurationFactory extends DataSourceConfigurationFactory {
-	private static final String FILE_PATH = "honoconsumer.json";
+	public static final String FILE_PATH = "honoconsumer.json";
 	
 	public HonoDefaultConfigurationFactory(ClassLoader loader) {
 		super(FILE_PATH, loader, HonoConsumerConfiguration.class);

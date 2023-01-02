@@ -9,7 +9,7 @@ import basyx.components.databridge.core.configuration.factory.DataSinkConfigurat
  *
  */
 public class PrometheusDefaultConfigurationFactory extends DataSinkConfigurationFactory {
-	private static final String FILE_PATH = "prometheus.json";
+	public static final String FILE_PATH = "prometheus.json";
 	
 	public PrometheusDefaultConfigurationFactory(ClassLoader loader) {
 		super(FILE_PATH, loader, PrometheusConsumerConfiguration.class);

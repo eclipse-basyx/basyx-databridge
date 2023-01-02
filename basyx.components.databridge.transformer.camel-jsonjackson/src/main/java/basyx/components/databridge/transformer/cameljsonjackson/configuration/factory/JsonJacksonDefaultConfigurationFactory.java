@@ -21,7 +21,7 @@ import basyx.components.databridge.transformer.cameljsonjackson.configuration.Js
  *
  */
 public class JsonJacksonDefaultConfigurationFactory extends DataTransformerConfigurationFactory {
-	private static final String FILE_PATH = "jsonjacksontransformer.json";
+	public static final String FILE_PATH = "jsonjacksontransformer.json";
 
 	public JsonJacksonDefaultConfigurationFactory(ClassLoader loader) {
 		super(FILE_PATH, loader, JsonJacksonTransformerConfiguration.class);

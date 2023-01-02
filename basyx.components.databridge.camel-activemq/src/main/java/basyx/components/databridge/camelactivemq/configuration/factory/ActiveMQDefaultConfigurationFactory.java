@@ -20,7 +20,7 @@ import basyx.components.databridge.core.configuration.factory.DataSourceConfigur
  *
  */
 public class ActiveMQDefaultConfigurationFactory extends DataSourceConfigurationFactory {
-	private static final String FILE_PATH = "activemqconsumer.json";
+	public static final String FILE_PATH = "activemqconsumer.json";
 	
 	public ActiveMQDefaultConfigurationFactory(ClassLoader loader) {
 		super(FILE_PATH, loader, ActiveMQConsumerConfiguration.class);

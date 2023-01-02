@@ -21,7 +21,7 @@ import basyx.components.databridge.core.configuration.factory.DataSourceConfigur
  *
  */
 public class OpcuaDefaultConfigurationFactory extends DataSourceConfigurationFactory {
-	private static final String FILE_PATH = "opcuaconsumer.json";
+	public static final String FILE_PATH = "opcuaconsumer.json";
 
 	public OpcuaDefaultConfigurationFactory(ClassLoader loader) {
 		super(FILE_PATH, loader, OpcuaConsumerConfiguration.class);
