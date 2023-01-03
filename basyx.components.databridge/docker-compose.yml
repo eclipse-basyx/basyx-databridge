@@ -5,14 +5,12 @@ services:
     image: ${BASYX_IMAGE_NAME}:${BASYX_IMAGE_TAG}
     container_name: ${BASYX_CONTAINER_NAME}
     volumes:
-      - C:\Users\danish\temp:/usr/share/config
+      - ${VOLUME_MAPPING}:/usr/share/config
     network_mode: host
     depends_on:
       mqtt:
         condition: service_healthy
       aas:
-        condition: service_healthy
-      activemq:
         condition: service_healthy
 
   aas:
@@ -22,7 +20,7 @@ services:
     ports:
       - 4001:4001
     volumes:
-      - C:\Users\danish\temp:/usr/share/config
+      - ${VOLUME_MAPPING}:/usr/share/config
     depends_on:
       mqtt:
         condition: service_healthy
@@ -45,25 +43,3 @@ services:
       retries: 3
       start_period: 10s
       timeout: 10s   
-
-  activemq:
-    image: symptoma/activemq:5.17.2
-    ports:
-      - "61616:61616"
-      - "8161:8161"
-    healthcheck:
-      test: /opt/activemq/bin/activemq query --objname type=Broker,brokerName=*,service=Health | grep Good
-      interval: 10s
-      timeout: 5s
-      retries: 5
-  
-  opcua:
-    image: opcua/server:0.0.1-SNAPSHOT
-    ports:
-      - "12686:12686"
-    # healthcheck:
-    #   test: curl --fail http://127.0.0.1:12686/ua/Server/GetSystemStatus || exit 1
-    #   interval: 10s
-    #   retries: 3
-    #   start_period: 10s
-    #   timeout: 10s

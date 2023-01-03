@@ -35,14 +35,14 @@ import java.util.Set;
 import org.junit.Test;
 import basyx.components.databridge.camelactivemq.configuration.ActiveMQConsumerConfiguration;
 import basyx.components.databridge.core.configuration.route.core.RoutesConfiguration;
-import basyx.components.databridge.executable.UpdaterExecutable;
+import basyx.components.databridge.executable.DatabridgeExecutable;
 
 /**
- * Tests the updater executable scenarios 
+ * Tests the databridge executable scenarios 
  *
  * @author danish
  */
-public class TestUpdaterExecutable {
+public class TestDatabridgeExecutable {
 	private static final String PATH_PREFIX = "src/test/resources";
 	
 	private static final String CONTENT = "[\r\n"
@@ -55,17 +55,15 @@ public class TestUpdaterExecutable {
 			+ "]";
 	
 	@Test
-	public void loadedFileisCorrect() throws IOException {
-		Set<String> configFiles = UpdaterExecutable.listFiles(PATH_PREFIX);
+	public void loadedFileIsCorrect() throws IOException {
+		Set<String> configFiles = DatabridgeExecutable.listFiles(PATH_PREFIX);
 		
-		assertEquals(1, configFiles.size());
-		
-		assertEquals(CONTENT, Files.readString(Path.of(PATH_PREFIX + "/" + configFiles.stream().findAny().get())));
+		assertEquals(CONTENT, Files.readString(Path.of(PATH_PREFIX + "/" + configFiles.stream().filter(file -> file.contains("activemqconsumer.json")).findAny().get())));
 	}
 	
 	@Test
 	public void configFactoryisCorrect() {
-		Set<String> configFiles = UpdaterExecutable.listFiles(PATH_PREFIX);
+		Set<String> configFiles = DatabridgeExecutable.listFiles(PATH_PREFIX);
 		
 		RoutesConfiguration configuration = new RoutesConfiguration();
 		
@@ -77,7 +75,7 @@ public class TestUpdaterExecutable {
 	}
 
 	private void applyConfiguration(Set<String> configFiles, RoutesConfiguration configuration) {
-		Set<Class<?>> classes = UpdaterExecutable.findAllConfigurationFactoryClasses(UpdaterExecutable.PACKAGE_PREFIX);
-		classes.stream().forEach(clazz -> UpdaterExecutable.findAvailableConfigurationFilesAndAddConfiguration(clazz, configuration, configFiles, PATH_PREFIX));
+		Set<Class<?>> classes = DatabridgeExecutable.findAllConfigurationFactoryClasses(DatabridgeExecutable.PACKAGE_PREFIX);
+		classes.stream().forEach(clazz -> DatabridgeExecutable.findAvailableConfigurationFilesAndAddConfiguration(clazz, configuration, configFiles, PATH_PREFIX));
 	}
 }

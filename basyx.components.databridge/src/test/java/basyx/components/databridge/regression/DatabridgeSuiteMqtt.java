@@ -22,62 +22,75 @@
  * 
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
-package basyx.components.databridge.integration;
+package basyx.components.databridge.regression;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+
+import org.apache.commons.io.FileUtils;
 import org.eclipse.basyx.aas.aggregator.api.IAASAggregator;
-import org.eclipse.basyx.aas.aggregator.proxy.AASAggregatorProxy;
 import org.eclipse.basyx.aas.metamodel.api.IAssetAdministrationShell;
 import org.eclipse.basyx.aas.metamodel.map.descriptor.CustomId;
 import org.eclipse.basyx.submodel.metamodel.api.ISubmodel;
 import org.eclipse.basyx.submodel.metamodel.api.identifier.IIdentifier;
 import org.eclipse.basyx.submodel.metamodel.api.submodelelement.ISubmodelElement;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
+import org.eclipse.paho.client.mqttv3.IMqttClient;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.MqttPersistenceException;
+import org.eclipse.paho.client.mqttv3.MqttSecurityException;
 import org.junit.Test;
 
 /**
- * Integration test with OPCUA 
- *
+ * Suite for testing that the Databridge is setup correctly
+ * with Mqtt
+ * 
  * @author danish
+ *
  */
-public class ITTestUpdaterOpcua {
+public abstract class DatabridgeSuiteMqtt {
 	protected static IIdentifier deviceAAS = new CustomId("TestUpdatedDeviceAAS");
-	@Before
-	public void setUp() throws Exception {
-		System.out.println("Setting up env...");
-	}
-
-	@After
-	public void tearDown() throws Exception {
-		System.out.println("Tearing down env...");
-	}
-
-	@Test
-	@Ignore
-	public void test() throws Exception {
-		Thread.sleep(15000);
-		System.out.println("CHECK PROPERTY");
-		checkProperty();
-	}
 	
-	private void checkProperty() throws InterruptedException {
-		IAASAggregator proxy = new AASAggregatorProxy("http://localhost:4001");
+	protected abstract IMqttClient getMqttClient() throws MqttException;
+	
+	protected abstract IAASAggregator getAASAggregatorProxy();
+	
+	@Test
+	public void test() throws Exception {
+		publishNewDatapoint();
+		
+		waitForPropagation();
+		
+		checkIfPropertyIsUpdated();
+	}
+
+	private void waitForPropagation() throws InterruptedException {
+		Thread.sleep(10000);
+	}
+
+	private void checkIfPropertyIsUpdated() throws InterruptedException {
+		IAASAggregator proxy = getAASAggregatorProxy();
 		
 		IAssetAdministrationShell aas = proxy.getAAS(deviceAAS);
 		ISubmodel sm = aas.getSubmodels().get("ConnectedSubmodel");
 		
-		ISubmodelElement updatedProp = sm.getSubmodelElement("ConnectedPropertyA");
+		ISubmodelElement updatedProp = sm.getSubmodelElement("ConnectedPropertyB");
 
 		Object propValue = updatedProp.getValue();
-		System.out.println("UpdatedPROPA: " + propValue);
-		assertEquals("3.14", propValue);
 		
-		ISubmodelElement updatedProp2 = sm.getSubmodelElement("ConnectedPropertyB");
-		Object propValue2 = updatedProp2.getValue();
-		System.out.println("UpdatedPROPB: " + propValue2);
-		assertEquals("32", propValue2);
+		assertEquals("858383", propValue);
+	}
+
+	private void publishNewDatapoint() throws MqttException, MqttSecurityException, MqttPersistenceException, IOException {
+		String json = FileUtils.readFileToString(new File(getClass().getClassLoader().getResource("test.json").getFile()), StandardCharsets.UTF_8);
+		
+		IMqttClient mqttClient = getMqttClient();
+		mqttClient.connect();
+		mqttClient.publish("PropertyB", new MqttMessage(json.getBytes()));
+		mqttClient.disconnect();
+		mqttClient.close();
 	}
 }
