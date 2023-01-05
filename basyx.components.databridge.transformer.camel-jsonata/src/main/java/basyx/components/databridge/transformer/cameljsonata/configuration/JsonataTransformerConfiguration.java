@@ -15,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import basyx.components.databridge.core.configuration.entity.DataTransformerConfiguration;
-import basyx.components.databridge.core.configuration.factory.DataTransformerConfigurationFactory;
 
 import java.io.File;
 
@@ -50,8 +49,6 @@ public class JsonataTransformerConfiguration extends DataTransformerConfiguratio
 	}
 
 	public String getConnectionURI() {
-		createAbsolutePathForQueryPathIfRequired();
-		
 		String url = "";
 		File jsonataFile = new File(getQueryPath());
 
@@ -63,16 +60,6 @@ public class JsonataTransformerConfiguration extends DataTransformerConfiguratio
 			url = "jsonata:" + getQueryPath() + "?inputType=" + getInputType() + "&outputType=" + getOutputType();
 		}
 		return url;
-	}
-
-	private void createAbsolutePathForQueryPathIfRequired() {
-		if(!isDataTransferConfiguredWithClassLoader()) {
-			setQueryPath(DataTransformerConfigurationFactory.getPath() + getQueryPath());
-		}
-	}
-
-	private boolean isDataTransferConfiguredWithClassLoader() {
-		return DataTransformerConfigurationFactory.getPath() == null && DataTransformerConfigurationFactory.getPath().isEmpty();
 	}
 
 	public String getInputType() {

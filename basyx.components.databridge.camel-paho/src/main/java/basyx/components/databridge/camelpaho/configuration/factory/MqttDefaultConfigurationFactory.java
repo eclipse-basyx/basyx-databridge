@@ -20,10 +20,10 @@ import basyx.components.databridge.core.configuration.factory.DataSourceConfigur
  *
  */
 public class MqttDefaultConfigurationFactory extends DataSourceConfigurationFactory {
-	public static final String FILE_PATH = "mqttconsumer.json";
+	public static final String DEFAULT_FILE_PATH = "mqttconsumer.json";
 	
 	public MqttDefaultConfigurationFactory(ClassLoader loader) {
-		super(FILE_PATH, loader, MqttConsumerConfiguration.class);
+		super(DEFAULT_FILE_PATH, loader, MqttConsumerConfiguration.class);
 	}
 	
 	public MqttDefaultConfigurationFactory(String filePath, ClassLoader loader) {

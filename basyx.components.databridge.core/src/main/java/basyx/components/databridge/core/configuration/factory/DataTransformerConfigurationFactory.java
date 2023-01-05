@@ -13,8 +13,6 @@ package basyx.components.databridge.core.configuration.factory;
 
 import java.util.List;
 
-import org.apache.commons.io.FilenameUtils;
-
 import basyx.components.databridge.core.configuration.entity.DataTransformerConfiguration;
 
 /**
@@ -24,34 +22,13 @@ import basyx.components.databridge.core.configuration.entity.DataTransformerConf
  *
  */
 public class DataTransformerConfigurationFactory extends ConfigurationFactory {
-	private static String path = "";
 
 	public DataTransformerConfigurationFactory(String filePath, ClassLoader loader, Class<?> mapperClass) {
 		super(filePath, loader, mapperClass);
-		
-		setConfigurationFilePathIfFilepathIsProvidedInsteadOfClassLoader(filePath);
 	}
 
 	@SuppressWarnings("unchecked")
 	public List<DataTransformerConfiguration> create() {
 		return (List<DataTransformerConfiguration>) getConfigurationLoader().loadListConfiguration();
-	}
-	
-	private void setConfigurationFilePathIfFilepathIsProvidedInsteadOfClassLoader(String filePath) {
-		if(!isProvidedFilePathIsDefaultPath(filePath)) {
-			setPath(FilenameUtils.getPath(filePath));
-		}
-	}
-
-	private boolean isProvidedFilePathIsDefaultPath(String filePath) {
-		return FilenameUtils.getPath(filePath).isEmpty();
-	}
-	
-	public static String getPath() {
-		return path;
-	}
-
-	public static void setPath(String path) {
-		DataTransformerConfigurationFactory.path = path;
 	}
 }

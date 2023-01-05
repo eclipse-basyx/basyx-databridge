@@ -60,7 +60,6 @@ public class TestUpdaterMqtt extends DatabridgeSuiteMqtt {
 	protected static IIdentifier deviceAAS = new CustomId("TestUpdatedDeviceAAS");
 	
 	private static final String AAS_AGGREGATOR_URL = "http://localhost:4001";
-
 	private static final String BROKER_URL = "tcp://localhost:1884";
 	
 	@BeforeClass

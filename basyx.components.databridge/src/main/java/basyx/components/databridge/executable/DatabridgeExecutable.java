@@ -27,6 +27,8 @@ package basyx.components.databridge.executable;
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -39,6 +41,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import basyx.components.databridge.core.component.UpdaterComponent;
+import basyx.components.databridge.core.configuration.entity.DataSinkConfiguration;
+import basyx.components.databridge.core.configuration.entity.DataSourceConfiguration;
+import basyx.components.databridge.core.configuration.entity.DataTransformerConfiguration;
 import basyx.components.databridge.core.configuration.factory.ConfigurationFactory;
 import basyx.components.databridge.core.configuration.factory.DataSinkConfigurationFactory;
 import basyx.components.databridge.core.configuration.factory.DataSourceConfigurationFactory;
@@ -61,7 +66,8 @@ public class DatabridgeExecutable {
 	protected static final String CONSUMER = "consumer";
 	protected static final String TRANSFORMER = "transformer";
 	protected static final String SERVER = "server";
-	protected static final String FIELD_FILE_PATH = "FILE_PATH";
+	protected static final String FIELD_FILE_PATH = "DEFAULT_FILE_PATH";
+	protected static final String CREATE_METHOD_NAME = "create";
 	
 	private static String configFilePath;
 
@@ -81,7 +87,7 @@ public class DatabridgeExecutable {
 		Set<String> configFiles = listFiles(getConfigFilePath());
 
 		Set<Class<?>> classes = findAllConfigurationFactoryClasses(PACKAGE_PREFIX);
-		logger.info("All classes : {}", classes.toString());
+		
 		classes.stream().forEach(
 				clazz -> findAvailableConfigurationFilesAndAddConfiguration(clazz, configuration, configFiles, getConfigFilePath()));
 	}
@@ -94,9 +100,7 @@ public class DatabridgeExecutable {
 	public static void findAvailableConfigurationFilesAndAddConfiguration(Class<?> clazz,
 			RoutesConfiguration configuration, Set<String> configFiles, String pathPrefix) {
 		try {
-			logger.info("Class name : {}", clazz.getName());
 			final String fileNameDefinedInConfigFactory = (String) clazz.getField(FIELD_FILE_PATH).get(null);
-			logger.info("Class field name : {}", fileNameDefinedInConfigFactory);
 
 			configFiles.stream()
 					.filter(userInputConfigFilename -> userInputConfigFilename.equals(fileNameDefinedInConfigFactory))
@@ -121,28 +125,31 @@ public class DatabridgeExecutable {
 	}
 
 	private static void addDataSink(String path, Class<?> clazz, RoutesConfiguration configuration) {
-		DataSinkConfigurationFactory defaultConfigFactory = getConfigFactory(path,
-				DatabridgeExecutable.class.getClassLoader(), DataSinkConfigurationFactory.class, clazz);
+		@SuppressWarnings("unchecked")
+		List<DataSinkConfiguration> configurations = (List<DataSinkConfiguration>) getConfigurations(path,
+				DatabridgeExecutable.class.getClassLoader(), clazz);
 
-		configuration.addDatasinks(defaultConfigFactory.create());
+		configuration.addDatasinks(configurations);
 
 		logger.info("Data sink added - {}", FilenameUtils.getName(path));
 	}
 
 	private static void addTransformer(String path, Class<?> clazz, RoutesConfiguration configuration) {
-		DataTransformerConfigurationFactory defaultConfigFactory = getConfigFactory(path,
-				DatabridgeExecutable.class.getClassLoader(), DataTransformerConfigurationFactory.class, clazz);
+		@SuppressWarnings("unchecked")
+		List<DataTransformerConfiguration> configurations = (List<DataTransformerConfiguration>) getConfigurations(path,
+				DatabridgeExecutable.class.getClassLoader(), clazz);
 
-		configuration.addTransformers(defaultConfigFactory.create());
+		configuration.addTransformers(configurations);
 
 		logger.info("Data Transformer added - {}", FilenameUtils.getName(path));
 	}
 
 	private static void addDataSource(String path, Class<?> clazz, RoutesConfiguration configuration) {
-		DataSourceConfigurationFactory defaultConfigFactory = getConfigFactory(path,
-				DatabridgeExecutable.class.getClassLoader(), DataSourceConfigurationFactory.class, clazz);
+		@SuppressWarnings("unchecked")
+		List<DataSourceConfiguration> configurations = (List<DataSourceConfiguration>) getConfigurations(path,
+				DatabridgeExecutable.class.getClassLoader(), clazz);
 
-		configuration.addDatasources(defaultConfigFactory.create());
+		configuration.addDatasources(configurations);
 
 		logger.info("Data source added - {}", FilenameUtils.getName(path));
 	}
@@ -155,23 +162,41 @@ public class DatabridgeExecutable {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static <configFactoryClass> configFactoryClass getConfigFactory(String path, ClassLoader loader,
-			Class<?> configFactoryClass, Class<?> nodeClass) {
-		Constructor<?> constructor = getConstructor(path, nodeClass);
+	private static <ConfigurationClass> Object getConfigurations(String path, ClassLoader loader, Class<?> configurationClass) {
+		Constructor<?> constructor = getConstructor(configurationClass);
 
-		configFactoryClass configFactory = null;
+		ConfigurationClass configFactory = null;
+		
+		Object listConfig = null;
 		try {
-			configFactory = (configFactoryClass) constructor.newInstance(path, loader);
+			configFactory = (ConfigurationClass) constructor.newInstance(path, loader);
+			listConfig = invokeCreateMethodAndGetConfigurations(configFactory);
+			
 			logger.info("Instantiated class {}", configFactory.getClass().toString());
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException e) {
 			throw new RuntimeException();
 		}
 
-		return configFactory;
+		return listConfig;
 	}
 
-	private static Constructor<?> getConstructor(String path, Class<?> nodeClass) {
+	private static <ConfigurationClass> Object invokeCreateMethodAndGetConfigurations(ConfigurationClass configurationFactory)
+			throws IllegalAccessException, InvocationTargetException {
+		Object configurations = null;
+		try {
+			Method method = configurationFactory.getClass().getMethod(CREATE_METHOD_NAME);
+			configurations = method.invoke(configurationFactory);
+			
+			logger.info("Retrieved method {}", method.getName());
+		} catch (NoSuchMethodException | SecurityException e) {
+			throw new RuntimeException();
+		}
+		
+		return configurations;
+	}
+
+	private static Constructor<?> getConstructor(Class<?> nodeClass) {
 		Constructor<?> constructor = null;
 		try {
 			constructor = nodeClass.getConstructor(String.class, ClassLoader.class);

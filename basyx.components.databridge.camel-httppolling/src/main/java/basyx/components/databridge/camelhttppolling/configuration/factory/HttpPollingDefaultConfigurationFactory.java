@@ -9,10 +9,10 @@ import basyx.components.databridge.core.configuration.factory.DataSourceConfigur
  *
  */
 public class HttpPollingDefaultConfigurationFactory extends DataSourceConfigurationFactory {
-	public static final String FILE_PATH = "httpconsumer.json";
+	public static final String DEFAULT_FILE_PATH = "httpconsumer.json";
 	
 	public HttpPollingDefaultConfigurationFactory(ClassLoader loader) {
-		super(FILE_PATH, loader, HttpPollingConsumerConfiguration.class);
+		super(DEFAULT_FILE_PATH, loader, HttpPollingConsumerConfiguration.class);
 	}
 	
 	public HttpPollingDefaultConfigurationFactory(String filePath, ClassLoader loader) {

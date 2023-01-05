@@ -20,10 +20,10 @@ import basyx.components.databridge.core.configuration.factory.DataSourceConfigur
  *
  */
 public class KafkaDefaultConfigurationFactory extends DataSourceConfigurationFactory {
-	public static final String FILE_PATH = "kafkaconsumer.json";
+	public static final String DEFAULT_FILE_PATH = "kafkaconsumer.json";
 	
 	public KafkaDefaultConfigurationFactory(ClassLoader loader) {
-		super(FILE_PATH, loader, KafkaConsumerConfiguration.class);
+		super(DEFAULT_FILE_PATH, loader, KafkaConsumerConfiguration.class);
 	}
 	
 	public KafkaDefaultConfigurationFactory(String filePath, ClassLoader loader) {
