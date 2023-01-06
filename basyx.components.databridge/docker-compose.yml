@@ -1,0 +1,45 @@
+version: '3.8'
+services:
+
+  databridge:
+    image: ${BASYX_IMAGE_NAME}:${BASYX_IMAGE_TAG}
+    container_name: ${BASYX_CONTAINER_NAME}
+    volumes:
+      - ${VOLUME_MAPPING}/databridge:/usr/share/config
+    network_mode: host
+    depends_on:
+      mqtt:
+        condition: service_healthy
+      aas:
+        condition: service_healthy
+
+  aas:
+    build: 
+      context: ./src/test/resources
+      dockerfile: ./Dockerfile
+    ports:
+      - 4001:4001
+    volumes:
+      - ${VOLUME_MAPPING}/databridge:/usr/share/config
+    depends_on:
+      mqtt:
+        condition: service_healthy
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider aas:4001/health || exit 1
+      interval: 20s
+      retries: 3
+      start_period: 10s
+      timeout: 10s
+
+  mqtt:
+    image: eclipse-mosquitto:2.0.15
+    ports:
+      - 1884:1884
+    volumes:
+      - ${VOLUME_MAPPING}/mosquito:/mosquitto/config
+    healthcheck:
+      test: ["CMD-SHELL", mosquitto_sub -p 1884 -t 'topic' -C 1 -E -i probe -W 3]
+      interval: 20s
+      retries: 3
+      start_period: 10s
+      timeout: 10s   

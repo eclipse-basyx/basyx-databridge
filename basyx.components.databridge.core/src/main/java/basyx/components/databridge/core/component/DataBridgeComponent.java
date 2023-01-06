@@ -35,13 +35,13 @@ import basyx.components.databridge.core.routebuilder.DataBridgeRouteBuilder;
  * @author haque, fischer
  *
  */
-public class UpdaterComponent implements IComponent {
-	private static Logger logger = LoggerFactory.getLogger(UpdaterComponent.class);
+public class DataBridgeComponent implements IComponent {
+	private static Logger logger = LoggerFactory.getLogger(DataBridgeComponent.class);
 	private DataBridgeRouteBuilder orchestrator;
 
 	protected CamelContext camelContext;
 
-	public UpdaterComponent(RoutesConfiguration configuration) {
+	public DataBridgeComponent(RoutesConfiguration configuration) {
 		camelContext = new DefaultCamelContext();
 		orchestrator = new DataBridgeRouteBuilder(configuration, getRouteCreatorFactoryMapDefault());
 	}
