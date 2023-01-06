@@ -19,7 +19,6 @@
 	<!-- Plugin configuration is done in parent project(s) -->
 	<build>
 		<plugins>
-
 			<!-- Compile Java sources using Java 11 -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -36,45 +35,6 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
 				<version>3.2.1</version>
-			</plugin>
-
-			<!-- Read maven properties from file -->
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>properties-maven-plugin</artifactId>
-				<version>1.1.0</version>
-				<executions>
-					<execution>
-						<phase>initialize</phase>
-						<goals>
-							<goal>read-project-properties</goal>
-						</goals>
-						<configuration>
-							<files>
-								<file>${project.basedir}/src/test/resources/.env</file>
-							</files>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-
-			<!-- Copy the dependencies necessary to run the jar -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>copy-dependencies</id>
-						<phase>prepare-package</phase>
-						<goals>
-							<goal>copy-dependencies</goal>
-						</goals>
-						<configuration>
-							<includeScope>compile</includeScope>
-							<outputDirectory>${project.build.directory}/lib/</outputDirectory>
-						</configuration>
-					</execution>
-				</executions>
 			</plugin>
 
 			<!-- Generate separate jar for tests and exclude logback.xml from generated 
@@ -103,92 +63,6 @@
 						</execution>
 					</executions>
 				</configuration>
-			</plugin>
-
-			<!-- Build the docker image -->
-			<plugin>
-				<groupId>io.fabric8</groupId>
-				<artifactId>docker-maven-plugin</artifactId>
-				<version>0.39.1</version>
-				<configuration>
-					<images>
-						<image>
-							<name>${BASYX_IMAGE_NAME}:${BASYX_IMAGE_TAG}</name>
-							<build>
-								<contextDir>${project.basedir}</contextDir>
-								<args>
-									<JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
-								</args>
-							</build>
-						</image>
-					</images>
-					<verbose>true</verbose>
-				</configuration>
-				<executions>
-					<execution>
-						<id>docker:build</id>
-						<phase>package</phase>
-						<goals>
-							<goal>build</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<!-- Create integration test environment -->
-			<plugin>
-				<groupId>com.dkanejs.maven.plugins</groupId>
-				<artifactId>docker-compose-maven-plugin</artifactId>
-				<version>2.5.1</version>
-				<configuration>
-					<composeFile>${project.basedir}/docker-compose.yml</composeFile>
-					<detachedMode>true</detachedMode>
-					<envFile>${project.basedir}/src/test/resources/.env</envFile>
-					<envVars>
-						<BASYX_IMAGE_TAG>${project.version}</BASYX_IMAGE_TAG>
-						<BASYX_IMAGE_NAME>${BASYX_IMAGE_NAME}</BASYX_IMAGE_NAME>
-						<VOLUME_MAPPING>${project.basedir}/src/test/resources/mqtt</VOLUME_MAPPING>
-					</envVars>
-				</configuration>
-				<executions>
-					<execution>
-						<id>docker-compose-up</id>
-						<phase>pre-integration-test</phase>
-						<goals>
-							<goal>up</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>docker-compose-down</id>
-						<phase>post-integration-test</phase>
-						<goals>
-							<goal>down</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<!-- Run integration tests -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-failsafe-plugin</artifactId>
-				<version>3.0.0-M7</version>
-				<configuration>
-					<systemPropertyVariables>
-						<VOLUME_MAPPING>${project.basedir}/src/test/resources/mqtt/databridge</VOLUME_MAPPING>
-					</systemPropertyVariables>
-					<includes>
-						<include>**/ITTestDataBridgeMqtt.java</include>
-					</includes>
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>integration-test</goal>
-							<goal>verify</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 	</build>
@@ -354,4 +228,140 @@
 			</exclusions>
 		</dependency>
 	</dependencies>
+
+	<profiles>
+		<profile>
+			<!-- "Docker" profile - do not build & install docker images by default 
+				Run "mvn install -Pdocker" in order to include docker -->
+			<id>docker</id>
+			<build>
+				<plugins>
+					<!-- Read maven properties from file -->
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>properties-maven-plugin</artifactId>
+						<version>1.1.0</version>
+						<executions>
+							<execution>
+								<phase>initialize</phase>
+								<goals>
+									<goal>read-project-properties</goal>
+								</goals>
+								<configuration>
+									<files>
+										<file>${project.basedir}/src/test/resources/.env</file>
+									</files>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+
+					<!-- Copy the dependencies necessary to run the jar -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-dependency-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>copy-dependencies</id>
+								<phase>prepare-package</phase>
+								<goals>
+									<goal>copy-dependencies</goal>
+								</goals>
+								<configuration>
+									<includeScope>compile</includeScope>
+									<outputDirectory>${project.build.directory}/lib/</outputDirectory>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+
+					<!-- Build the docker image -->
+					<plugin>
+						<groupId>io.fabric8</groupId>
+						<artifactId>docker-maven-plugin</artifactId>
+						<version>0.39.1</version>
+						<configuration>
+							<images>
+								<image>
+									<name>${BASYX_IMAGE_NAME}:${BASYX_IMAGE_TAG}</name>
+									<build>
+										<contextDir>${project.basedir}</contextDir>
+										<args>
+											<JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
+										</args>
+									</build>
+								</image>
+							</images>
+							<verbose>true</verbose>
+						</configuration>
+						<executions>
+							<execution>
+								<id>docker:build</id>
+								<phase>package</phase>
+								<goals>
+									<goal>build</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<!-- Create integration test environment -->
+					<plugin>
+						<groupId>com.dkanejs.maven.plugins</groupId>
+						<artifactId>docker-compose-maven-plugin</artifactId>
+						<version>2.5.1</version>
+						<configuration>
+							<composeFile>${project.basedir}/docker-compose.yml</composeFile>
+							<detachedMode>true</detachedMode>
+							<envFile>${project.basedir}/src/test/resources/.env</envFile>
+							<envVars>
+								<BASYX_IMAGE_TAG>${project.version}</BASYX_IMAGE_TAG>
+								<BASYX_IMAGE_NAME>${BASYX_IMAGE_NAME}</BASYX_IMAGE_NAME>
+								<VOLUME_MAPPING>${project.basedir}/src/test/resources/mqtt</VOLUME_MAPPING>
+							</envVars>
+						</configuration>
+						<executions>
+							<execution>
+								<id>docker-compose-up</id>
+								<phase>pre-integration-test</phase>
+								<goals>
+									<goal>up</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>docker-compose-down</id>
+								<phase>post-integration-test</phase>
+								<goals>
+									<goal>down</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<!-- Run integration tests -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-failsafe-plugin</artifactId>
+						<version>3.0.0-M7</version>
+						<configuration>
+							<systemPropertyVariables>
+								<VOLUME_MAPPING>${project.basedir}/src/test/resources/mqtt/databridge</VOLUME_MAPPING>
+							</systemPropertyVariables>
+							<includes>
+								<include>**/ITTestDataBridgeMqtt.java</include>
+							</includes>
+						</configuration>
+						<executions>
+							<execution>
+								<goals>
+									<goal>integration-test</goal>
+									<goal>verify</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>

@@ -61,3 +61,5 @@ jobs:
       run: mvn test -f basyx.components.databridge.examples/basyx.components.databridge.examples.opcua-jsonata-aas/pom.xml
     - name: Test HTTP Polling
       run: mvn test -f basyx.components.databridge.examples/basyx.components.databridge.examples.httppolling-jsonata-aas/pom.xml
+    - name: Install DataBridge Executable
+      run: mvn clean install -f basyx.components.databridge/pom.xml
