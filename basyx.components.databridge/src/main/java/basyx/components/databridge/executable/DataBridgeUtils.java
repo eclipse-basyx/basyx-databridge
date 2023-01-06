@@ -84,9 +84,9 @@ public class DataBridgeUtils {
 		Object listConfig = null;
 		try {
 			configFactory = (ConfigurationClass) constructor.newInstance(path, loader);
-			listConfig = invokeCreateMethodAndGetConfigurations(configFactory);
+			listConfig = getConfigurations(configFactory);
 
-			logger.info("Instantiated class {}", configFactory.getClass().toString());
+			logger.info("Instantiated {}", configFactory.getClass().toString());
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException e) {
 			throw new RuntimeException();
@@ -95,7 +95,7 @@ public class DataBridgeUtils {
 		return listConfig;
 	}
 
-	private static <ConfigurationClass> Object invokeCreateMethodAndGetConfigurations(
+	private static <ConfigurationClass> Object getConfigurations(
 			ConfigurationClass configurationFactory) throws IllegalAccessException, InvocationTargetException {
 		Object configurations = null;
 		try {

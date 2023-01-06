@@ -31,7 +31,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import basyx.components.databridge.core.component.UpdaterComponent;
 import basyx.components.databridge.core.configuration.entity.DataSinkConfiguration;
 import basyx.components.databridge.core.configuration.entity.DataSourceConfiguration;
 import basyx.components.databridge.core.configuration.entity.DataTransformerConfiguration;
@@ -42,32 +41,31 @@ import basyx.components.databridge.core.configuration.factory.RoutesConfiguratio
 import basyx.components.databridge.core.configuration.route.core.RoutesConfiguration;
 
 /**
- * Component for configuring and starting
- * the DataBridge
+ * Used for configuring the routes
  *
  * @author danish
  */
-public class DataBridgeComponent {
-	private static Logger logger = LoggerFactory.getLogger(DataBridgeComponent.class);
+public class RoutesConfigurationLoader {
+	private static Logger logger = LoggerFactory.getLogger(RoutesConfigurationLoader.class);
 
 	private String configFilePath;
 
-	public DataBridgeComponent(String configFilePath) {
+	public RoutesConfigurationLoader(String configFilePath) {
 		this.configFilePath = configFilePath;
 	}
 
-	public void start() {
+	public RoutesConfiguration create() {
 		ClassLoader loader = DataBridgeExecutable.class.getClassLoader();
 		RoutesConfiguration configuration = new RoutesConfiguration();
 
 		configureRouteFactory(loader, configuration);
 
 		addAvailableConfigurations(configuration);
-
-		startUpdaterComponent(configuration);
+		
+		return configuration;
 	}
 
-	public void addAvailableConfigurations(RoutesConfiguration configuration) {
+	private void addAvailableConfigurations(RoutesConfiguration configuration) {
 		Set<String> configFiles = DataBridgeUtils.getFiles(getConfigFilePath());
 
 		Set<Class<?>> classes = DataBridgeUtils.findAllConfigurationFactoryClasses(DataBridgeUtils.PACKAGE_PREFIX);
@@ -79,7 +77,7 @@ public class DataBridgeComponent {
 				.forEach(userInputConfigFilename -> addConfiguration(clazz, userInputConfigFilename, configuration)));
 	}
 	
-	public void addConfiguration(Class<?> clazz, String userInputConfigFilename, RoutesConfiguration configuration) {
+	private void addConfiguration(Class<?> clazz, String userInputConfigFilename, RoutesConfiguration configuration) {
 		if (DataSourceConfigurationFactory.class.isAssignableFrom(clazz)) {
 			addDataSource(getConfigFilePath() + "/" + userInputConfigFilename, clazz, configuration);
 		} else if (DataTransformerConfigurationFactory.class.isAssignableFrom(clazz)) {
@@ -91,7 +89,7 @@ public class DataBridgeComponent {
 		}
 	}
 	
-	public String getConfigFilePath() {
+	private String getConfigFilePath() {
 		return configFilePath;
 	}
 
@@ -129,10 +127,5 @@ public class DataBridgeComponent {
 		configuration.addDatasinks(configurations);
 
 		logger.info("Data sink added - {}", FilenameUtils.getName(path));
-	}
-	
-	private void startUpdaterComponent(RoutesConfiguration configuration) {
-		UpdaterComponent updater = new UpdaterComponent(configuration);
-		updater.startComponent();
 	}
 }

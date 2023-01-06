@@ -5,7 +5,7 @@ services:
     image: ${BASYX_IMAGE_NAME}:${BASYX_IMAGE_TAG}
     container_name: ${BASYX_CONTAINER_NAME}
     volumes:
-      - ${VOLUME_MAPPING}:/usr/share/config
+      - ${VOLUME_MAPPING}/databridge:/usr/share/config
     network_mode: host
     depends_on:
       mqtt:
@@ -20,7 +20,7 @@ services:
     ports:
       - 4001:4001
     volumes:
-      - ${VOLUME_MAPPING}:/usr/share/config
+      - ${VOLUME_MAPPING}/databridge:/usr/share/config
     depends_on:
       mqtt:
         condition: service_healthy
@@ -36,7 +36,7 @@ services:
     ports:
       - 1884:1884
     volumes:
-      - C:\Users\danish\temp\mosquitto:/mosquitto/config
+      - ${VOLUME_MAPPING}/mosquito:/mosquitto/config
     healthcheck:
       test: ["CMD-SHELL", mosquitto_sub -p 1884 -t 'topic' -C 1 -E -i probe -W 3]
       interval: 20s

@@ -147,7 +147,7 @@
 					<envVars>
 						<BASYX_IMAGE_TAG>${project.version}</BASYX_IMAGE_TAG>
 						<BASYX_IMAGE_NAME>${BASYX_IMAGE_NAME}</BASYX_IMAGE_NAME>
-						<VOLUME_MAPPING>${project.basedir}/src/test/resources/mqtt/databridge</VOLUME_MAPPING>
+						<VOLUME_MAPPING>${project.basedir}/src/test/resources/mqtt</VOLUME_MAPPING>
 					</envVars>
 				</configuration>
 				<executions>

@@ -41,7 +41,7 @@ import org.eclipse.basyx.components.configuration.BaSyxContextConfiguration;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
-import basyx.components.databridge.executable.DataBridgeComponent;
+import basyx.components.databridge.executable.DataBridgeExecutable;
 
 /**
  * Tests the DataBridge with ActiveMQ
@@ -76,8 +76,7 @@ public class TestDataBridgeActiveMQ extends DataBridgeSuiteActiveMQ {
 	}
 	
 	private static void startUpdaterComponent() {
-		DataBridgeComponent dataBridgeComponent = new DataBridgeComponent("src/test/resources/activemq/databridge");
-		dataBridgeComponent.start();
+		DataBridgeExecutable.main(new String[] {"src/test/resources/activemq/databridge"});
 	}
 	
 	@Override

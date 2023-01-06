@@ -22,35 +22,31 @@
  * 
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
-package basyx.components.databridge.executable;
+package basyx.components.databridge.regression;
 
-import basyx.components.databridge.core.component.DataBridgeComponent;
-import basyx.components.databridge.core.configuration.route.core.RoutesConfiguration;
+import static org.junit.Assert.assertTrue;
+
+import java.io.IOException;
+import java.util.Set;
+
+import org.junit.Test;
+
+import basyx.components.databridge.executable.DataBridgeUtils;
 
 /**
- * Starts the stand-alone databridge component
+ * Tests the DataBridgeUtils class
  *
  * @author danish
  */
-public class DataBridgeExecutable {
-
-	private static final String DEFAULT_CONFIG_PATH = "/usr/share/config";
-	
-	public static void main(String[] args) throws IllegalArgumentException, SecurityException {
-		String configPath = getConfigPath(args);
+public class TestDataBridgeUtils {
+	@Test
+	public void loadedFileIsCorrect() throws IOException {
+		Set<String> configFiles = DataBridgeUtils.getFiles("src/test/resources/activemq/databridge");
 		
-		RoutesConfigurationLoader routesConfigurationLoader = new RoutesConfigurationLoader(configPath);
-
-		RoutesConfiguration config = routesConfigurationLoader.create();
-
-		new DataBridgeComponent(config).startComponent();
+		assertActiveMQConsumerIsFound(configFiles);
 	}
 
-	private static String getConfigPath(String[] args) {
-		if (args.length == 0) {
-			return DEFAULT_CONFIG_PATH;
-		} else {
-			return args[0];
-		}
+	private void assertActiveMQConsumerIsFound(Set<String> configFiles) {
+		assertTrue(configFiles.stream().anyMatch(file -> file.contains("activemqconsumer.json")));
 	}
 }

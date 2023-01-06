@@ -45,7 +45,7 @@ import org.eclipse.paho.client.mqttv3.MqttSecurityException;
 import org.junit.Test;
 
 /**
- * Suite for testing that the Databridge is setup correctly
+ * Suite for testing that the DataBridge is setup correctly
  * with Mqtt
  * 
  * @author danish

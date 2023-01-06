@@ -29,14 +29,14 @@ import org.junit.Test;
 
 import basyx.components.databridge.aas.configuration.factory.AASProducerDefaultConfigurationFactory;
 import basyx.components.databridge.camelkafka.configuration.factory.KafkaDefaultConfigurationFactory;
-import basyx.components.databridge.core.component.UpdaterComponent;
+import basyx.components.databridge.core.component.DataBridgeComponent;
 import basyx.components.databridge.core.configuration.factory.RoutesConfigurationFactory;
 import basyx.components.databridge.core.configuration.route.core.RoutesConfiguration;
 import basyx.components.databridge.transformer.cameljsonata.configuration.factory.JsonataDefaultConfigurationFactory;
 
 public class TestAASUpdater {
 	private static AASServerComponent aasServer;
-	private static UpdaterComponent updater;
+	private static DataBridgeComponent updater;
 	private static InMemoryRegistry registry;
 
 	protected static IIdentifier deviceAAS = new CustomId("TestUpdatedDeviceAAS");
@@ -78,7 +78,7 @@ public class TestAASUpdater {
 		JsonataDefaultConfigurationFactory jsonataConfigFactory = new JsonataDefaultConfigurationFactory(loader);
 		configuration.addTransformers(jsonataConfigFactory.create());
 
-		updater = new UpdaterComponent(configuration);
+		updater = new DataBridgeComponent(configuration);
 		updater.startComponent();
 		System.out.println("UPDATER STARTED");
 		publishNewDatapoint();

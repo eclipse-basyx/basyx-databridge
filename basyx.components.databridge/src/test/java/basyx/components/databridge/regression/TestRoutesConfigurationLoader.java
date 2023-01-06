@@ -27,54 +27,32 @@ package basyx.components.databridge.regression;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Set;
-
 import org.junit.Test;
+
 import basyx.components.databridge.camelactivemq.configuration.ActiveMQConsumerConfiguration;
 import basyx.components.databridge.core.configuration.route.core.RoutesConfiguration;
-import basyx.components.databridge.executable.DataBridgeComponent;
-import basyx.components.databridge.executable.DataBridgeUtils;
+import basyx.components.databridge.executable.RoutesConfigurationLoader;
 
 /**
- * Tests the DataBridge component scenarios 
+ * Tests the DataBridge routes configuration scenario
  *
  * @author danish
  */
-public class TestDataBridgeComponent {
-	private static final String PATH_PREFIX = "src/test/resources";
-	
-	private static final String CONTENT = "[\r\n"
-			+ "	{\r\n"
-			+ "		\"uniqueId\": \"property1\",\r\n"
-			+ "		\"serverUrl\": \"127.0.0.1\",\r\n"
-			+ "		\"serverPort\": 61616,\r\n"
-			+ "		\"queue\": \"first-topic\"\r\n"
-			+ "	}\r\n"
-			+ "]";
-	
-	@Test
-	public void loadedFileIsCorrect() throws IOException {
-		Set<String> configFiles = DataBridgeUtils.getFiles(PATH_PREFIX);
-		
-		assertEquals(CONTENT, Files.readString(Path.of(PATH_PREFIX + "/" + configFiles.stream().filter(file -> file.contains("activemqconsumer.json")).findAny().get())));
-	}
-	
+public class TestRoutesConfigurationLoader {
+	private static final String PATH_PREFIX = "src/test/resources/activemq/databridge";
+
 	@Test
 	public void configFactoryisCorrect() {
-		RoutesConfiguration configuration = new RoutesConfiguration();
-		
-		configureDataBridgeComponent(configuration);
-		
-		assertTrue(configuration.getDatasources().get("property1") instanceof ActiveMQConsumerConfiguration);
-		
-		assertTrue(configuration.getDatasinks().size() == 0 && configuration.getRoutes().size() == 0 && configuration.getTransformers().size() == 0);
+		RoutesConfiguration configuration = new RoutesConfigurationLoader(PATH_PREFIX).create();
+
+		assertRoutesConfigurationIsCorrect(configuration);
 	}
 
-	private void configureDataBridgeComponent(RoutesConfiguration configuration) {
-		DataBridgeComponent dataBridgeComponent = new DataBridgeComponent(PATH_PREFIX);
-		dataBridgeComponent.addAvailableConfigurations(configuration);
+	private void assertRoutesConfigurationIsCorrect(RoutesConfiguration configuration) {
+		assertEquals(2, configuration.getDatasources().size());
+		assertEquals(2, configuration.getTransformers().size());
+		assertEquals(2, configuration.getDatasinks().size());
+
+		assertTrue(configuration.getDatasources().get("property1") instanceof ActiveMQConsumerConfiguration);
 	}
 }

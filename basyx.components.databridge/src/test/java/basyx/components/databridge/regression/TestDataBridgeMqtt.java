@@ -41,7 +41,7 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
-import basyx.components.databridge.executable.DataBridgeComponent;
+import basyx.components.databridge.executable.DataBridgeExecutable;
 import io.moquette.broker.Server;
 import io.moquette.broker.config.ClasspathResourceLoader;
 import io.moquette.broker.config.IConfig;
@@ -90,8 +90,7 @@ public class TestDataBridgeMqtt extends DataBridgeSuiteMqtt {
 	}
 	
 	private static void startUpdaterComponent() {
-		DataBridgeComponent dataBridgeComponent = new DataBridgeComponent("src/test/resources/mqtt/databridge");
-		dataBridgeComponent.start();
+		DataBridgeExecutable.main(new String[] {"src/test/resources/mqtt/databridge"});
 	}
 	
 	@Override
