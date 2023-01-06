@@ -12,7 +12,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-		<basyx.databridge.executable>basyx.components.databridge.executable.DatabridgeExecutable</basyx.databridge.executable>
+		<basyx.databridge.executable>basyx.components.databridge.executable.DataBridgeExecutable</basyx.databridge.executable>
 	</properties>
 
 	<!-- Define additional plugins that are not included by default -->
@@ -178,7 +178,7 @@
 						<VOLUME_MAPPING>${project.basedir}/src/test/resources/mqtt/databridge</VOLUME_MAPPING>
 					</systemPropertyVariables>
 					<includes>
-						<include>**/ITTestUpdaterMqtt.java</include>
+						<include>**/ITTestDataBridgeMqtt.java</include>
 					</includes>
 				</configuration>
 				<executions>

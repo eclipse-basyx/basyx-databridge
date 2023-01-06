@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2022 the Eclipse BaSyx Authors
+ * Copyright (C) 2023 the Eclipse BaSyx Authors
  * 
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -22,35 +22,26 @@
  * 
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
-package basyx.components.databridge.integration;
-
-import java.util.UUID;
-
-import org.eclipse.basyx.aas.aggregator.api.IAASAggregator;
-import org.eclipse.basyx.aas.aggregator.proxy.AASAggregatorProxy;
-import org.eclipse.paho.client.mqttv3.IMqttClient;
-import org.eclipse.paho.client.mqttv3.MqttClient;
-import org.eclipse.paho.client.mqttv3.MqttException;
-import basyx.components.databridge.regression.DatabridgeSuiteMqtt;
+package basyx.components.databridge.executable;
 
 /**
- * Integration test with Mqtt 
+ * Starts the stand-alone databridge component
  *
  * @author danish
  */
-public class ITTestUpdaterMqtt extends DatabridgeSuiteMqtt {
-	private static final String HOST = "localhost";
+public class DataBridgeExecutable {
 
-	@Override
-	protected IMqttClient getMqttClient() throws MqttException {
-		String publisherId = UUID.randomUUID().toString();
-		
-		return new MqttClient("tcp://" + HOST + ":1884", publisherId);
-	}
-
-	@Override
-	protected IAASAggregator getAASAggregatorProxy() {
-		return new AASAggregatorProxy("http://" + HOST + ":4001");
-	}
+	private static final String DEFAULT_CONFIG_PATH = "/usr/share/config";
 	
+	public static void main(String[] args) throws IllegalArgumentException, SecurityException {
+		DataBridgeComponent dataBridgeComponent;
+		
+		if (args.length == 0) {
+			dataBridgeComponent = new DataBridgeComponent(DEFAULT_CONFIG_PATH);
+		} else {
+			dataBridgeComponent = new DataBridgeComponent(args[0]);
+		}
+		
+		dataBridgeComponent.start();
+	}
 }

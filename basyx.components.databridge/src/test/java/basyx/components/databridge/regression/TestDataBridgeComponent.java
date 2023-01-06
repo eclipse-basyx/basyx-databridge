@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2022 the Eclipse BaSyx Authors
+ * Copyright (C) 2023 the Eclipse BaSyx Authors
  * 
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -35,14 +35,15 @@ import java.util.Set;
 import org.junit.Test;
 import basyx.components.databridge.camelactivemq.configuration.ActiveMQConsumerConfiguration;
 import basyx.components.databridge.core.configuration.route.core.RoutesConfiguration;
-import basyx.components.databridge.executable.DatabridgeExecutable;
+import basyx.components.databridge.executable.DataBridgeComponent;
+import basyx.components.databridge.executable.DataBridgeUtils;
 
 /**
- * Tests the databridge executable scenarios 
+ * Tests the DataBridge component scenarios 
  *
  * @author danish
  */
-public class TestDatabridgeExecutable {
+public class TestDataBridgeComponent {
 	private static final String PATH_PREFIX = "src/test/resources";
 	
 	private static final String CONTENT = "[\r\n"
@@ -56,26 +57,24 @@ public class TestDatabridgeExecutable {
 	
 	@Test
 	public void loadedFileIsCorrect() throws IOException {
-		Set<String> configFiles = DatabridgeExecutable.listFiles(PATH_PREFIX);
+		Set<String> configFiles = DataBridgeUtils.getFiles(PATH_PREFIX);
 		
 		assertEquals(CONTENT, Files.readString(Path.of(PATH_PREFIX + "/" + configFiles.stream().filter(file -> file.contains("activemqconsumer.json")).findAny().get())));
 	}
 	
 	@Test
 	public void configFactoryisCorrect() {
-		Set<String> configFiles = DatabridgeExecutable.listFiles(PATH_PREFIX);
-		
 		RoutesConfiguration configuration = new RoutesConfiguration();
 		
-		applyConfiguration(configFiles, configuration);
+		configureDataBridgeComponent(configuration);
 		
 		assertTrue(configuration.getDatasources().get("property1") instanceof ActiveMQConsumerConfiguration);
 		
 		assertTrue(configuration.getDatasinks().size() == 0 && configuration.getRoutes().size() == 0 && configuration.getTransformers().size() == 0);
 	}
 
-	private void applyConfiguration(Set<String> configFiles, RoutesConfiguration configuration) {
-		Set<Class<?>> classes = DatabridgeExecutable.findAllConfigurationFactoryClasses(DatabridgeExecutable.PACKAGE_PREFIX);
-		classes.stream().forEach(clazz -> DatabridgeExecutable.findAvailableConfigurationFilesAndAddConfiguration(clazz, configuration, configFiles, PATH_PREFIX));
+	private void configureDataBridgeComponent(RoutesConfiguration configuration) {
+		DataBridgeComponent dataBridgeComponent = new DataBridgeComponent(PATH_PREFIX);
+		dataBridgeComponent.addAvailableConfigurations(configuration);
 	}
 }

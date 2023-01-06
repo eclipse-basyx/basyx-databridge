@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2022 the Eclipse BaSyx Authors
+ * Copyright (C) 2023 the Eclipse BaSyx Authors
  * 
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -24,28 +24,33 @@
  ******************************************************************************/
 package basyx.components.databridge.integration;
 
-import javax.jms.Connection;
-import javax.jms.JMSException;
-import org.apache.activemq.ActiveMQConnectionFactory;
+import java.util.UUID;
+
 import org.eclipse.basyx.aas.aggregator.api.IAASAggregator;
 import org.eclipse.basyx.aas.aggregator.proxy.AASAggregatorProxy;
-import basyx.components.databridge.regression.DatabridgeSuiteActiveMQ;
+import org.eclipse.paho.client.mqttv3.IMqttClient;
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import basyx.components.databridge.regression.DataBridgeSuiteMqtt;
 
 /**
- * Integration test with ActiveMQ 
+ * Integration test with Mqtt 
  *
  * @author danish
  */
-public class ITTestUpdaterActiveMQ extends DatabridgeSuiteActiveMQ {
+public class ITTestDataBridgeMqtt extends DataBridgeSuiteMqtt {
 	private static final String HOST = "localhost";
 
 	@Override
-	protected Connection getActiveMQConnection() throws JMSException {
-		return new ActiveMQConnectionFactory("tcp://" + HOST + ":61616").createConnection();
+	protected IMqttClient getMqttClient() throws MqttException {
+		String publisherId = UUID.randomUUID().toString();
+		
+		return new MqttClient("tcp://" + HOST + ":1884", publisherId);
 	}
 
 	@Override
 	protected IAASAggregator getAASAggregatorProxy() {
 		return new AASAggregatorProxy("http://" + HOST + ":4001");
 	}
+	
 }

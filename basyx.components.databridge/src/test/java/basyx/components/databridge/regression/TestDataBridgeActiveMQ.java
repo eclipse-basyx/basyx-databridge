@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2022 the Eclipse BaSyx Authors
+ * Copyright (C) 2023 the Eclipse BaSyx Authors
  * 
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -25,59 +25,45 @@
 package basyx.components.databridge.regression;
 
 import java.io.IOException;
-import java.util.UUID;
 
+import javax.jms.Connection;
+import javax.jms.JMSException;
+
+import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.broker.BrokerService;
+import org.apache.activemq.usage.SystemUsage;
 import org.eclipse.basyx.aas.aggregator.api.IAASAggregator;
 import org.eclipse.basyx.aas.aggregator.proxy.AASAggregatorProxy;
-import org.eclipse.basyx.aas.metamodel.map.descriptor.CustomId;
 import org.eclipse.basyx.components.aas.AASServerComponent;
 import org.eclipse.basyx.components.aas.configuration.AASServerBackend;
 import org.eclipse.basyx.components.aas.configuration.BaSyxAASServerConfiguration;
 import org.eclipse.basyx.components.configuration.BaSyxContextConfiguration;
-import org.eclipse.basyx.submodel.metamodel.api.identifier.IIdentifier;
-import org.eclipse.paho.client.mqttv3.IMqttClient;
-import org.eclipse.paho.client.mqttv3.MqttClient;
-import org.eclipse.paho.client.mqttv3.MqttException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
-import basyx.components.databridge.executable.DatabridgeExecutable;
-import io.moquette.broker.Server;
-import io.moquette.broker.config.ClasspathResourceLoader;
-import io.moquette.broker.config.IConfig;
-import io.moquette.broker.config.IResourceLoader;
-import io.moquette.broker.config.ResourceLoaderConfig;
+import basyx.components.databridge.executable.DataBridgeComponent;
 
 /**
- * Tests the updater component with Mqtt
+ * Tests the DataBridge with ActiveMQ
  *
  * @author danish
  */
-public class TestUpdaterMqtt extends DatabridgeSuiteMqtt {
-	private static AASServerComponent aasServer;
-	protected static Server mqttBroker;
-
-	protected static IIdentifier deviceAAS = new CustomId("TestUpdatedDeviceAAS");
-	
+public class TestDataBridgeActiveMQ extends DataBridgeSuiteActiveMQ {
 	private static final String AAS_AGGREGATOR_URL = "http://localhost:4001";
-	private static final String BROKER_URL = "tcp://localhost:1884";
+
+	private static final String BROKER_URL = "tcp://localhost:61616";
+
+	private static AASServerComponent aasServer;
+	
+	protected static BrokerService activeMQBroker;
 	
 	@BeforeClass
 	public static void setUp() throws IOException {
-		startMqttBroker();
+		startActiveMQBroker();
 
 		configureAndStartAASServer();
 		
 		startUpdaterComponent();
-	}
-
-	private static void startMqttBroker() throws IOException {
-		mqttBroker = new Server();
-		
-		IResourceLoader classpathLoader = new ClasspathResourceLoader();
-		final IConfig classPathConfig = new ResourceLoaderConfig(classpathLoader);
-		
-		mqttBroker.startServer(classPathConfig);
 	}
 	
 	private static void configureAndStartAASServer() {
@@ -90,16 +76,13 @@ public class TestUpdaterMqtt extends DatabridgeSuiteMqtt {
 	}
 	
 	private static void startUpdaterComponent() {
-		DatabridgeExecutable.setConfigFilePath("src/test/resources/mqtt/databridge");
-		
-		DatabridgeExecutable.main(new String[] {});
+		DataBridgeComponent dataBridgeComponent = new DataBridgeComponent("src/test/resources/activemq/databridge");
+		dataBridgeComponent.start();
 	}
 	
 	@Override
-	protected IMqttClient getMqttClient() throws MqttException {
-		String publisherId = UUID.randomUUID().toString();
-		
-		return new MqttClient(BROKER_URL, publisherId);
+	protected Connection getActiveMQConnection() throws JMSException {
+		return new ActiveMQConnectionFactory(BROKER_URL).createConnection();
 	}
 
 	@Override
@@ -107,10 +90,34 @@ public class TestUpdaterMqtt extends DatabridgeSuiteMqtt {
 		return new AASAggregatorProxy(AAS_AGGREGATOR_URL);
 	}
 	
+	private static void startActiveMQBroker() {
+		try {
+			activeMQBroker = new BrokerService();
+			activeMQBroker.addConnector(BROKER_URL);
+			activeMQBroker.setPersistent(false);
+			
+			setSystemUsageLimit();
+			
+			activeMQBroker.start();
+		} catch (Exception e) {
+			throw new RuntimeException();
+		}
+	}
+
+	private static void setSystemUsageLimit() {
+		SystemUsage systemUsage = activeMQBroker.getSystemUsage();
+		systemUsage.getStoreUsage().setLimit(1024 * 1024 * 8);
+		systemUsage.getTempUsage().setLimit(1024 * 1024 * 8);
+	}
+	
 	@AfterClass
 	public static void tearDown() {
 		aasServer.stopComponent();
 		
-		mqttBroker.stopServer();
+		try {
+			activeMQBroker.stop();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
