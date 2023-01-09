@@ -45,7 +45,7 @@
 		<dependency>
 			<groupId>org.apache.camel</groupId>
 			<artifactId>camel-kafka</artifactId>
-			<version>3.20.0</version>
+			<version>3.20.1</version>
 		</dependency>
 	</dependencies>
 </project>
