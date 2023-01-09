@@ -37,8 +37,6 @@
 				<version>3.2.1</version>
 			</plugin>
 
-			<!-- Generate separate jar for tests and exclude logback.xml from generated 
-				jars -->
 			<!-- + create the executable jar -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -315,7 +313,7 @@
 							<detachedMode>true</detachedMode>
 							<envFile>${project.basedir}/src/test/resources/.env</envFile>
 							<envVars>
-								<BASYX_IMAGE_TAG>${project.version}</BASYX_IMAGE_TAG>
+								<BASYX_IMAGE_TAG>${BASYX_IMAGE_TAG}</BASYX_IMAGE_TAG>
 								<BASYX_IMAGE_NAME>${BASYX_IMAGE_NAME}</BASYX_IMAGE_NAME>
 								<VOLUME_MAPPING>${project.basedir}/src/test/resources/mqtt</VOLUME_MAPPING>
 							</envVars>
