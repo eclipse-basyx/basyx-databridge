@@ -1,0 +1,14 @@
+[
+	{
+		"datasource": "httpsource",
+		"transformers": [
+			"jsonataA"
+		],
+		"trigger": "request",
+		"triggerData": {
+			"host": "localhost",
+			"port": "8090",
+			"path": "/valueA"
+		}
+	}
+]

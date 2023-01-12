@@ -1,0 +1,27 @@
+[
+	{
+		"routeId": "namedRoute",
+		"datasource": "property1",
+		"transformers": [
+			"jsonataA"
+		],
+		"trigger": "request",
+		"triggerData": {
+			"host": "localhost",
+			"port": "8090",
+			"path": "/valueA"
+		}
+	},
+	{
+		"datasource": "property2",
+		"transformers": [
+			"jsonataB"
+		],
+		"trigger": "request",
+		"triggerData": {
+			"host": "localhost",
+			"port": "8091",
+			"path": "/valueB"
+		}
+	}
+]

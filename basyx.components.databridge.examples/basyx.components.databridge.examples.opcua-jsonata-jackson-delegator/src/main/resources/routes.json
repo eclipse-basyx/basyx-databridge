@@ -1,0 +1,22 @@
+[
+	{
+		"datasource": "doublescalar",
+		"transformers": ["dataValueToJson", "jsonataExtractValue"],
+		"trigger": "request",
+		"triggerData": {
+			"host": "localhost",
+			"port": "8090",
+			"path": "/valueA"
+		}
+	},
+	{
+		"datasource": "integerscalar",
+		"transformers": ["dataValueToJson", "jsonataExtractValue"],
+		"trigger": "request",
+		"triggerData": {
+			"host": "localhost",
+			"port": "8091",
+			"path": "/valueA"
+		}
+	}
+]
