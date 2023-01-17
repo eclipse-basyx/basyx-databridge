@@ -16,6 +16,7 @@ import java.util.List;
 
 import basyx.components.databridge.core.configuration.route.core.RouteConfiguration;
 import basyx.components.databridge.core.configuration.route.event.EventRouteConfiguration;
+import basyx.components.databridge.core.configuration.route.request.RequestRouteConfiguration;
 import basyx.components.databridge.core.configuration.route.timer.TimerRouteConfiguration;
 
 /**
@@ -63,6 +64,8 @@ public class RoutesConfigurationFactory extends ConfigurationFactory {
 				mapped.add(new EventRouteConfiguration(configuration));
 			} else if (isTimerConfiguration(configuration)) {
 				mapped.add(new TimerRouteConfiguration(configuration));
+			} else if (isRequestConfiguration(configuration)) {
+				mapped.add(new RequestRouteConfiguration(configuration));
 			}
 		}
 
@@ -75,5 +78,9 @@ public class RoutesConfigurationFactory extends ConfigurationFactory {
 
 	private boolean isEventConfiguration(RouteConfiguration configuration) {
 		return configuration.getRouteTrigger().equals(EventRouteConfiguration.ROUTE_TRIGGER);
+	}
+	
+	private boolean isRequestConfiguration(RouteConfiguration configuration) {
+		return configuration.getRouteTrigger().equals(RequestRouteConfiguration.ROUTE_TRIGGER);
 	}
 }

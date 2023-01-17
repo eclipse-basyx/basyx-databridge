@@ -25,6 +25,7 @@
 		<module>basyx.components.databridge.examples.httpserver</module>
 		<module>basyx.components.databridge.examples.opcua-jsonata-aas</module>
 		<module>basyx.components.databridge.examples.httppolling-jsonata-aas</module>
+		<module>basyx.components.databridge.examples.httppolling-jsonata-delegator</module>
 		<module>basyx.components.databridge.examples.prometheus-jsonata-aas</module>
 	</modules>
 

@@ -24,6 +24,8 @@ import basyx.components.databridge.core.configuration.route.core.IRouteCreatorFa
 import basyx.components.databridge.core.configuration.route.core.RoutesConfiguration;
 import basyx.components.databridge.core.configuration.route.event.EventRouteConfiguration;
 import basyx.components.databridge.core.configuration.route.event.EventRouteCreatorFactory;
+import basyx.components.databridge.core.configuration.route.request.RequestRouteConfiguration;
+import basyx.components.databridge.core.configuration.route.request.RequestRouteCreatorFactory;
 import basyx.components.databridge.core.configuration.route.timer.TimerRouteConfiguration;
 import basyx.components.databridge.core.configuration.route.timer.TimerRouteCreatorFactory;
 import basyx.components.databridge.core.routebuilder.DataBridgeRouteBuilder;
@@ -50,6 +52,7 @@ public class DataBridgeComponent implements IComponent {
 		Map<String, IRouteCreatorFactory> defaultRouteCreatorFactoryMap = new HashMap<>();
 		defaultRouteCreatorFactoryMap.put(EventRouteConfiguration.ROUTE_TRIGGER, new EventRouteCreatorFactory());
 		defaultRouteCreatorFactoryMap.put(TimerRouteConfiguration.ROUTE_TRIGGER, new TimerRouteCreatorFactory());
+		defaultRouteCreatorFactoryMap.put(RequestRouteConfiguration.ROUTE_TRIGGER, new RequestRouteCreatorFactory());
 
 		return defaultRouteCreatorFactoryMap;
 	}
