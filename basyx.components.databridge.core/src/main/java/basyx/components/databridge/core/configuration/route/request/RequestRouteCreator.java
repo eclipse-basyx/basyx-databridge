@@ -1,19 +1,43 @@
+/*******************************************************************************
+ * Copyright (C) 2023 the Eclipse BaSyx Authors
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining
+ * a copy of this software and associated documentation files (the
+ * "Software"), to deal in the Software without restriction, including
+ * without limitation the rights to use, copy, modify, merge, publish,
+ * distribute, sublicense, and/or sell copies of the Software, and to
+ * permit persons to whom the Software is furnished to do so, subject to
+ * the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+ * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+ * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+ * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * 
+ * SPDX-License-Identifier: MIT
+ ******************************************************************************/
 package basyx.components.databridge.core.configuration.route.request;
 
-import org.apache.camel.Endpoint;
-import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.model.RouteDefinition;
-import org.apache.commons.lang3.RandomUtils;
-
-import basyx.components.databridge.core.configuration.delegator.processor.HeaderProcessor;
-import basyx.components.databridge.core.configuration.delegator.processor.RequestProcessor;
-import basyx.components.databridge.core.configuration.delegator.processor.SourceProcessor;
-import basyx.components.databridge.core.configuration.delegator.response.ResponseMessage;
+import basyx.components.databridge.core.configuration.delegator.handler.ResponseHandler;
+import basyx.components.databridge.core.configuration.delegator.processor.CamelRemoveHeaderProcessor;
 import basyx.components.databridge.core.configuration.route.core.AbstractRouteCreator;
 import basyx.components.databridge.core.configuration.route.core.RouteConfiguration;
 import basyx.components.databridge.core.configuration.route.core.RoutesConfiguration;
 
+/**
+ * Configures and creates the request route
+ *
+ * @author danish
+ *
+ */
 public class RequestRouteCreator extends AbstractRouteCreator {
 
 	public RequestRouteCreator(RouteBuilder routeBuilder, RoutesConfiguration routesConfiguration) {
@@ -25,42 +49,17 @@ public class RequestRouteCreator extends AbstractRouteCreator {
 			String[] dataTransformerEndpoints, String routeId) {
 		String delegatorEndpoint = ((RequestRouteConfiguration) routeConfig).getRequestEndpointURI();
 
-		MyBean myBean = new MyBean();
-
-		RouteDefinition routeDefinition;
-
-		if (isDataSourceAProducer(dataSourceEndpoint)) {
-			System.out.println("Producer source");
-			routeDefinition = createProducerRoute(dataSourceEndpoint, routeId, delegatorEndpoint);
-		} else {
-			System.out.println("Consumer source");
-			routeDefinition = createConsumerRoute(dataSourceEndpoint, routeId, delegatorEndpoint);
-		}
+		RouteDefinition routeDefinition = createProducerRoute(dataSourceEndpoint, routeId, delegatorEndpoint);
 
 		if (!(dataTransformerEndpoints == null || dataTransformerEndpoints.length == 0)) {
-			routeDefinition.to(dataTransformerEndpoints).log("Transfer response : ${body}");
+			routeDefinition.to(dataTransformerEndpoints).log("Transformer : " + routeId);
 		}
 
-		routeDefinition.setBody().simple("${body}").setHeader(Exchange.HTTP_RESPONSE_CODE).constant(200);
+		routeDefinition.bean(new ResponseHandler());
 	}
 
 	private RouteDefinition createProducerRoute(String dataSourceEndpoint, String routeId, String delegatorEndpoint) {
-		return getRouteBuilder().from(delegatorEndpoint).routeId(routeId).process(new HeaderProcessor())
-				.to(dataSourceEndpoint).log("Data from URL : ${body}");
-	}
-
-	private RouteDefinition createConsumerRoute(String dataSourceEndpoint, String routeId, String delegatorEndpoint) {
-		ResponseMessage responseMessage = new ResponseMessage();
-
-		getRouteBuilder().from(dataSourceEndpoint).process(new SourceProcessor(responseMessage))
-				.routeId("route" + RandomUtils.nextInt()).log("Data from source processor : ${body}");
-
-		return getRouteBuilder().from(delegatorEndpoint).routeId(routeId).process(new RequestProcessor(responseMessage));
-	}
-
-	private boolean isDataSourceAProducer(String dataSourceEndpoint) {
-		Endpoint endpoint = getRouteBuilder().getCamelContext().getEndpoint(dataSourceEndpoint);
-
-		return endpoint.isLenientProperties();
+		return getRouteBuilder().from(delegatorEndpoint).routeId(routeId).process(new CamelRemoveHeaderProcessor())
+				.to(dataSourceEndpoint).log("Source : " + routeId);
 	}
 }

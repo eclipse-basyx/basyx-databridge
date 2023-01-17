@@ -22,25 +22,21 @@
  * 
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
-package basyx.components.databridge.core.configuration.route.request;
+package basyx.components.databridge.core.configuration.delegator.handler;
 
-import org.apache.camel.builder.RouteBuilder;
-
-import basyx.components.databridge.core.configuration.route.core.IRouteCreator;
-import basyx.components.databridge.core.configuration.route.core.IRouteCreatorFactory;
-import basyx.components.databridge.core.configuration.route.core.RoutesConfiguration;
+import org.apache.camel.Exchange;
+import org.apache.camel.Handler;
 
 /**
- * A factory class for request route
+ * A handler for setting the response to the message
  *
  * @author danish
  *
  */
-public class RequestRouteCreatorFactory implements IRouteCreatorFactory {
-
-	@Override
-	public IRouteCreator create(RouteBuilder routeBuilder, RoutesConfiguration routesConfiguration) {
-		return new RequestRouteCreator(routeBuilder, routesConfiguration);
-	}
-
+public class ResponseHandler {
+	
+	@Handler
+	public void setResponse(Exchange exchange) {
+        exchange.getIn().setHeader(Exchange.HTTP_RESPONSE_CODE, 200);
+    }
 }

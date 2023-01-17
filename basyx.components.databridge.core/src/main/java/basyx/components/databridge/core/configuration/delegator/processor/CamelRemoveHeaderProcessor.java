@@ -22,25 +22,26 @@
  * 
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
-package basyx.components.databridge.core.configuration.route.request;
+package basyx.components.databridge.core.configuration.delegator.processor;
 
-import org.apache.camel.builder.RouteBuilder;
-
-import basyx.components.databridge.core.configuration.route.core.IRouteCreator;
-import basyx.components.databridge.core.configuration.route.core.IRouteCreatorFactory;
-import basyx.components.databridge.core.configuration.route.core.RoutesConfiguration;
+import org.apache.camel.Exchange;
+import org.apache.camel.Processor;
 
 /**
- * A factory class for request route
- *
+ * Removes camel header from the exchange in-order to communicate with external
+ * http service
+ * <br>
+ * Refer to <a href=
+ * "https://camel.apache.org/manual/faq/how-to-remove-the-http-protocol-headers-in-the-camel-message.html">Camel
+ * HTTP Protocol Headers</a>
+ * 
  * @author danish
  *
  */
-public class RequestRouteCreatorFactory implements IRouteCreatorFactory {
+public class CamelRemoveHeaderProcessor implements Processor {
 
 	@Override
-	public IRouteCreator create(RouteBuilder routeBuilder, RoutesConfiguration routesConfiguration) {
-		return new RequestRouteCreator(routeBuilder, routesConfiguration);
+	public void process(Exchange exchange) throws Exception {
+		exchange.getIn().removeHeader(Exchange.HTTP_URI);
 	}
-
 }

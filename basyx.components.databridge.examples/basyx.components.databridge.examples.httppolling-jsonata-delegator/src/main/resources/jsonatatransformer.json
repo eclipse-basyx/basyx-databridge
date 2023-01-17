@@ -1,7 +1,7 @@
 [
   {
     "uniqueId": "jsonataA",
-    "queryPath": "jsonataA.json",
+    "queryPath": "jsonataA.jsonata",
     "inputType": "JsonString",
     "outputType": "JsonString"
   }
