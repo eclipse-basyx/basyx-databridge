@@ -26,6 +26,9 @@ package basyx.components.databridge.core.configuration.delegator.handler;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Handler;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.springframework.http.HttpMethod;
 
 /**
  * A handler for setting the response to the message
@@ -33,10 +36,10 @@ import org.apache.camel.Handler;
  * @author danish
  *
  */
-public class ResponseCodeSetHandler {
+public class ResponseOkCodeHandler {
 	
 	@Handler
 	public void setResponse(Exchange exchange) {
-        exchange.getIn().setHeader(Exchange.HTTP_RESPONSE_CODE, 200);
+        exchange.getIn().setHeader(Exchange.HTTP_RESPONSE_CODE, HttpStatus.SC_OK);
     }
 }
