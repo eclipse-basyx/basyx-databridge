@@ -1,0 +1,9 @@
+[
+	{
+		"uniqueId": "doublescalar",
+		"serverUrl": "127.0.0.1",
+		"serverPort": 12686,
+		"pathToService": "milo",
+		"nodeInformation": "ns=2;s=HelloWorld/ScalarTypes/Double"
+	}
+]

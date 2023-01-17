@@ -49,7 +49,7 @@ public class RequestRouteCreator extends AbstractRouteCreator {
 			String[] dataTransformerEndpoints, String routeId) {
 		String delegatorEndpoint = ((RequestRouteConfiguration) routeConfig).getRequestEndpointURI();
 
-		RouteDefinition routeDefinition = createProducerRoute(dataSourceEndpoint, routeId, delegatorEndpoint);
+		RouteDefinition routeDefinition = createRoute(dataSourceEndpoint, routeId, delegatorEndpoint);
 
 		if (!(dataTransformerEndpoints == null || dataTransformerEndpoints.length == 0)) {
 			routeDefinition.to(dataTransformerEndpoints).log("Transformer : " + routeId);
@@ -58,8 +58,8 @@ public class RequestRouteCreator extends AbstractRouteCreator {
 		routeDefinition.bean(new ResponseOkCodeHandler());
 	}
 
-	private RouteDefinition createProducerRoute(String dataSourceEndpoint, String routeId, String delegatorEndpoint) {
-		return getRouteBuilder().from(delegatorEndpoint).routeId(routeId).process(new RemoveCamelHeaderProcessor())
-				.to(dataSourceEndpoint).log("Source : " + routeId);
+	private RouteDefinition createRoute(String dataSourceEndpoint, String routeId, String delegatorEndpoint) {
+		return getRouteBuilder().from(delegatorEndpoint).routeId(routeId).pollEnrich(dataSourceEndpoint)
+				.log("Source : " + routeId);
 	}
 }

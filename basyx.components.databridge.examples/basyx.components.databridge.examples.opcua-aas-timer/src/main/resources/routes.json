@@ -1,0 +1,16 @@
+[
+	{
+		"datasource": "doublescalar",
+		"transformers": [
+			"dataValueToJson",
+			"jsonataExtractValue"
+		],
+		"datasinks": [
+			"ConnectedSubmodel/ConnectedPropertyA"
+		],
+		"trigger": "timer",
+		"triggerData": {
+			"timerName": "timer1"
+		}
+	}
+]
