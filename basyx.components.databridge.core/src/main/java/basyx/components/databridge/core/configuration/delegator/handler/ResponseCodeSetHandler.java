@@ -22,26 +22,21 @@
  * 
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
-package basyx.components.databridge.core.configuration.delegator.processor;
+package basyx.components.databridge.core.configuration.delegator.handler;
 
 import org.apache.camel.Exchange;
-import org.apache.camel.Processor;
+import org.apache.camel.Handler;
 
 /**
- * Removes camel header from the exchange in-order to communicate with external
- * http service
- * <br>
- * Refer to <a href=
- * "https://camel.apache.org/manual/faq/how-to-remove-the-http-protocol-headers-in-the-camel-message.html">Camel
- * HTTP Protocol Headers</a>
- * 
+ * A handler for setting the response to the message
+ *
  * @author danish
  *
  */
-public class CamelRemoveHeaderProcessor implements Processor {
-
-	@Override
-	public void process(Exchange exchange) throws Exception {
-		exchange.getIn().removeHeader(Exchange.HTTP_URI);
-	}
+public class ResponseCodeSetHandler {
+	
+	@Handler
+	public void setResponse(Exchange exchange) {
+        exchange.getIn().setHeader(Exchange.HTTP_RESPONSE_CODE, 200);
+    }
 }

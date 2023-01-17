@@ -55,6 +55,7 @@ import basyx.components.databridge.transformer.cameljsonata.configuration.factor
  *
  */
 public class TestAASUpdater {
+	private static final String EXPECTED_VALUE = "858383";
 	private static DataBridgeComponent delegatorComponent;
 
 	@BeforeClass
@@ -63,21 +64,22 @@ public class TestAASUpdater {
 
 		startDataBridgeComponent();
 	}
-	
+
 	@Test
 	public void transformedResponseIsReturned() throws ClientProtocolException, IOException {
-		callApiAndCheckResult();
+		String actualValue = getContentFromDelegatedEndpoint();
+
+		assertEquals(EXPECTED_VALUE, actualValue);
 	}
-	
+
 	private static void startHTTPServer() {
 		ClientAndServer clientServer = ClientAndServer.startClientAndServer(2018);
-		
+
 		clientServer.when(HttpRequest.request().withMethod("GET"))
-				.respond(HttpResponse.response().withStatusCode(HttpStatusCode.OK_200.code()).withBody(
-						"{\"objects\": \n" + "      [\n" + "        {\"name\":\"object1\", \"value\":858383},\n"
-								+ "        {\"name\":\"object2\", \"value\":42}\n" + "      ]\n" + "    }"));
+				.respond(HttpResponse.response().withStatusCode(HttpStatusCode.OK_200.code())
+						.withBody(getResponseBody()));
 	}
-	
+
 	private static void startDataBridgeComponent() {
 		delegatorComponent = new DataBridgeComponent(addConfigurations());
 		delegatorComponent.startComponent();
@@ -85,7 +87,7 @@ public class TestAASUpdater {
 
 	private static RoutesConfiguration addConfigurations() {
 		RoutesConfiguration configuration = new RoutesConfiguration();
-		
+
 		ClassLoader loader = TestAASUpdater.class.getClassLoader();
 
 		RoutesConfigurationFactory routesFactory = new RoutesConfigurationFactory(loader);
@@ -97,20 +99,25 @@ public class TestAASUpdater {
 
 		JsonataDefaultConfigurationFactory jsonataConfigFactory = new JsonataDefaultConfigurationFactory(loader);
 		configuration.addTransformers(jsonataConfigFactory.create());
-		
+
 		return configuration;
 	}
-
-	private static void callApiAndCheckResult() throws ClientProtocolException, IOException {
+	
+	private String getContentFromDelegatedEndpoint() throws IOException, ClientProtocolException {
 		CloseableHttpClient client = HttpClients.createDefault();
 		HttpGet request = new HttpGet("http://localhost:8090/valueA");
 		CloseableHttpResponse resp = client.execute(request);
 		String content = new String(resp.getEntity().getContent().readAllBytes(), StandardCharsets.UTF_8);
 
-		assertEquals("858383", content);
 		client.close();
+		return content;
 	}
 	
+	private static String getResponseBody() {
+		return "{\"objects\":\n" + "[\n" + "{\"name\":\"object1\", \"value\":" + EXPECTED_VALUE
+				+ "},\n" + "{\"name\":\"object2\", \"value\":42}\n" + "]\n" + "}";
+	}
+
 	@AfterClass
 	public static void tearDown() {
 		delegatorComponent.stopComponent();

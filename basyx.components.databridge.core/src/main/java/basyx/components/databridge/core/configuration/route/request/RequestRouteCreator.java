@@ -26,8 +26,8 @@ package basyx.components.databridge.core.configuration.route.request;
 
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.model.RouteDefinition;
-import basyx.components.databridge.core.configuration.delegator.handler.ResponseHandler;
-import basyx.components.databridge.core.configuration.delegator.processor.CamelRemoveHeaderProcessor;
+import basyx.components.databridge.core.configuration.delegator.handler.ResponseCodeSetHandler;
+import basyx.components.databridge.core.configuration.delegator.processor.RemoveCamelHeaderProcessor;
 import basyx.components.databridge.core.configuration.route.core.AbstractRouteCreator;
 import basyx.components.databridge.core.configuration.route.core.RouteConfiguration;
 import basyx.components.databridge.core.configuration.route.core.RoutesConfiguration;
@@ -55,11 +55,11 @@ public class RequestRouteCreator extends AbstractRouteCreator {
 			routeDefinition.to(dataTransformerEndpoints).log("Transformer : " + routeId);
 		}
 
-		routeDefinition.bean(new ResponseHandler());
+		routeDefinition.bean(new ResponseCodeSetHandler());
 	}
 
 	private RouteDefinition createProducerRoute(String dataSourceEndpoint, String routeId, String delegatorEndpoint) {
-		return getRouteBuilder().from(delegatorEndpoint).routeId(routeId).process(new CamelRemoveHeaderProcessor())
+		return getRouteBuilder().from(delegatorEndpoint).routeId(routeId).process(new RemoveCamelHeaderProcessor())
 				.to(dataSourceEndpoint).log("Source : " + routeId);
 	}
 }
