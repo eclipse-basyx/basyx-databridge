@@ -20,7 +20,6 @@ import org.apache.camel.spi.UriEndpoint;
 import org.apache.camel.spi.UriParam;
 import org.apache.camel.spi.UriPath;
 import org.apache.camel.support.DefaultEndpoint;
-import org.eclipse.basyx.vab.modelprovider.VABPathTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,7 +81,7 @@ public class AASEndpoint extends DefaultEndpoint {
 	}
 	
 	public String getFullProxyUrl() {
-		String elemUrl = String.format("%s/submodels/%s/submodel/submodelElements/%s", this.getAASEndpoint(), this.getSubmodelId(), this.getSubmodelElementId());
+		String elemUrl = String.format("%s/submodelElements/%s", this.getSubmodelEndpoint(), this.getSubmodelElementIdShortPath());
 		logger.info("Proxy URL: " + elemUrl);
 		return elemUrl;
 	}
@@ -91,30 +90,20 @@ public class AASEndpoint extends DefaultEndpoint {
 	 * Gets the AAS URL for connection
 	 * @return
 	 */
-	private String getAASEndpoint() {
-		String onlyEndpoint = this.getEndpointBaseUri().substring(6); 
-    	logger.info("only url " + onlyEndpoint);
-		return onlyEndpoint;
-	}
-	
-	/**
-	 * Gets the Submodel ID for data dump
-	 * @return
-	 */
-	private String getSubmodelId() {
-		String submodelId = VABPathTools.getEntry(getPropertyPath(), 0);
-    	logger.info("Submodel ID: " + submodelId);
-		return submodelId;
+	private String getSubmodelEndpoint() {
+		String submodelEndpoint = this.getEndpointBaseUri().substring(6); 
+    	logger.info("SubmodelEndpoint " + submodelEndpoint);
+		return submodelEndpoint;
 	}
 	
 	/**
 	 * Gets the submodel element id for data dump
 	 * @return 
 	 */
-	private String getSubmodelElementId() {
-		String submodelElementId = VABPathTools.skipEntries(getPropertyPath(), 1);
-    	logger.info("Submodel Element ID: " + submodelElementId);
-		return submodelElementId;
+	private String getSubmodelElementIdShortPath() {
+		String submodelElementIdShortPath = getPropertyPath();
+    	logger.info("Submodel Element ID: " + submodelElementIdShortPath);
+		return submodelElementIdShortPath;
 	}
 	
 }
