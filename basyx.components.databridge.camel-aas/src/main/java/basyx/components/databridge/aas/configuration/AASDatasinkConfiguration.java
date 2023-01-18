@@ -22,16 +22,16 @@ public class AASDatasinkConfiguration extends DataSinkConfiguration {
 	private static final String PROPERTY_TYPE = "PROPERTY";
 
 	private String type;
-	private String endpoint;
-	private String path;
+	private String submodelEndpoint;
+	private String idShortPath;
 
 	public AASDatasinkConfiguration() {}
 	
-	public AASDatasinkConfiguration(String aasEndpoint, String propertyPath, String uniqueId) {
+	public AASDatasinkConfiguration(String submodelEndpoint, String idShortPath, String uniqueId) {
 		super(uniqueId);
 		this.type = PROPERTY_TYPE;
-		this.endpoint = aasEndpoint;
-		this.path = propertyPath;
+		this.submodelEndpoint = submodelEndpoint;
+		this.idShortPath = idShortPath;
 	}
 	
 	public AASDatasinkConfiguration(String aasEndpoint, String propertyPath) {
@@ -46,27 +46,27 @@ public class AASDatasinkConfiguration extends DataSinkConfiguration {
 		this.type = type;
 	}
 
-	public String getEndpoint() {
-		return endpoint;
+	public String getSubmodelEndpoint() {
+		return submodelEndpoint;
 	}
 
-	public void setEndpoint(String endpoint) {
-		this.endpoint = endpoint;
+	public void setSubmodelEndpoint(String endpoint) {
+		this.submodelEndpoint = endpoint;
 	}
 
-	public String getPath() {
-		return path;
+	public String getIdShortPath() {
+		return idShortPath;
 	}
 
-	public void setPath(String path) {
-		this.path = path;
+	public void setIdShortPath(String path) {
+		this.idShortPath = path;
 	}
 
 	@Override
 	public String getConnectionURI() {
 		String endpointDefinition = "aas:";
-		endpointDefinition += this.endpoint;
-		endpointDefinition += "?propertyPath=" + this.path;
+		endpointDefinition += this.submodelEndpoint;
+		endpointDefinition += "?propertyPath=" + this.idShortPath;
 		return endpointDefinition;
 	}
 }
