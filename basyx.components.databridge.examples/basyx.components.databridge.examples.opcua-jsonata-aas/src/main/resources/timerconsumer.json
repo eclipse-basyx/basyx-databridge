@@ -6,5 +6,13 @@
     "fixedRate": true,
     "delay": 0,
     "period": 5000
+  },
+  {
+    "uniqueId": "timer2",
+    "host": "bar",
+    "port": 1235,
+    "fixedRate": true,
+    "delay": 0,
+    "period": 5000
   }
 ]

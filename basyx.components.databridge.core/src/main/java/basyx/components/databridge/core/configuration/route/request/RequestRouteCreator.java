@@ -27,7 +27,6 @@ package basyx.components.databridge.core.configuration.route.request;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.model.RouteDefinition;
 import basyx.components.databridge.core.configuration.delegator.handler.ResponseOkCodeHandler;
-import basyx.components.databridge.core.configuration.delegator.processor.RemoveCamelHeaderProcessor;
 import basyx.components.databridge.core.configuration.route.core.AbstractRouteCreator;
 import basyx.components.databridge.core.configuration.route.core.RouteConfiguration;
 import basyx.components.databridge.core.configuration.route.core.RoutesConfiguration;
@@ -39,6 +38,7 @@ import basyx.components.databridge.core.configuration.route.core.RoutesConfigura
  *
  */
 public class RequestRouteCreator extends AbstractRouteCreator {
+	private static final Long TIMEOUT = 5000L;
 
 	public RequestRouteCreator(RouteBuilder routeBuilder, RoutesConfiguration routesConfiguration) {
 		super(routeBuilder, routesConfiguration);
@@ -59,7 +59,7 @@ public class RequestRouteCreator extends AbstractRouteCreator {
 	}
 
 	private RouteDefinition createRoute(String dataSourceEndpoint, String routeId, String delegatorEndpoint) {
-		return getRouteBuilder().from(delegatorEndpoint).routeId(routeId).pollEnrich(dataSourceEndpoint)
+		return getRouteBuilder().from(delegatorEndpoint).routeId(routeId).pollEnrich(dataSourceEndpoint, TIMEOUT)
 				.log("Source : " + routeId);
 	}
 }
