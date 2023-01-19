@@ -14,7 +14,7 @@
 		"datasinks": ["ConnectedSubmodel/ConnectedPropertyB"],
 		"trigger": "timer",
 		"triggerData": {
-			"timerName": "timer2"
+			"timerName": "timer1"
 		}
 	}
 ]
