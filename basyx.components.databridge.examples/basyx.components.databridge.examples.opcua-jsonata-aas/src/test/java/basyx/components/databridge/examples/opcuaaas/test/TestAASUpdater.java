@@ -17,11 +17,14 @@ import org.eclipse.basyx.submodel.metamodel.api.identifier.IIdentifier;
 import org.eclipse.basyx.submodel.metamodel.api.submodelelement.ISubmodelElement;
 import org.eclipse.milo.examples.server.ExampleServer;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import basyx.components.databridge.aas.configuration.factory.AASProducerDefaultConfigurationFactory;
 import basyx.components.databridge.camelopcua.configuration.factory.OpcuaDefaultConfigurationFactory;
+import basyx.components.databridge.cameltimer.configuration.factory.TimerDefaultConfigurationFactory;
 import basyx.components.databridge.core.component.DataBridgeComponent;
 import basyx.components.databridge.core.configuration.factory.RoutesConfigurationFactory;
 import basyx.components.databridge.core.configuration.route.core.RoutesConfiguration;
@@ -37,20 +40,21 @@ public class TestAASUpdater {
 	protected static IIdentifier deviceAAS = new CustomId("TestUpdatedDeviceAAS");
 	private static BaSyxContextConfiguration aasContextConfig;
 
-	@Before
-	public void setUp() throws Exception {
+	@BeforeClass
+	public static void setUp() throws Exception {
 		System.out.println("Setting up env...");
 		startOpcUaServer();
 		registry = new InMemoryRegistry();
 
 		aasContextConfig = new BaSyxContextConfiguration(4001, "");
-		BaSyxAASServerConfiguration aasConfig = new BaSyxAASServerConfiguration(AASServerBackend.INMEMORY, "aasx/updatertest.aasx");
+		BaSyxAASServerConfiguration aasConfig = new BaSyxAASServerConfiguration(AASServerBackend.INMEMORY,
+				"aasx/updatertest.aasx");
 		aasServer = new AASServerComponent(aasContextConfig, aasConfig);
 		aasServer.setRegistry(registry);
 	}
 
-	@After
-	public void tearDown() throws Exception {
+	@AfterClass
+	public static void tearDown() throws Exception {
 		System.out.println("Tearing down env...");
 		updater.stopComponent();
 		aasServer.stopComponent();
@@ -69,6 +73,10 @@ public class TestAASUpdater {
 		RoutesConfigurationFactory routesFactory = new RoutesConfigurationFactory(loader);
 		configuration.addRoutes(routesFactory.create());
 
+		// Extend configuration for Timer
+		TimerDefaultConfigurationFactory timerConfigFactory = new TimerDefaultConfigurationFactory(loader);
+		configuration.addDatasources(timerConfigFactory.create());
+
 		// Extend configutation for Opcua Source
 		OpcuaDefaultConfigurationFactory opcuaConfigFactory = new OpcuaDefaultConfigurationFactory(loader);
 		configuration.addDatasources(opcuaConfigFactory.create());
@@ -77,7 +85,8 @@ public class TestAASUpdater {
 		AASProducerDefaultConfigurationFactory aasConfigFactory = new AASProducerDefaultConfigurationFactory(loader);
 		configuration.addDatasinks(aasConfigFactory.create());
 
-		JsonJacksonDefaultConfigurationFactory jsonJacksonConfigFactory = new JsonJacksonDefaultConfigurationFactory(loader);
+		JsonJacksonDefaultConfigurationFactory jsonJacksonConfigFactory = new JsonJacksonDefaultConfigurationFactory(
+				loader);
 		configuration.addTransformers(jsonJacksonConfigFactory.create());
 
 		// Extend configuration for Jsonata
