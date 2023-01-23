@@ -13,12 +13,16 @@ package basyx.components.databridge.core.component;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.camel.CamelContext;
+import org.apache.camel.health.HealthCheckRegistry;
 import org.apache.camel.impl.DefaultCamelContext;
+import org.apache.camel.impl.health.ContextHealthCheck;
+import org.apache.camel.impl.health.DefaultHealthCheckRegistry;
+import org.apache.camel.impl.health.RoutesHealthCheckRepository;
 import org.eclipse.basyx.components.IComponent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import basyx.components.databridge.core.configuration.route.core.IRouteCreatorFactory;
 import basyx.components.databridge.core.configuration.route.core.RoutesConfiguration;
@@ -29,6 +33,7 @@ import basyx.components.databridge.core.configuration.route.request.RequestRoute
 import basyx.components.databridge.core.configuration.route.timer.TimerRouteConfiguration;
 import basyx.components.databridge.core.configuration.route.timer.TimerRouteCreatorFactory;
 import basyx.components.databridge.core.routebuilder.DataBridgeRouteBuilder;
+import basyx.components.databridge.core.routebuilder.HealthCheckRouteBuilder;
 
 /**
  * Core Updater component which can run the updater if routes configuration is
@@ -67,6 +72,7 @@ public class DataBridgeComponent implements IComponent {
 
 	public void startRoutes() {
 		try {
+			configureHealthCheckForContext();
 			camelContext.addRoutes(orchestrator);
 			camelContext.start();
 			logger.info("Updater started");
@@ -74,6 +80,19 @@ public class DataBridgeComponent implements IComponent {
 			e.printStackTrace();
 			camelContext = null;
 		}
+	}
+
+	private void configureHealthCheckForContext() throws Exception {
+		camelContext.setLoadHealthChecks(true);
+		camelContext.setExtension(HealthCheckRegistry.class, configureHealthCheckRegistry());
+		camelContext.addRoutes(new HealthCheckRouteBuilder());
+	}
+
+	private DefaultHealthCheckRegistry configureHealthCheckRegistry() {
+		DefaultHealthCheckRegistry registry = new DefaultHealthCheckRegistry();
+		registry.register(new ContextHealthCheck());
+		registry.register(new RoutesHealthCheckRepository());
+		return registry;
 	}
 
 	/**

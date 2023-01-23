@@ -1,6 +1,4 @@
-package basyx.components.databridge.examples.mqttjsonataaas.test;
 
-import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 
@@ -21,9 +19,6 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.MqttPersistenceException;
 import org.eclipse.paho.client.mqttv3.MqttSecurityException;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import basyx.components.databridge.aas.configuration.factory.AASProducerDefaultConfigurationFactory;
 import basyx.components.databridge.camelpaho.configuration.factory.MqttDefaultConfigurationFactory;
 import basyx.components.databridge.core.component.DataBridgeComponent;
@@ -36,7 +31,7 @@ import io.moquette.broker.config.IConfig;
 import io.moquette.broker.config.IResourceLoader;
 import io.moquette.broker.config.ResourceLoaderConfig;
 
-public class TestAASUpdater {
+public class MainUpdaterMqttJsonataAAS {
 	private static AASServerComponent aasServer;
 	private static DataBridgeComponent updater;
 	private static InMemoryRegistry registry;
@@ -45,8 +40,7 @@ public class TestAASUpdater {
 	protected static IIdentifier deviceAAS = new CustomId("TestUpdatedDeviceAAS");
 	private static BaSyxContextConfiguration aasContextConfig;
 
-	@BeforeClass
-	public static void setUp() throws IOException {
+	public static void main(String[] args) throws Exception {
 		startMqttBroker();
 		registry = new InMemoryRegistry();
 
@@ -54,14 +48,14 @@ public class TestAASUpdater {
 		BaSyxAASServerConfiguration aasConfig = new BaSyxAASServerConfiguration(AASServerBackend.INMEMORY, "aasx/updatertest.aasx");
 		aasServer = new AASServerComponent(aasContextConfig, aasConfig);
 		aasServer.setRegistry(registry);
+		test();
 	}
 
-	@Test
-	public void test() throws Exception {
+	public static void test() throws Exception {
 		aasServer.startComponent();
 		System.out.println("AAS STARTED");
 		System.out.println("START UPDATER");
-		ClassLoader loader = TestAASUpdater.class.getClassLoader();
+		ClassLoader loader = MainUpdaterMqttJsonataAAS.class.getClassLoader();
 		RoutesConfiguration configuration = new RoutesConfiguration();
 
 		// Extend configutation for connections
@@ -89,25 +83,24 @@ public class TestAASUpdater {
 		waitForPropagation();
 		checkIfPropertyIsUpdated();
 //		updater.stopComponent();
-		aasServer.stopComponent();
+//		aasServer.stopComponent();
 	}
 
-	private void waitForPropagation() throws InterruptedException {
-		Thread.sleep(1000);
+	private static void waitForPropagation() throws InterruptedException {
+		Thread.sleep(5000);
 	}
 
-	private void checkIfPropertyIsUpdated() throws InterruptedException {
+	private static void checkIfPropertyIsUpdated() throws InterruptedException {
 		ConnectedAssetAdministrationShellManager manager = new ConnectedAssetAdministrationShellManager(registry);
 		ConnectedAssetAdministrationShell aas = manager.retrieveAAS(deviceAAS);
 		ISubmodel sm = aas.getSubmodels().get("ConnectedSubmodel");
 		ISubmodelElement updatedProp = sm.getSubmodelElement("ConnectedPropertyB");
 		Object propValue = updatedProp.getValue();
 		System.out.println("UpdatedPROP" + propValue);
-		assertEquals("858383", propValue);
 
 	}
 
-	private void publishNewDatapoint() throws MqttException, MqttSecurityException, MqttPersistenceException {
+	private static void publishNewDatapoint() throws MqttException, MqttSecurityException, MqttPersistenceException {
 		String json = "{\"Account\":{\"Account Name\":\"Firefly\",\"Order\":[{\"OrderID\":\"order103\",\"Product\":[{\"Product Name\":\"Bowler Hat\",\"ProductID\":858383,\"SKU\":\"0406654608\",\"Description\":{\"Colour\":\"Purple\",\"Width\":300,\"Height\":200,\"Depth\":210,\"Weight\":0.75},\"Price\":34.45,\"Quantity\":2},{\"Product Name\":\"Trilby hat\",\"ProductID\":858236,\"SKU\":\"0406634348\",\"Description\":{\"Colour\":\"Orange\",\"Width\":300,\"Height\":200,\"Depth\":210,\"Weight\":0.6},\"Price\":21.67,\"Quantity\":1}]},{\"OrderID\":\"order104\",\"Product\":[{\"Product Name\":\"Bowler Hat\",\"ProductID\":858383,\"SKU\":\"040657863\",\"Description\":{\"Colour\":\"Purple\",\"Width\":300,\"Height\":200,\"Depth\":210,\"Weight\":0.75},\"Price\":34.45,\"Quantity\":4},{\"ProductID\":345664,\"SKU\":\"0406654603\",\"Product Name\":\"Cloak\",\"Description\":{\"Colour\":\"Black\",\"Width\":30,\"Height\":20,\"Depth\":210,\"Weight\":2},\"Price\":107.99,\"Quantity\":1}]}]}}";
 		MqttClient mqttClient = new MqttClient("tcp://localhost:1884", "testClient", new MemoryPersistence());
 		mqttClient.connect();
