@@ -26,9 +26,7 @@ package basyx.components.databridge.core.configuration.delegator.handler;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Handler;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
-import org.springframework.http.HttpMethod;
 
 /**
  * A handler for setting the response to the message
