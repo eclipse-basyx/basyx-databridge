@@ -109,6 +109,12 @@ public class TestDataBridgeActiveMQ extends DataBridgeSuiteActiveMQ {
 		systemUsage.getTempUsage().setLimit(1024 * 1024 * 8);
 	}
 	
+	private static void stopDataBridgeComponent() {
+		if(DataBridgeExecutable.getDataBridgeComponent() != null) {
+			DataBridgeExecutable.getDataBridgeComponent().stopComponent();
+		}
+	}
+	
 	@AfterClass
 	public static void tearDown() {
 		aasServer.stopComponent();
@@ -118,5 +124,7 @@ public class TestDataBridgeActiveMQ extends DataBridgeSuiteActiveMQ {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		stopDataBridgeComponent();
 	}
 }

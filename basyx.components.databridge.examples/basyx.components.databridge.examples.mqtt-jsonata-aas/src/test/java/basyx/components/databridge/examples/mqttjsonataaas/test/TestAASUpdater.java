@@ -88,7 +88,7 @@ public class TestAASUpdater {
 		System.out.println("EVENT PUBLISHED");
 		waitForPropagation();
 		checkIfPropertyIsUpdated();
-//		updater.stopComponent();
+		updater.stopComponent();
 		aasServer.stopComponent();
 	}
 

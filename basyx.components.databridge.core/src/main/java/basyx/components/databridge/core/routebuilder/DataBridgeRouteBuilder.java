@@ -22,8 +22,7 @@ public class DataBridgeRouteBuilder extends RouteBuilder {
 	private RoutesConfiguration routesConfiguration;
 	private Map<String, IRouteCreatorFactory> routeCreatorFactoryMap;
 
-	public DataBridgeRouteBuilder(RoutesConfiguration configuration,
-			Map<String, IRouteCreatorFactory> routeCreatorFactoryMap) {
+	public DataBridgeRouteBuilder(RoutesConfiguration configuration, Map<String, IRouteCreatorFactory> routeCreatorFactoryMap) {
 		this.routesConfiguration = configureRouteIds(configuration);
 		this.routeCreatorFactoryMap = routeCreatorFactoryMap;
 	}
@@ -31,8 +30,7 @@ public class DataBridgeRouteBuilder extends RouteBuilder {
 	@Override
 	public void configure() throws Exception {
 		for (RouteConfiguration routeConfig : routesConfiguration.getRoutes()) {
-			IRouteCreator routeCreator = routeCreatorFactoryMap.get(routeConfig.getRouteTrigger()).create(this,
-					routesConfiguration);
+			IRouteCreator routeCreator = routeCreatorFactoryMap.get(routeConfig.getRouteTrigger()).create(this, routesConfiguration);
 
 			routeCreator.addRouteToRouteBuilder(routeConfig);
 		}
