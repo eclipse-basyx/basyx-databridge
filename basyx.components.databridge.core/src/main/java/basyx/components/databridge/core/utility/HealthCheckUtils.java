@@ -22,27 +22,26 @@
  * 
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
-package basyx.components.databridge.core.configuration.health;
+package basyx.components.databridge.core.utility;
 
 import org.springframework.http.HttpMethod;
 
 /**
- * A configuration class for health check endpoint
+ * Utility class for health check
  *
  * @author danish
  *
  */
-public class HealthCheckEndpointConfiguration {
+public class HealthCheckUtils {
 	public static final String ROUTE_ID = "app.health.context";
 	private static final String COMPONENT = "jetty";
 	private static final String PROTOCOL = "http";
-	private static final String HOST = "localhost";
+	private static final String HOST = "0.0.0.0";
 	private static final String PORT = "8085";
 	private static final String PATH = "/health";
 	private static final String HTTP_METHOD_RESTRICT_PARAMETER = "httpMethodRestrict=" + HttpMethod.GET;
-	
 
-	private HealthCheckEndpointConfiguration() {
+	private HealthCheckUtils() {
 		throw new IllegalStateException("Utility class");
 	}
 

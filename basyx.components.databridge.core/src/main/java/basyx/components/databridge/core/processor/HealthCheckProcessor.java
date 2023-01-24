@@ -22,7 +22,7 @@
  * 
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
-package basyx.components.databridge.core.configuration.health;
+package basyx.components.databridge.core.processor;
 
 import java.util.Collection;
 import java.util.List;

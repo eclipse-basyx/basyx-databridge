@@ -30,8 +30,8 @@ import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.model.dataformat.JsonLibrary;
 
-import basyx.components.databridge.core.configuration.health.HealthCheckEndpointConfiguration;
-import basyx.components.databridge.core.configuration.health.HealthCheckProcessor;
+import basyx.components.databridge.core.processor.HealthCheckProcessor;
+import basyx.components.databridge.core.utility.HealthCheckUtils;
 
 /**
  * Builds the health check route by extending the RouteBuilder
@@ -43,7 +43,7 @@ public class HealthCheckRouteBuilder extends RouteBuilder {
 
 	@Override
 	public void configure() throws Exception {
-		from(HealthCheckEndpointConfiguration.getHealthCheckEndpoint()).id(HealthCheckEndpointConfiguration.ROUTE_ID)
+		from(HealthCheckUtils.getHealthCheckEndpoint()).id(HealthCheckUtils.ROUTE_ID)
 				.setHeader(Exchange.CONTENT_TYPE).constant(MediaType.APPLICATION_JSON).bean(HealthCheckProcessor.class)
 				.marshal().json(JsonLibrary.Gson);
 	}

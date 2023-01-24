@@ -50,8 +50,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 
-import basyx.components.databridge.core.configuration.health.HealthCheckEndpointConfiguration;
 import basyx.components.databridge.core.routebuilder.HealthCheckRouteBuilder;
+import basyx.components.databridge.core.utility.HealthCheckUtils;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -74,7 +74,6 @@ class HealthCheckTest extends CamelTestSupport {
 	@Override
 	protected CamelContext createCamelContext() throws Exception {
 		context = super.createCamelContext();
-		context.getPropertiesComponent().setLocation("ref:prop");
 
 		DefaultHealthCheckRegistry registry = configureHealthCheckRegistry();
 
@@ -100,13 +99,13 @@ class HealthCheckTest extends CamelTestSupport {
 		context.start();
 
 		HttpResponse response = getResponseFromHealthEndpoint(
-				HealthCheckEndpointConfiguration.getHealthCheckEndpointRequestURI());
+				HealthCheckUtils.getHealthCheckEndpointRequestURI());
 
 		String expectedRouteId = getRouteIdFromResponse(response, 1);
 
 		assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
 
-		assertThat(expectedRouteId, equalTo(HealthCheckEndpointConfiguration.ROUTE_ID));
+		assertThat(expectedRouteId, equalTo(HealthCheckUtils.ROUTE_ID));
 	}
 
 	@Test
@@ -118,7 +117,7 @@ class HealthCheckTest extends CamelTestSupport {
 		stopDummyRoute();
 
 		HttpResponse response = getResponseFromHealthEndpoint(
-				HealthCheckEndpointConfiguration.getHealthCheckEndpointRequestURI());
+				HealthCheckUtils.getHealthCheckEndpointRequestURI());
 
 		String expectedRouteId = getRouteIdFromResponse(response, 2);
 
@@ -144,7 +143,6 @@ class HealthCheckTest extends CamelTestSupport {
 			@Override
 			public void configure() throws Exception {
 				from("direct:test").routeId("test.endpoint").log("mock endpoint");
-
 			}
 		});
 	}
