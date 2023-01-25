@@ -123,4 +123,7 @@ basyx.components.databridge.examples/kafka-multiple-zookeeper-multiple-server/zk
 basyx.components.databridge.examples/kafka-multiple-zookeeper-single-server/zk-single-kafka-multiple/
 basyx.components.databridge.examples/kafka-single-broker-server/zk-single-kafka-single
 
+### MQTT ###
+*.moquette_uuid
+
 # End of https://www.toptal.com/developers/gitignore/api/maven,java,eclipse
