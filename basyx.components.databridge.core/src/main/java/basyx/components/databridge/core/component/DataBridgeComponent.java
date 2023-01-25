@@ -30,8 +30,8 @@ import basyx.components.databridge.core.configuration.route.request.RequestRoute
 import basyx.components.databridge.core.configuration.route.request.RequestRouteCreatorFactory;
 import basyx.components.databridge.core.configuration.route.timer.TimerRouteConfiguration;
 import basyx.components.databridge.core.configuration.route.timer.TimerRouteCreatorFactory;
+import basyx.components.databridge.core.health.routebuilder.HealthCheckRouteBuilder;
 import basyx.components.databridge.core.routebuilder.DataBridgeRouteBuilder;
-import basyx.components.databridge.core.routebuilder.HealthCheckRouteBuilder;
 
 /**
  * Core DataBridge component which can run the updater if routes configuration is

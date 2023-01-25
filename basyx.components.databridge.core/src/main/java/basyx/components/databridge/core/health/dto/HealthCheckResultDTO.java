@@ -22,7 +22,7 @@
  * 
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
-package basyx.components.databridge.core.dto;
+package basyx.components.databridge.core.health.dto;
 
 import java.util.Map;
 import org.apache.camel.health.HealthCheck;

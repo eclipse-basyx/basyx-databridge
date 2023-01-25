@@ -50,8 +50,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 
-import basyx.components.databridge.core.routebuilder.HealthCheckRouteBuilder;
-import basyx.components.databridge.core.utility.HealthCheckUtils;
+import basyx.components.databridge.core.health.routebuilder.HealthCheckRouteBuilder;
+import basyx.components.databridge.core.health.utility.HealthCheckUtils;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.equalTo;

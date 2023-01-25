@@ -22,46 +22,29 @@
  * 
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
-package basyx.components.databridge.core.processor;
+package basyx.components.databridge.core.health.routebuilder;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
+import javax.ws.rs.core.MediaType;
 
 import org.apache.camel.Exchange;
-import org.apache.camel.Handler;
-import org.apache.camel.health.HealthCheck;
-import org.apache.camel.health.HealthCheckHelper;
-import org.apache.http.HttpStatus;
+import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.model.dataformat.JsonLibrary;
 
-import basyx.components.databridge.core.dto.HealthCheckResultDTO;
+import basyx.components.databridge.core.health.processor.HealthCheckProcessor;
+import basyx.components.databridge.core.health.utility.HealthCheckUtils;
 
 /**
- * A processor class for processing the health status
+ * Builds the health check route by extending the RouteBuilder
  *
  * @author danish
  *
  */
-public class HealthCheckProcessor {
+public class HealthCheckRouteBuilder extends RouteBuilder {
 
-	@Handler
-	public void processHealthCheck(Exchange exchange) {
-		Collection<HealthCheck.Result> healthCheckResults = HealthCheckHelper.invoke(exchange.getContext());
-
-		if (!areAllServicesAndRoutesHealthy(healthCheckResults)) {
-			exchange.getMessage().setHeader(Exchange.HTTP_RESPONSE_CODE, HttpStatus.SC_SERVICE_UNAVAILABLE);
-		}
-
-		List<HealthCheckResultDTO> healthCheckResultDTOs = prepareHealthCheckResults(healthCheckResults);
-
-		exchange.getMessage().setBody(healthCheckResultDTOs);
-	}
-
-	private boolean areAllServicesAndRoutesHealthy(Collection<HealthCheck.Result> results) {
-		return results.stream().allMatch(healthCheckResult -> healthCheckResult.getState() == HealthCheck.State.UP);
-	}
-
-	private List<HealthCheckResultDTO> prepareHealthCheckResults(Collection<HealthCheck.Result> healthCheckResults) {
-		return healthCheckResults.stream().map(HealthCheckResultDTO::toDTO).collect(Collectors.toList());
+	@Override
+	public void configure() throws Exception {
+		from(HealthCheckUtils.getHealthCheckEndpoint()).id(HealthCheckUtils.ROUTE_ID)
+				.setHeader(Exchange.CONTENT_TYPE).constant(MediaType.APPLICATION_JSON).bean(HealthCheckProcessor.class)
+				.marshal().json(JsonLibrary.Gson);
 	}
 }

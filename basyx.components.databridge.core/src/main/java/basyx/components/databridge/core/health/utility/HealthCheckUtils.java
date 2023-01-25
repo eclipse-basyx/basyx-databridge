@@ -22,7 +22,7 @@
  * 
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
-package basyx.components.databridge.core.utility;
+package basyx.components.databridge.core.health.utility;
 
 import org.springframework.http.HttpMethod;
 
