@@ -105,10 +105,18 @@ public class TestDataBridgeMqtt extends DataBridgeSuiteMqtt {
 		return new AASAggregatorProxy(AAS_AGGREGATOR_URL);
 	}
 	
+	private static void stopDataBridgeComponent() {
+		if(DataBridgeExecutable.getDataBridgeComponent() != null) {
+			DataBridgeExecutable.getDataBridgeComponent().stopComponent();
+		}
+	}
+	
 	@AfterClass
 	public static void tearDown() {
 		aasServer.stopComponent();
 		
 		mqttBroker.stopServer();
+		
+		stopDataBridgeComponent();
 	}
 }

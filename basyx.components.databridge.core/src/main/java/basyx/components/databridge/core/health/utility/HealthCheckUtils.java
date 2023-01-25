@@ -22,41 +22,34 @@
  * 
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
-package basyx.components.databridge.executable;
+package basyx.components.databridge.core.health.utility;
 
-import basyx.components.databridge.core.component.DataBridgeComponent;
-import basyx.components.databridge.core.configuration.route.core.RoutesConfiguration;
+import org.springframework.http.HttpMethod;
 
 /**
- * Starts the stand-alone databridge component
+ * Utility class for health check
  *
  * @author danish
+ *
  */
-public class DataBridgeExecutable {
+public class HealthCheckUtils {
+	public static final String ROUTE_ID = "app.health.context";
+	private static final String COMPONENT = "jetty";
+	private static final String PROTOCOL = "http";
+	private static final String HOST = "0.0.0.0";
+	private static final String PORT = "8085";
+	private static final String PATH = "/health";
+	private static final String HTTP_METHOD_RESTRICT_PARAMETER = "httpMethodRestrict=" + HttpMethod.GET;
 
-	private static final String DEFAULT_CONFIG_PATH = "/usr/share/config";
-	private static DataBridgeComponent dataBridgeComponent;
+	private HealthCheckUtils() {
+		throw new IllegalStateException("Utility class");
+	}
+
+	public static String getHealthCheckEndpoint() {
+		return COMPONENT + ":" + PROTOCOL + "://" + HOST + ":" + PORT + PATH + "?" + HTTP_METHOD_RESTRICT_PARAMETER;
+	}
 	
-	public static void main(String[] args) throws IllegalArgumentException, SecurityException {
-		String configPath = getConfigPath(args);
-		
-		RoutesConfigurationLoader routesConfigurationLoader = new RoutesConfigurationLoader(configPath);
-
-		RoutesConfiguration config = routesConfigurationLoader.create();
-
-		dataBridgeComponent = new DataBridgeComponent(config);
-		dataBridgeComponent.startComponent();
-	}
-
-	private static String getConfigPath(String[] args) {
-		if (args.length == 0) {
-			return DEFAULT_CONFIG_PATH;
-		} else {
-			return args[0];
-		}
-	}
-
-	public static DataBridgeComponent getDataBridgeComponent() {
-		return dataBridgeComponent;
+	public static String getHealthCheckEndpointRequestURI() {
+		return PROTOCOL + "://" + HOST + ":" + PORT + PATH;
 	}
 }

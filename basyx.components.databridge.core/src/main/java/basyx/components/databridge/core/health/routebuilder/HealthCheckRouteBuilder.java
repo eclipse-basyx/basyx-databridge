@@ -22,41 +22,29 @@
  * 
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
-package basyx.components.databridge.executable;
+package basyx.components.databridge.core.health.routebuilder;
 
-import basyx.components.databridge.core.component.DataBridgeComponent;
-import basyx.components.databridge.core.configuration.route.core.RoutesConfiguration;
+import javax.ws.rs.core.MediaType;
+
+import org.apache.camel.Exchange;
+import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.model.dataformat.JsonLibrary;
+
+import basyx.components.databridge.core.health.processor.HealthCheckProcessor;
+import basyx.components.databridge.core.health.utility.HealthCheckUtils;
 
 /**
- * Starts the stand-alone databridge component
+ * Builds the health check route by extending the RouteBuilder
  *
  * @author danish
+ *
  */
-public class DataBridgeExecutable {
+public class HealthCheckRouteBuilder extends RouteBuilder {
 
-	private static final String DEFAULT_CONFIG_PATH = "/usr/share/config";
-	private static DataBridgeComponent dataBridgeComponent;
-	
-	public static void main(String[] args) throws IllegalArgumentException, SecurityException {
-		String configPath = getConfigPath(args);
-		
-		RoutesConfigurationLoader routesConfigurationLoader = new RoutesConfigurationLoader(configPath);
-
-		RoutesConfiguration config = routesConfigurationLoader.create();
-
-		dataBridgeComponent = new DataBridgeComponent(config);
-		dataBridgeComponent.startComponent();
-	}
-
-	private static String getConfigPath(String[] args) {
-		if (args.length == 0) {
-			return DEFAULT_CONFIG_PATH;
-		} else {
-			return args[0];
-		}
-	}
-
-	public static DataBridgeComponent getDataBridgeComponent() {
-		return dataBridgeComponent;
+	@Override
+	public void configure() throws Exception {
+		from(HealthCheckUtils.getHealthCheckEndpoint()).id(HealthCheckUtils.ROUTE_ID)
+				.setHeader(Exchange.CONTENT_TYPE).constant(MediaType.APPLICATION_JSON).bean(HealthCheckProcessor.class)
+				.marshal().json(JsonLibrary.Gson);
 	}
 }
