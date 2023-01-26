@@ -1,1 +1,1 @@
-class=basyx.components.databridge.hono.HonoComponent
+class=org.eclipse.digitaltwin.basyx.components.databridge.hono.HonoComponent
