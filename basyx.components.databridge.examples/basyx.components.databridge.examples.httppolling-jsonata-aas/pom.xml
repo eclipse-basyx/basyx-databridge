@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-            <groupId>org.eclipse.basyx</groupId>
+            <groupId>org.eclipse.digitaltwin.basyx</groupId>
             <artifactId>basyx.components.databridge.examples</artifactId>
             <version>0.0.1-SNAPSHOT</version>
     </parent>
@@ -44,32 +44,32 @@
         </dependency>
 
         <dependency>
-            <groupId>org.eclipse.basyx</groupId>
+            <groupId>org.eclipse.digitaltwin.basyx</groupId>
             <artifactId>basyx.components.databridge.core</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
-            <groupId>org.eclipse.basyx</groupId>
+            <groupId>org.eclipse.digitaltwin.basyx</groupId>
             <artifactId>basyx.components.databridge.camel-aas</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
-            <groupId>org.eclipse.basyx</groupId>
+            <groupId>org.eclipse.digitaltwin.basyx</groupId>
             <artifactId>basyx.components.databridge.camel-httppolling</artifactId>
             <version>0.0.1-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
 
        <dependency>
-            <groupId>org.eclipse.basyx</groupId>
+            <groupId>org.eclipse.digitaltwin.basyx</groupId>
             <artifactId>basyx.components.databridge.transformer.camel-jsonata</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
-            <groupId>org.eclipse.basyx</groupId>
+            <groupId>org.eclipse.digitaltwin.basyx</groupId>
             <artifactId>basyx.components.databridge.camel-timer</artifactId>
             <version>0.0.1-SNAPSHOT</version>
             <scope>test</scope>
