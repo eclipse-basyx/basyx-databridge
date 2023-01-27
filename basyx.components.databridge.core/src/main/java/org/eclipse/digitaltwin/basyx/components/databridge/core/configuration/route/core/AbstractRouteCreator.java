@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2021 the Eclipse BaSyx Authors
+ * Copyright (C) 2022 the Eclipse BaSyx Authors
  * 
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -22,6 +22,8 @@
  * 
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
+
+
 package org.eclipse.digitaltwin.basyx.components.databridge.core.configuration.route.core;
 
 import org.apache.camel.builder.RouteBuilder;
