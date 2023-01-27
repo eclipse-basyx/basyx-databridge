@@ -126,4 +126,7 @@ basyx.components.databridge.examples/kafka-single-broker-server/zk-single-kafka-
 ### MQTT ###
 *.moquette_uuid
 
+### META-INF ###
+**/META-INF/*
+
 # End of https://www.toptal.com/developers/gitignore/api/maven,java,eclipse
