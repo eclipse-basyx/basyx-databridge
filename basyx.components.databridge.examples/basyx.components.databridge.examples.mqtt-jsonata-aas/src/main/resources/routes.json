@@ -10,5 +10,11 @@
 		"transformers": ["jsonataB"],
 		"datasinks": ["ConnectedSubmodel/ConnectedPropertyB"],
 		"trigger": "event"
+	},
+	{
+		"datasource": "property3",
+		"transformers": ["jsonataB"],
+		"datasinks": ["ConnectedTestSubmodel/ConnectedPropertyC"],
+		"trigger": "event"
 	}
 ]

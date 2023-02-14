@@ -66,7 +66,8 @@ public class TestAASUpdater {
 	private static InMemoryRegistry registry;
 	protected static Server mqttBroker;
 
-	protected static IIdentifier deviceAAS = new CustomId("TestUpdatedDeviceAAS");
+	protected static IIdentifier deviceAASPlainId = new CustomId("TestUpdatedDeviceAAS");
+	protected static IIdentifier deviceAASIriId = new CustomId("https://example.com/ids/aas/7053_6021_1032_9066");
 	private static BaSyxContextConfiguration aasContextConfig;
 
 	@BeforeClass
@@ -107,35 +108,54 @@ public class TestAASUpdater {
 		updater = new DataBridgeComponent(configuration);
 		updater.startComponent();
 		System.out.println("UPDATER STARTED");
-		System.out.println("PUBLISH EVENT");
-		publishNewDatapoint();
-		System.out.println("EVENT PUBLISHED");
+		System.out.println("PUBLISH EVENT to PropertyB");
+		
+		publishNewDatapoint("PropertyB");
+		
 		waitForPropagation();
+		
 		checkIfPropertyIsUpdated();
+		
+		System.out.println("PUBLISH EVENT to PropertyC");
+		
+		publishNewDatapoint("PropertyC");
+		
+		waitForPropagation();
+		
+		checkIfPropertyIsUpdatedInEncodedAASEndpoint();
 		updater.stopComponent();
 		aasServer.stopComponent();
 	}
 
 	private void waitForPropagation() throws InterruptedException {
-		Thread.sleep(1000);
+		Thread.sleep(5000);
 	}
 
 	private void checkIfPropertyIsUpdated() throws InterruptedException {
-		ConnectedAssetAdministrationShellManager manager = new ConnectedAssetAdministrationShellManager(registry);
-		ConnectedAssetAdministrationShell aas = manager.retrieveAAS(deviceAAS);
-		ISubmodel sm = aas.getSubmodels().get("ConnectedSubmodel");
-		ISubmodelElement updatedProp = sm.getSubmodelElement("ConnectedPropertyB");
-		Object propValue = updatedProp.getValue();
-		System.out.println("UpdatedPROP" + propValue);
-		assertEquals("858383", propValue);
+		ConnectedAssetAdministrationShell aas = getAAS(deviceAASPlainId);
+		
+		ISubmodelElement updatedProp = getSubmodelElement(aas, "ConnectedSubmodel", "ConnectedPropertyB");
 
+		Object propValue = updatedProp.getValue();
+		
+		assertEquals("858383", propValue);
+	}
+	
+	private void checkIfPropertyIsUpdatedInEncodedAASEndpoint() throws InterruptedException {
+		ConnectedAssetAdministrationShell aas = getAAS(deviceAASIriId);
+		
+		ISubmodelElement updatedProp = getSubmodelElement(aas, "ConnectedTestSubmodel", "ConnectedPropertyC");
+		
+		Object propValue = updatedProp.getValue();
+		
+		assertEquals("858383", propValue);
 	}
 
-	private void publishNewDatapoint() throws MqttException, MqttSecurityException, MqttPersistenceException {
+	private void publishNewDatapoint(String topic) throws MqttException, MqttSecurityException, MqttPersistenceException {
 		String json = "{\"Account\":{\"Account Name\":\"Firefly\",\"Order\":[{\"OrderID\":\"order103\",\"Product\":[{\"Product Name\":\"Bowler Hat\",\"ProductID\":858383,\"SKU\":\"0406654608\",\"Description\":{\"Colour\":\"Purple\",\"Width\":300,\"Height\":200,\"Depth\":210,\"Weight\":0.75},\"Price\":34.45,\"Quantity\":2},{\"Product Name\":\"Trilby hat\",\"ProductID\":858236,\"SKU\":\"0406634348\",\"Description\":{\"Colour\":\"Orange\",\"Width\":300,\"Height\":200,\"Depth\":210,\"Weight\":0.6},\"Price\":21.67,\"Quantity\":1}]},{\"OrderID\":\"order104\",\"Product\":[{\"Product Name\":\"Bowler Hat\",\"ProductID\":858383,\"SKU\":\"040657863\",\"Description\":{\"Colour\":\"Purple\",\"Width\":300,\"Height\":200,\"Depth\":210,\"Weight\":0.75},\"Price\":34.45,\"Quantity\":4},{\"ProductID\":345664,\"SKU\":\"0406654603\",\"Product Name\":\"Cloak\",\"Description\":{\"Colour\":\"Black\",\"Width\":30,\"Height\":20,\"Depth\":210,\"Weight\":2},\"Price\":107.99,\"Quantity\":1}]}]}}";
 		MqttClient mqttClient = new MqttClient("tcp://localhost:1884", "testClient", new MemoryPersistence());
 		mqttClient.connect();
-		mqttClient.publish("PropertyB", new MqttMessage(json.getBytes()));
+		mqttClient.publish(topic, new MqttMessage(json.getBytes()));
 		mqttClient.disconnect();
 		mqttClient.close();
 	}
@@ -145,5 +165,18 @@ public class TestAASUpdater {
 		IResourceLoader classpathLoader = new ClasspathResourceLoader();
 		final IConfig classPathConfig = new ResourceLoaderConfig(classpathLoader);
 		mqttBroker.startServer(classPathConfig);
+	}
+	
+	private ISubmodelElement getSubmodelElement(ConnectedAssetAdministrationShell aas, String submodelId, String submodelElementId) {
+		ISubmodel sm = aas.getSubmodels().get(submodelId);
+		ISubmodelElement updatedProp = sm.getSubmodelElement(submodelElementId);
+		
+		return updatedProp;
+	}
+
+	private ConnectedAssetAdministrationShell getAAS(IIdentifier identifier) {
+		ConnectedAssetAdministrationShellManager manager = new ConnectedAssetAdministrationShellManager(registry);
+		ConnectedAssetAdministrationShell aas = manager.retrieveAAS(identifier);
+		return aas;
 	}
 }

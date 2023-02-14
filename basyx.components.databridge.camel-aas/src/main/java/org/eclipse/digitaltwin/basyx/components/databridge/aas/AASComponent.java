@@ -39,4 +39,9 @@ public class AASComponent extends DefaultComponent {
         setProperties(endpoint, parameters);
         return endpoint;
     }
+    
+    @Override
+	public boolean useRawUri() {
+		return true;
+	}
 }

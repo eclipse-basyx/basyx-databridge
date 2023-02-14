@@ -104,7 +104,7 @@ public class AASEndpoint extends DefaultEndpoint {
 	 * @return
 	 */
 	private String getSubmodelEndpoint() {
-		String submodelEndpoint = this.getEndpointBaseUri().substring(6); 
+		String submodelEndpoint = this.getEndpointBaseUri().substring(4); 
     	logger.info("SubmodelEndpoint " + submodelEndpoint);
 		return submodelEndpoint;
 	}
