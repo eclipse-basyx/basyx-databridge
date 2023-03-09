@@ -28,6 +28,7 @@ import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -62,7 +63,11 @@ public class DataBridgeUtils {
 	}
 
 	public static Set<String> getFiles(String directory) {
-		return Stream.of(new File(directory).listFiles()).filter(file -> !file.isDirectory()).map(File::getName)
+		File[] files = new File(directory).listFiles();
+		if (files == null)
+			return Collections.emptySet();
+
+		return Stream.of(files).filter(file -> !file.isDirectory()).map(File::getName)
 				.collect(Collectors.toSet());
 	}
 
@@ -121,14 +126,13 @@ public class DataBridgeUtils {
 	}
 
 	public static String findAvailableConfigurationFile(Class<?> clazz) {
-		String fileNameDefinedInConfigFactory = null;
 		try {
-			fileNameDefinedInConfigFactory = (String) clazz.getField(FIELD_FILE_PATH).get(null);
+			return (String) clazz.getField(FIELD_FILE_PATH).get(null);
 		} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
-			logger.info("In class {} the field {} doesn't found!", clazz.getName(), FIELD_FILE_PATH);
+			logger.info("In class {} the field could not be  {} found!", clazz.getName(), FIELD_FILE_PATH);
 		}
 
-		return fileNameDefinedInConfigFactory;
+		return null;
 	}
 
 	public static Set<String> getAllConfigFilesMatchingInputFileName(Set<String> configFiles,

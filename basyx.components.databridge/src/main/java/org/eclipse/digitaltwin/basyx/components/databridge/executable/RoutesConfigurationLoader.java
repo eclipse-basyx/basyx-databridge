@@ -24,9 +24,14 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.components.databridge.executable;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.eclipse.digitaltwin.basyx.components.databridge.core.configuration.entity.DataSinkConfiguration;
 import org.eclipse.digitaltwin.basyx.components.databridge.core.configuration.entity.DataSourceConfiguration;
@@ -47,10 +52,11 @@ import org.slf4j.LoggerFactory;
 public class RoutesConfigurationLoader {
 	private static Logger logger = LoggerFactory.getLogger(RoutesConfigurationLoader.class);
 
-	private String configFilePath;
+	private static String TEMP_DIR = System.getProperty("java.io.tmpdir");
 
 	public RoutesConfigurationLoader(String configFilePath) {
-		this.configFilePath = configFilePath;
+		Set<String> configFiles = DataBridgeUtils.getFiles(configFilePath);
+		configFiles.forEach(fileName -> copyFileToTempDirectory(configFilePath + "/" + fileName));
 	}
 
 	public RoutesConfiguration create() {
@@ -60,14 +66,16 @@ public class RoutesConfigurationLoader {
 		configureRouteFactory(loader, configuration);
 
 		addAvailableConfigurations(configuration);
-		
+
 		return configuration;
 	}
 
 	private void addAvailableConfigurations(RoutesConfiguration configuration) {
-		Set<String> configFiles = DataBridgeUtils.getFiles(getConfigFilePath());
-
 		Set<Class<?>> classes = DataBridgeUtils.findAllConfigurationFactoryClasses(DataBridgeUtils.PACKAGE_PREFIX);
+
+		classes.forEach(RoutesConfigurationLoader::createFileFromEnvironmentVariable);
+
+		Set<String> configFiles = DataBridgeUtils.getFiles(TEMP_DIR);
 
 		classes.stream().forEach(clazz -> DataBridgeUtils
 				.getAllConfigFilesMatchingInputFileName(configFiles,
@@ -75,43 +83,78 @@ public class RoutesConfigurationLoader {
 				.stream()
 				.forEach(userInputConfigFilename -> addConfiguration(clazz, userInputConfigFilename, configuration)));
 	}
+
+	private static void createFileFromEnvironmentVariable(Class<?> clazz) {
+		String fileName = DataBridgeUtils.findAvailableConfigurationFile(clazz);
+
+		if (fileName == null)
+			return;
+
+		String fileContent = System.getenv(fileName);
+
+		if (fileContent == null)
+			return;
+
+		writeFileToTempDirectory(fileName, fileContent);
+	}
+
+	private static void writeFileToTempDirectory(String fileName, String fileContent) {
+		String pathToFile = getFilePathToTempDirectory(fileName);
+
+		try {
+			BufferedWriter writer = new BufferedWriter(new FileWriter(pathToFile));
+
+			writer.write(fileContent);
+			writer.close();
+		} catch (IOException e) {
+			throw new RuntimeException("Unexpected error when trying to write file " + pathToFile);
+		}
+	}
 	
+	private void copyFileToTempDirectory(String filePath) {
+		File source = new File(filePath);
+		File dest = new File(TEMP_DIR);
+
+		try {
+			FileUtils.copyDirectory(source, dest);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	private void addConfiguration(Class<?> clazz, String userInputConfigFilename, RoutesConfiguration configuration) {
 		if (DataSourceConfigurationFactory.class.isAssignableFrom(clazz)) {
-			addDataSource(getConfigFilePath() + "/" + userInputConfigFilename, clazz, configuration);
+			addDataSource(getFilePathToTempDirectory(userInputConfigFilename), clazz, configuration);
 		} else if (DataTransformerConfigurationFactory.class.isAssignableFrom(clazz)) {
-			addTransformer(getConfigFilePath() + "/" + userInputConfigFilename, clazz, configuration);
+			addTransformer(getFilePathToTempDirectory(userInputConfigFilename), clazz, configuration);
 		} else if (DataSinkConfigurationFactory.class.isAssignableFrom(clazz)) {
-			addDataSink(getConfigFilePath() + "/" + userInputConfigFilename, clazz, configuration);
+			addDataSink(getFilePathToTempDirectory(userInputConfigFilename), clazz, configuration);
 		} else {
 			logger.info("Config file doesn't match to consumer, transformer, or server!");
 		}
 	}
-	
-	private String getConfigFilePath() {
-		return configFilePath;
+
+	private static String getFilePathToTempDirectory(String fileName) {
+		return TEMP_DIR + "/" + fileName;
 	}
 
 	private void configureRouteFactory(ClassLoader loader, RoutesConfiguration configuration) {
-		RoutesConfigurationFactory routesFactory = new RoutesConfigurationFactory(getConfigFilePath() + "/routes.json",
-				loader);
+		RoutesConfigurationFactory routesFactory = new RoutesConfigurationFactory(getFilePathToTempDirectory(RoutesConfigurationFactory.DEFAULT_FILE_PATH), loader);
 		configuration.addRoutes(routesFactory.create());
 	}
-	
+
 	private static void addDataSource(String path, Class<?> clazz, RoutesConfiguration configuration) {
 		@SuppressWarnings("unchecked")
-		List<DataSourceConfiguration> configurations = (List<DataSourceConfiguration>) DataBridgeUtils.getConfigurations(path,
-				DataBridgeExecutable.class.getClassLoader(), clazz);
+		List<DataSourceConfiguration> configurations = (List<DataSourceConfiguration>) DataBridgeUtils.getConfigurations(path, DataBridgeExecutable.class.getClassLoader(), clazz);
 
 		configuration.addDatasources(configurations);
 
 		logger.info("Data source added - {}", FilenameUtils.getName(path));
 	}
-	
+
 	private static void addTransformer(String path, Class<?> clazz, RoutesConfiguration configuration) {
 		@SuppressWarnings("unchecked")
-		List<DataTransformerConfiguration> configurations = (List<DataTransformerConfiguration>) DataBridgeUtils.getConfigurations(path,
-				DataBridgeExecutable.class.getClassLoader(), clazz);
+		List<DataTransformerConfiguration> configurations = (List<DataTransformerConfiguration>) DataBridgeUtils.getConfigurations(path, DataBridgeExecutable.class.getClassLoader(), clazz);
 
 		configuration.addTransformers(configurations);
 
@@ -120,8 +163,7 @@ public class RoutesConfigurationLoader {
 
 	private static void addDataSink(String path, Class<?> clazz, RoutesConfiguration configuration) {
 		@SuppressWarnings("unchecked")
-		List<DataSinkConfiguration> configurations = (List<DataSinkConfiguration>) DataBridgeUtils.getConfigurations(path,
-				DataBridgeExecutable.class.getClassLoader(), clazz);
+		List<DataSinkConfiguration> configurations = (List<DataSinkConfiguration>) DataBridgeUtils.getConfigurations(path, DataBridgeExecutable.class.getClassLoader(), clazz);
 
 		configuration.addDatasinks(configurations);
 
