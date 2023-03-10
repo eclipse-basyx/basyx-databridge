@@ -24,11 +24,9 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.components.databridge.transformer.cameljsonata.configuration;
 
-import org.eclipse.digitaltwin.basyx.components.databridge.core.configuration.entity.DataTransformerConfiguration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.File;
+
+import org.eclipse.digitaltwin.basyx.components.databridge.core.configuration.entity.DataTransformerConfiguration;
 
 /**
  * An implementation of Jsonata transformer configuration
@@ -38,7 +36,6 @@ import java.io.File;
  *
  */
 public class JsonataTransformerConfiguration extends DataTransformerConfiguration {
-	private static final Logger logger = LoggerFactory.getLogger(JsonataTransformerConfiguration.class);
 	private String queryPath;
 	private String inputType;
 	private String outputType;
@@ -60,18 +57,14 @@ public class JsonataTransformerConfiguration extends DataTransformerConfiguratio
 		this.queryPath = queryPath;
 	}
 
+	@Override
 	public String getConnectionURI() {
-		String url = "";
 		File jsonataFile = new File(getQueryPath());
-
 		if (jsonataFile.exists()) {
-			logger.info("Looking for jsonata config as configured in jsonatatransformer.json...");
-			url = "jsonata:" + "file:./" + getQueryPath() + "?inputType=" + getInputType() + "&outputType=" + getOutputType();
+			return "jsonata:file:" + getQueryPath() + "?inputType=" + getInputType() + "&outputType=" + getOutputType();
 		} else {
-			logger.info("Couldn't find jsonata config as configured in jsonatatransformer.json. Looking in classpath...");
-			url = "jsonata:" + getQueryPath() + "?inputType=" + getInputType() + "&outputType=" + getOutputType();
+			return "jsonata:" + getQueryPath() + "?inputType=" + getInputType() + "&outputType=" + getOutputType();
 		}
-		return url;
 	}
 
 	public String getInputType() {

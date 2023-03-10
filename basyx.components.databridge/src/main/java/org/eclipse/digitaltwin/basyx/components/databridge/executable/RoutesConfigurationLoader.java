@@ -52,11 +52,12 @@ import org.slf4j.LoggerFactory;
 public class RoutesConfigurationLoader {
 	private static Logger logger = LoggerFactory.getLogger(RoutesConfigurationLoader.class);
 
-	private static String TEMP_DIR = System.getProperty("java.io.tmpdir");
+	private final static String FILE_DIRECTORY = System.getProperty("java.io.tmpdir") + "dataBridge";
 
 	public RoutesConfigurationLoader(String configFilePath) {
-		Set<String> configFiles = DataBridgeUtils.getFiles(configFilePath);
-		configFiles.forEach(fileName -> copyFileToTempDirectory(configFilePath + "/" + fileName));
+		resetFileDirectory();
+		copyConfigsToFileDirectory(configFilePath);
+		createFilesFromEnvironmentVariables();
 	}
 
 	public RoutesConfiguration create() {
@@ -70,12 +71,38 @@ public class RoutesConfigurationLoader {
 		return configuration;
 	}
 
-	private void addAvailableConfigurations(RoutesConfiguration configuration) {
-		Set<Class<?>> classes = DataBridgeUtils.findAllConfigurationFactoryClasses(DataBridgeUtils.PACKAGE_PREFIX);
+	private static Set<Class<?>> findAllConfigurationFactoryClasses() {
+		return DataBridgeUtils.findAllConfigurationFactoryClasses(DataBridgeUtils.PACKAGE_PREFIX);
+	}
 
+	private static void createFilesFromEnvironmentVariables() {
+		createRoutesFile();
+		createConfigurationFactoryFiles();
+	}
+
+	private static void createConfigurationFactoryFiles() {
+		Set<Class<?>> classes = findAllConfigurationFactoryClasses();
 		classes.forEach(RoutesConfigurationLoader::createFileFromEnvironmentVariable);
+	}
 
-		Set<String> configFiles = DataBridgeUtils.getFiles(TEMP_DIR);
+	private static void createRoutesFile() {
+		createFileFromEnvironmentVariable(RoutesConfigurationFactory.DEFAULT_FILE_PATH);
+	}
+
+	private static void resetFileDirectory() {
+		try {
+			File directory = new File(FILE_DIRECTORY);
+			FileUtils.deleteDirectory(directory);
+			directory.mkdir();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private static void addAvailableConfigurations(RoutesConfiguration configuration) {
+		Set<Class<?>> classes = findAllConfigurationFactoryClasses();
+
+		Set<String> configFiles = DataBridgeUtils.getFiles(FILE_DIRECTORY);
 
 		classes.stream().forEach(clazz -> DataBridgeUtils
 				.getAllConfigFilesMatchingInputFileName(configFiles,
@@ -90,16 +117,20 @@ public class RoutesConfigurationLoader {
 		if (fileName == null)
 			return;
 
-		String fileContent = System.getenv(fileName);
+		createFileFromEnvironmentVariable(fileName);
+	}
+
+	private static void createFileFromEnvironmentVariable(String variableName) {
+		String fileContent = System.getenv(variableName);
 
 		if (fileContent == null)
 			return;
 
-		writeFileToTempDirectory(fileName, fileContent);
+		writeFileToTempDirectory(variableName, fileContent);
 	}
 
 	private static void writeFileToTempDirectory(String fileName, String fileContent) {
-		String pathToFile = getFilePathToTempDirectory(fileName);
+		String pathToFile = getFilePathInFileDirectory(fileName);
 
 		try {
 			BufferedWriter writer = new BufferedWriter(new FileWriter(pathToFile));
@@ -107,39 +138,40 @@ public class RoutesConfigurationLoader {
 			writer.write(fileContent);
 			writer.close();
 		} catch (IOException e) {
-			throw new RuntimeException("Unexpected error when trying to write file " + pathToFile);
+			throw new RuntimeException(e);
 		}
 	}
 	
-	private void copyFileToTempDirectory(String filePath) {
+	private static void copyConfigsToFileDirectory(String filePath) {
 		File source = new File(filePath);
-		File dest = new File(TEMP_DIR);
+		File dest = new File(FILE_DIRECTORY);
 
 		try {
 			FileUtils.copyDirectory(source, dest);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.warn("Could not reach config files files from " + filePath + ". "
+					+ "If no files are configured via environment variables, this is an error.");
 		}
 	}
 
-	private void addConfiguration(Class<?> clazz, String userInputConfigFilename, RoutesConfiguration configuration) {
+	private static void addConfiguration(Class<?> clazz, String userInputConfigFilename, RoutesConfiguration configuration) {
 		if (DataSourceConfigurationFactory.class.isAssignableFrom(clazz)) {
-			addDataSource(getFilePathToTempDirectory(userInputConfigFilename), clazz, configuration);
+			addDataSource(getFilePathInFileDirectory(userInputConfigFilename), clazz, configuration);
 		} else if (DataTransformerConfigurationFactory.class.isAssignableFrom(clazz)) {
-			addTransformer(getFilePathToTempDirectory(userInputConfigFilename), clazz, configuration);
+			addTransformer(getFilePathInFileDirectory(userInputConfigFilename), clazz, configuration);
 		} else if (DataSinkConfigurationFactory.class.isAssignableFrom(clazz)) {
-			addDataSink(getFilePathToTempDirectory(userInputConfigFilename), clazz, configuration);
+			addDataSink(getFilePathInFileDirectory(userInputConfigFilename), clazz, configuration);
 		} else {
 			logger.info("Config file doesn't match to consumer, transformer, or server!");
 		}
 	}
 
-	private static String getFilePathToTempDirectory(String fileName) {
-		return TEMP_DIR + "/" + fileName;
+	private static String getFilePathInFileDirectory(String fileName) {
+		return FILE_DIRECTORY + "/" + fileName;
 	}
 
-	private void configureRouteFactory(ClassLoader loader, RoutesConfiguration configuration) {
-		RoutesConfigurationFactory routesFactory = new RoutesConfigurationFactory(getFilePathToTempDirectory(RoutesConfigurationFactory.DEFAULT_FILE_PATH), loader);
+	private static void configureRouteFactory(ClassLoader loader, RoutesConfiguration configuration) {
+		RoutesConfigurationFactory routesFactory = new RoutesConfigurationFactory(getFilePathInFileDirectory(RoutesConfigurationFactory.DEFAULT_FILE_PATH), loader);
 		configuration.addRoutes(routesFactory.create());
 	}
 
