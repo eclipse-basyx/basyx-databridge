@@ -24,7 +24,12 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.components.databridge.core.configuration.loader;
 
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 
 import org.eclipse.digitaltwin.basyx.components.databridge.core.configuration.parser.JsonParser;
 import org.slf4j.Logger;
@@ -66,7 +71,13 @@ public class FileConfigurationLoader {
 	public Object loadListConfiguration() {
 		Reader reader = getJsonReader();
 		JsonParser parser = new JsonParser(mapperClass);
-		return parser.getListConfiguration(reader);
+		Object obj = parser.getListConfiguration(reader);
+		try {
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return obj;
 	}
 	
 	/**
@@ -87,18 +98,17 @@ public class FileConfigurationLoader {
 	private InputStreamReader getJsonReader() {
 
 		InputStream stream = null;
-	    try {
+		try {
 			stream = new FileInputStream(filePath);
 		} catch (Exception e1) {
-	        logger.warn("No exterior config file found in defined path. Trying to load config file from classpath...");
-	        try {
+			logger.warn("No exterior config file found in defined path. Trying to load config file from classpath...");
+			try {
 				stream = loader.getResourceAsStream(filePath);
 			} catch (Exception e2) {
 				logger.error("No exterior config file found in defined path and no config file found in classpath");
 				e2.printStackTrace();
 			}
 		}
-
 
 		InputStreamReader reader = null;
 		try {

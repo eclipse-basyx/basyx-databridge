@@ -52,7 +52,7 @@ import org.slf4j.LoggerFactory;
 public class RoutesConfigurationLoader {
 	private static Logger logger = LoggerFactory.getLogger(RoutesConfigurationLoader.class);
 
-	private final static String FILE_DIRECTORY = System.getProperty("java.io.tmpdir") + "dataBridge";
+	private final static String FILE_DIRECTORY = System.getProperty("java.io.tmpdir") + "/dataBridge";
 
 	public RoutesConfigurationLoader(String configFilePath) {
 		resetFileDirectory();

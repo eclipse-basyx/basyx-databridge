@@ -66,7 +66,7 @@ public class JsonataDefaultConfigurationFactory extends DataTransformerConfigura
 
 		String queryPath = ((JsonataTransformerConfiguration) config).getQueryPath();
 		
-		((JsonataTransformerConfiguration) config).setQueryPath(FilenameUtils.getPath(filePath) + queryPath);
+		((JsonataTransformerConfiguration) config).setQueryPath(FilenameUtils.getFullPath(filePath) + queryPath);
 	}
 
 	private boolean isConfiguredFromDefaultPath() {
