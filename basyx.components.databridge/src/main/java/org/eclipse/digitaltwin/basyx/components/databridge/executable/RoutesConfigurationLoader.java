@@ -109,6 +109,8 @@ public class RoutesConfigurationLoader {
 
 		Set<String> configFiles = DataBridgeUtils.getFiles(TEMPORARY_CONFIG_DIRECTORY);
 
+		logger.info("Found files: " + configFiles);
+
 		classes.stream().forEach(clazz -> DataBridgeUtils
 				.getAllConfigFilesMatchingInputFileName(configFiles,
 						DataBridgeUtils.findAvailableConfigurationFile(clazz))
