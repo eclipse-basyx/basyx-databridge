@@ -24,10 +24,14 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.components.databridge.executable;
 
-import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -38,6 +42,7 @@ import org.reflections.scanners.Scanners;
 import org.reflections.util.ConfigurationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 /**
  * Utility class for DataBridge
@@ -62,8 +67,11 @@ public class DataBridgeUtils {
 	}
 
 	public static Set<String> getFiles(String directory) {
-		return Stream.of(new File(directory).listFiles()).filter(file -> !file.isDirectory()).map(File::getName)
-				.collect(Collectors.toSet());
+		try (Stream<Path> stream = Files.list(Paths.get(directory))) {
+			return stream.filter(file -> !Files.isDirectory(file)).map(Path::getFileName).map(Path::toString).collect(Collectors.toSet());
+		} catch (IOException e) {
+			return Collections.emptySet();
+		}
 	}
 
 	public static Set<Class<?>> findAllConfigurationFactoryClasses(String packageName) {
@@ -121,14 +129,13 @@ public class DataBridgeUtils {
 	}
 
 	public static String findAvailableConfigurationFile(Class<?> clazz) {
-		String fileNameDefinedInConfigFactory = null;
 		try {
-			fileNameDefinedInConfigFactory = (String) clazz.getField(FIELD_FILE_PATH).get(null);
+			return (String) clazz.getField(FIELD_FILE_PATH).get(null);
 		} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
-			logger.info("In class {} the field {} doesn't found!", clazz.getName(), FIELD_FILE_PATH);
+			logger.info("In class {} the field could not be  {} found!", clazz.getName(), FIELD_FILE_PATH);
 		}
 
-		return fileNameDefinedInConfigFactory;
+		return null;
 	}
 
 	public static Set<String> getAllConfigFilesMatchingInputFileName(Set<String> configFiles,

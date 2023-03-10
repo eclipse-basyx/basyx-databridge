@@ -39,7 +39,7 @@ import org.eclipse.digitaltwin.basyx.components.databridge.core.configuration.ro
  *
  */
 public class RoutesConfigurationFactory extends ConfigurationFactory {
-	private static final String DEFAULT_FILE_PATH = "routes.json";
+	public static final String DEFAULT_FILE_PATH = "routes.json";
 
 	/**
 	 * This constructor uses the {@link EventRouteConfiguration} as the default

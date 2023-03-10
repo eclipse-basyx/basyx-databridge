@@ -27,9 +27,13 @@ package org.eclipse.digitaltwin.basyx.components.databridge.regression;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Collections;
+import java.util.Map;
+
 import org.eclipse.digitaltwin.basyx.components.databridge.camelactivemq.configuration.ActiveMQConsumerConfiguration;
 import org.eclipse.digitaltwin.basyx.components.databridge.core.configuration.route.core.RoutesConfiguration;
 import org.eclipse.digitaltwin.basyx.components.databridge.executable.RoutesConfigurationLoader;
+import org.junit.AfterClass;
 import org.junit.Test;
 
 /**
@@ -45,6 +49,21 @@ public class TestRoutesConfigurationLoader {
 		RoutesConfiguration configuration = new RoutesConfigurationLoader(PATH_PREFIX).create();
 
 		assertRoutesConfigurationIsCorrect(configuration);
+	}
+
+	@Test
+	public void configInEnvironmentVariables() throws ClassNotFoundException, IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
+		Map<String, String> environmentVariables = RoutesConfigurationTestEnvironmentVariables.get();
+		EnvironmentVariableHelper.setEnvironmentVariablesForTesting(environmentVariables);
+
+		RoutesConfiguration configuration = new RoutesConfigurationLoader("doesNotMatter").create();
+
+		assertRoutesConfigurationIsCorrect(configuration);
+	}
+
+	@AfterClass
+	public static void resetEnvironmentVariables() throws ClassNotFoundException, IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
+		EnvironmentVariableHelper.setEnvironmentVariablesForTesting(Collections.emptyMap());
 	}
 
 	private void assertRoutesConfigurationIsCorrect(RoutesConfiguration configuration) {
