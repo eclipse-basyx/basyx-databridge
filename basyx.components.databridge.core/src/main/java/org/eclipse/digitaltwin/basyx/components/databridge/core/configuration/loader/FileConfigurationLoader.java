@@ -69,15 +69,15 @@ public class FileConfigurationLoader {
 	 * @return
 	 */
 	public Object loadListConfiguration() {
-		Reader reader = getJsonReader();
-		JsonParser parser = new JsonParser(mapperClass);
-		Object obj = parser.getListConfiguration(reader);
-		try {
-			reader.close();
+
+		try (Reader reader = getJsonReader()) {
+			JsonParser parser = new JsonParser(mapperClass);
+			return parser.getListConfiguration(reader);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return obj;
+
+		return null;
 	}
 	
 	/**

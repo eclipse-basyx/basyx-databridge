@@ -24,10 +24,13 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.components.databridge.executable;
 
-import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -39,6 +42,7 @@ import org.reflections.scanners.Scanners;
 import org.reflections.util.ConfigurationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 /**
  * Utility class for DataBridge
@@ -63,12 +67,11 @@ public class DataBridgeUtils {
 	}
 
 	public static Set<String> getFiles(String directory) {
-		File[] files = new File(directory).listFiles();
-		if (files == null)
+		try (Stream<Path> stream = Files.list(Paths.get(directory))) {
+			return stream.filter(file -> !Files.isDirectory(file)).map(Path::getFileName).map(Path::toString).collect(Collectors.toSet());
+		} catch (IOException e) {
 			return Collections.emptySet();
-
-		return Stream.of(files).filter(file -> !file.isDirectory()).map(File::getName)
-				.collect(Collectors.toSet());
+		}
 	}
 
 	public static Set<Class<?>> findAllConfigurationFactoryClasses(String packageName) {

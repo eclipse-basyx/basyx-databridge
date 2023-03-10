@@ -36,7 +36,7 @@ import java.util.Map;
  * @author schnicke
  *
  */
-public class RoutesConfigurationEnvironmentVariables {
+public class RoutesConfigurationTestEnvironmentVariables {
 	public static Map<String, String> get() {
 		Map<String, String> variables = new HashMap<>();
 		putRoutes(variables);

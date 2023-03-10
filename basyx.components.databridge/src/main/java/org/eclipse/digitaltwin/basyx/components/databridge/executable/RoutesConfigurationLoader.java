@@ -52,7 +52,12 @@ import org.slf4j.LoggerFactory;
 public class RoutesConfigurationLoader {
 	private static Logger logger = LoggerFactory.getLogger(RoutesConfigurationLoader.class);
 
-	private final static String FILE_DIRECTORY = System.getProperty("java.io.tmpdir") + "/dataBridge";
+	private final static String TEMPORARY_CONFIG_DIRECTORY = System.getProperty("java.io.tmpdir") + "/dataBridge";
+
+	public RoutesConfigurationLoader() {
+		resetFileDirectory();
+		createFilesFromEnvironmentVariables();
+	}
 
 	public RoutesConfigurationLoader(String configFilePath) {
 		resetFileDirectory();
@@ -91,7 +96,7 @@ public class RoutesConfigurationLoader {
 
 	private static void resetFileDirectory() {
 		try {
-			File directory = new File(FILE_DIRECTORY);
+			File directory = new File(TEMPORARY_CONFIG_DIRECTORY);
 			FileUtils.deleteDirectory(directory);
 			directory.mkdir();
 		} catch (IOException e) {
@@ -102,7 +107,7 @@ public class RoutesConfigurationLoader {
 	private static void addAvailableConfigurations(RoutesConfiguration configuration) {
 		Set<Class<?>> classes = findAllConfigurationFactoryClasses();
 
-		Set<String> configFiles = DataBridgeUtils.getFiles(FILE_DIRECTORY);
+		Set<String> configFiles = DataBridgeUtils.getFiles(TEMPORARY_CONFIG_DIRECTORY);
 
 		classes.stream().forEach(clazz -> DataBridgeUtils
 				.getAllConfigFilesMatchingInputFileName(configFiles,
@@ -132,11 +137,8 @@ public class RoutesConfigurationLoader {
 	private static void writeFileToTempDirectory(String fileName, String fileContent) {
 		String pathToFile = getFilePathInFileDirectory(fileName);
 
-		try {
-			BufferedWriter writer = new BufferedWriter(new FileWriter(pathToFile));
-
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(pathToFile))) {
 			writer.write(fileContent);
-			writer.close();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -144,7 +146,7 @@ public class RoutesConfigurationLoader {
 	
 	private static void copyConfigsToFileDirectory(String filePath) {
 		File source = new File(filePath);
-		File dest = new File(FILE_DIRECTORY);
+		File dest = new File(TEMPORARY_CONFIG_DIRECTORY);
 
 		try {
 			FileUtils.copyDirectory(source, dest);
@@ -167,7 +169,7 @@ public class RoutesConfigurationLoader {
 	}
 
 	private static String getFilePathInFileDirectory(String fileName) {
-		return FILE_DIRECTORY + "/" + fileName;
+		return TEMPORARY_CONFIG_DIRECTORY + "/" + fileName;
 	}
 
 	private static void configureRouteFactory(ClassLoader loader, RoutesConfiguration configuration) {

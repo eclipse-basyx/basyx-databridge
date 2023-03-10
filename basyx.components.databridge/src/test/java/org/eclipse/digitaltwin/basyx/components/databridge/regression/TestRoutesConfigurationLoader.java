@@ -51,7 +51,7 @@ public class TestRoutesConfigurationLoader {
 
 	@Test
 	public void configInEnvironmentVariables() throws ClassNotFoundException, IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
-		Map<String, String> environmentVariables = RoutesConfigurationEnvironmentVariables.get();
+		Map<String, String> environmentVariables = RoutesConfigurationTestEnvironmentVariables.get();
 		EnvironmentVariableHelper.setEnvironmentVariablesForTesting(environmentVariables);
 
 		RoutesConfiguration configuration = new RoutesConfigurationLoader("doesNotMatter").create();
