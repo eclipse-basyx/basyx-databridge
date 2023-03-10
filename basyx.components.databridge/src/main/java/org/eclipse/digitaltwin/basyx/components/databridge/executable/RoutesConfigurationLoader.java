@@ -133,6 +133,7 @@ public class RoutesConfigurationLoader {
 		if (fileContent == null)
 			return;
 
+		logger.info("Creating file " + variableName + " from environment with content " + fileContent);
 		writeFileToTempDirectory(variableName, fileContent);
 	}
 
