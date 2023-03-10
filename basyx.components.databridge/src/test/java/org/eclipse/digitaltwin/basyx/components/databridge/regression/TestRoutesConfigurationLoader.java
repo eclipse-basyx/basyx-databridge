@@ -62,7 +62,7 @@ public class TestRoutesConfigurationLoader {
 	}
 
 	@AfterClass
-	public void resetEnvironmentVariables() throws ClassNotFoundException, IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
+	public static void resetEnvironmentVariables() throws ClassNotFoundException, IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
 		EnvironmentVariableHelper.setEnvironmentVariablesForTesting(Collections.emptyMap());
 	}
 
