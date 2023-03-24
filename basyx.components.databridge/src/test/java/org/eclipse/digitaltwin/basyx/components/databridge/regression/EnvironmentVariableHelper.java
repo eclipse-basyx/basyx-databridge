@@ -37,7 +37,7 @@ import java.util.Map;
  *
  */
 public class EnvironmentVariableHelper {
-	public static void setEnvironmentVariablesForTesting(Map<String, String> newenv) throws ClassNotFoundException, IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
+	public static void setEnvironmentVariablesForTesting(Map<String, String> newenv) {
 		try {
 			Class<?> processEnvironmentClass = getProcessEnvironmentClass();
 			Field theEnvironment = getAccessibleField(processEnvironmentClass, "theEnvironment");
@@ -46,6 +46,8 @@ public class EnvironmentVariableHelper {
 			setNewEnvironmentVariables(theCaseInsensitiveEnvironmentField, newenv);
 		} catch (NoSuchFieldException e) {
 			setVariableToUnmodifiableMap(newenv);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -67,7 +69,8 @@ public class EnvironmentVariableHelper {
 		env.putAll(newenv);
 	}
 
-	private static void setVariableToUnmodifiableMap(Map<String, String> newenv) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+	private static void setVariableToUnmodifiableMap(Map<String, String> newenv) {
+		try {
 		Class<?>[] classes = Collections.class.getDeclaredClasses();
 		Map<String, String> currentEnvironmentVariables = System.getenv();
 		for (Class<?> cl : classes) {
@@ -81,5 +84,8 @@ public class EnvironmentVariableHelper {
 				map.putAll(newenv);
 			}
 		}
+	} catch (Exception e) {
+		throw new RuntimeException(e);
+	}
 	}
 }

@@ -44,6 +44,8 @@ import org.eclipse.digitaltwin.basyx.components.databridge.core.configuration.ro
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.Gson;
+
 /**
  * Used for configuring the routes
  *
@@ -53,7 +55,9 @@ public class RoutesConfigurationLoader {
 	private static Logger logger = LoggerFactory.getLogger(RoutesConfigurationLoader.class);
 
 	private final static String TEMPORARY_CONFIG_DIRECTORY = System.getProperty("java.io.tmpdir") + "/dataBridge";
-
+	public static final String JSONATA_ENV_VAR_NAME = "jsonatatransformers";
+	
+	
 	public RoutesConfigurationLoader() {
 		resetFileDirectory();
 		createFilesFromEnvironmentVariables();
@@ -83,6 +87,17 @@ public class RoutesConfigurationLoader {
 	private static void createFilesFromEnvironmentVariables() {
 		createRoutesFile();
 		createConfigurationFactoryFiles();
+		createJSONataFiles();
+	}
+
+	private static void createJSONataFiles() {
+		Gson gson = new Gson();
+		String jsonataFilesFromEnv = System.getenv(JSONATA_ENV_VAR_NAME);
+		String[] jsonataFiles = gson.fromJson(jsonataFilesFromEnv, String[].class);
+
+		for (String jsonataFile : jsonataFiles) {
+			createFileFromEnvironmentVariable(jsonataFile);
+		}
 	}
 
 	private static void createConfigurationFactoryFiles() {
@@ -129,6 +144,9 @@ public class RoutesConfigurationLoader {
 
 	private static void createFileFromEnvironmentVariable(String variableName) {
 		String fileContent = System.getenv(variableName);
+
+		if (fileContent == null)
+			fileContent = System.getenv(variableName.replaceAll("\\.", "_"));
 
 		if (fileContent == null)
 			return;

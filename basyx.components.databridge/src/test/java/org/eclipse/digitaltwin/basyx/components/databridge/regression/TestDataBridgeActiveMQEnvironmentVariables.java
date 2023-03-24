@@ -25,6 +25,7 @@
 package org.eclipse.digitaltwin.basyx.components.databridge.regression;
 
 import java.io.IOException;
+import java.util.Map;
 
 import javax.jms.Connection;
 import javax.jms.JMSException;
@@ -39,11 +40,11 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
 /**
- * Tests the DataBridge with ActiveMQ
+ * Tests the DataBridge with ActiveMQ configured via environment variables
  *
- * @author danish
+ * @author danish, schnicke
  */
-public class TestDataBridgeActiveMQ extends DataBridgeSuiteActiveMQ {
+public class TestDataBridgeActiveMQEnvironmentVariables extends DataBridgeSuiteActiveMQ {
 	private static final String AAS_AGGREGATOR_URL = "http://localhost:4001";
 
 	private static final String BROKER_URL = "tcp://localhost:61616";
@@ -54,6 +55,8 @@ public class TestDataBridgeActiveMQ extends DataBridgeSuiteActiveMQ {
 	
 	@BeforeClass
 	public static void setUp() throws IOException {
+		setUpEnvironmentVariables();
+
 		activeMQBroker = DataBridgeActiveMQTestHelper.startActiveMQBroker(BROKER_URL);
 
 		aasServer = DataBridgeActiveMQTestHelper.configureAndStartAASServer();
@@ -61,9 +64,14 @@ public class TestDataBridgeActiveMQ extends DataBridgeSuiteActiveMQ {
 		startUpdaterComponent();
 	}
 	
+	private static void setUpEnvironmentVariables() {
+		Map<String, String> environmentVariables = RoutesConfigurationTestEnvironmentVariables.get();
+		EnvironmentVariableHelper.setEnvironmentVariablesForTesting(environmentVariables);
+	}
+
 	
 	private static void startUpdaterComponent() {
-		DataBridgeExecutable.main(new String[] {"src/test/resources/activemq/databridge"});
+		DataBridgeExecutable.main(new String[] {});
 	}
 	
 	@Override
