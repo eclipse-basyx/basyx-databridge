@@ -91,13 +91,20 @@ public class RoutesConfigurationLoader {
 	}
 
 	private static void createJSONataFiles() {
-		Gson gson = new Gson();
-		String jsonataFilesFromEnv = System.getenv(JSONATA_ENV_VAR_NAME);
-		String[] jsonataFiles = gson.fromJson(jsonataFilesFromEnv, String[].class);
+		String[] jsonataFiles = getJSONataFilesFromEnv();
 
 		for (String jsonataFile : jsonataFiles) {
 			createFileFromEnvironmentVariable(jsonataFile);
 		}
+	}
+
+	private static String[] getJSONataFilesFromEnv() {
+		Gson gson = new Gson();
+		String jsonataFilesFromEnv = System.getenv(JSONATA_ENV_VAR_NAME);
+		if (jsonataFilesFromEnv == null)
+			return new String[0];
+
+		return gson.fromJson(jsonataFilesFromEnv, String[].class);
 	}
 
 	private static void createConfigurationFactoryFiles() {
