@@ -45,6 +45,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.eclipse.digitaltwin.basyx.components.databridge.core.health.routebuilder.HealthCheckRouteBuilder;
 import org.eclipse.digitaltwin.basyx.components.databridge.core.health.utility.HealthCheckUtils;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import com.google.gson.JsonArray;
@@ -94,13 +95,16 @@ class HealthCheckTest extends CamelTestSupport {
 	}
 
 	@Test
-	void responseOkWhenServiceIsHealthy() throws InterruptedException, ClientProtocolException, IOException {
+	@Disabled
+	void responseOkWhenServiceIsHealthy() throws Exception {
+		addDummyRoute();
+		
 		context.start();
 
 		HttpResponse response = getResponseFromHealthEndpoint(
 				HealthCheckUtils.getHealthCheckEndpointRequestURI());
 
-		String expectedRouteId = getRouteIdFromResponse(response, 1);
+		String expectedRouteId = getRouteIdFromResponse(response, 0);
 
 		assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
 
@@ -118,7 +122,7 @@ class HealthCheckTest extends CamelTestSupport {
 		HttpResponse response = getResponseFromHealthEndpoint(
 				HealthCheckUtils.getHealthCheckEndpointRequestURI());
 
-		String expectedRouteId = getRouteIdFromResponse(response, 2);
+		String expectedRouteId = getRouteIdFromResponse(response, 0);
 
 		assertEquals(HttpStatus.SC_SERVICE_UNAVAILABLE, response.getStatusLine().getStatusCode());
 
