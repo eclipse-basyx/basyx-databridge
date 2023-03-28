@@ -31,7 +31,6 @@ import java.io.IOException;
 import org.apache.camel.CamelContext;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.health.HealthCheckRegistry;
-import org.apache.camel.impl.health.ContextHealthCheck;
 import org.apache.camel.impl.health.DefaultHealthCheckRegistry;
 import org.apache.camel.impl.health.RoutesHealthCheckRepository;
 import org.apache.camel.test.junit5.CamelTestSupport;
@@ -45,7 +44,6 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.eclipse.digitaltwin.basyx.components.databridge.core.health.routebuilder.HealthCheckRouteBuilder;
 import org.eclipse.digitaltwin.basyx.components.databridge.core.health.utility.HealthCheckUtils;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import com.google.gson.JsonArray;
@@ -84,7 +82,6 @@ class HealthCheckTest extends CamelTestSupport {
 
 	private DefaultHealthCheckRegistry configureHealthCheckRegistry() {
 		DefaultHealthCheckRegistry registry = new DefaultHealthCheckRegistry();
-		registry.register(new ContextHealthCheck());
 		registry.register(new RoutesHealthCheckRepository());
 		return registry;
 	}
@@ -95,10 +92,7 @@ class HealthCheckTest extends CamelTestSupport {
 	}
 
 	@Test
-	@Disabled
-	void responseOkWhenServiceIsHealthy() throws Exception {
-		addDummyRoute();
-		
+	void responseOkWhenServiceIsHealthy() throws InterruptedException, ClientProtocolException, IOException {
 		context.start();
 
 		HttpResponse response = getResponseFromHealthEndpoint(

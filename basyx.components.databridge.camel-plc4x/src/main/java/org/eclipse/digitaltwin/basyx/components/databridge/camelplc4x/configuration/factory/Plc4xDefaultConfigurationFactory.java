@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2021 the Eclipse BaSyx Authors
+ * Copyright (C) 2023 the Eclipse BaSyx Authors
  * 
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -22,35 +22,25 @@
  * 
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
-package org.eclipse.digitaltwin.basyx.components.databridge.core.configuration.entity;
+package org.eclipse.digitaltwin.basyx.components.databridge.camelplc4x.configuration.factory;
+
+import org.eclipse.digitaltwin.basyx.components.databridge.camelplc4x.configuration.Plc4xConsumerConfiguration;
+import org.eclipse.digitaltwin.basyx.components.databridge.core.configuration.factory.DataSourceConfigurationFactory;
 
 /**
- * An generic class of Route Entity. parent of all configuration class
- * @author haque
+ * A default configuration factory for PLC4X from a default file path
+ * 
+ * @author danish
  *
  */
-public abstract class RouteEntity {
-	private String uniqueId;
+public class Plc4xDefaultConfigurationFactory extends DataSourceConfigurationFactory {
+	public static final String DEFAULT_FILE_PATH = "plc4xconsumer.json";
 	
-	public RouteEntity() {
-		this.uniqueId = null;
-	}
-	
-	public RouteEntity(String uniqueId) {
-		this.uniqueId = uniqueId;
-	}
-
-	public String getUniqueId() {
-		return uniqueId;
-	}
-
-	public void setUniqueId(String uniqueId) {
-		this.uniqueId = uniqueId;
+	public Plc4xDefaultConfigurationFactory(ClassLoader loader) {
+		super(DEFAULT_FILE_PATH, loader, Plc4xConsumerConfiguration.class);
 	}
 	
-	/**
-	 * Retrieves the connection URI of the configuration
-	 * @return
-	 */
-	public abstract Object getConnectionURI();
+	public Plc4xDefaultConfigurationFactory(String filePath, ClassLoader loader) {
+		super(filePath, loader, Plc4xConsumerConfiguration.class);
+	}
 }

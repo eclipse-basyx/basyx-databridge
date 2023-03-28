@@ -120,7 +120,7 @@ public class TestAASUpdater {
 	}
 
 	private void waitForPropagation() throws InterruptedException {
-		Thread.sleep(10000);
+		Thread.sleep(1000);
 	}
 
 	private void checkIfPropertyIsUpdated() throws InterruptedException {
