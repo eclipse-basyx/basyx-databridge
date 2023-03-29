@@ -24,6 +24,7 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.components.databridge.core.configuration.route.timer;
 
+import org.apache.camel.Endpoint;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.model.RouteDefinition;
 import org.eclipse.digitaltwin.basyx.components.databridge.core.configuration.route.core.AbstractRouteCreator;
@@ -39,16 +40,52 @@ public class TimerRouteCreator extends AbstractRouteCreator {
 	}
 
 	@Override
-	protected void configureRoute(RouteConfiguration routeConfig, String dataSourceEndpoint, String[] dataSinkEndpoints, String[] dataTransformerEndpoints, String routeId) {
+	protected void configureRoute(RouteConfiguration routeConfig, Object dataSourceEndpoint, Object[] dataSinkEndpoints, Object[] dataTransformerEndpoints, String routeId) {
 		TimerRouteConfiguration timerConfig = (TimerRouteConfiguration) routeConfig;
-		String timerEndpoint = RouteCreatorHelper.getDataSourceEndpoint(getRoutesConfiguration(), timerConfig.getTimerName());
-		RouteDefinition routeDefinition = getRouteBuilder().from(timerEndpoint).pollEnrich(dataSourceEndpoint, TIMEOUT).routeId(routeId).to("log:" + routeId);
+		Object timerEndpoint = RouteCreatorHelper.getDataSourceEndpoint(getRoutesConfiguration(), timerConfig.getTimerName());
+		RouteDefinition routeDefinition = configureTimerEndpoint(timerEndpoint);
+		
+		configureSource(routeDefinition, dataSourceEndpoint, routeId);
+		
+		configureTransformers(dataTransformerEndpoints, routeId, routeDefinition);
+		
+		configureSinks(dataSinkEndpoints, routeId, routeDefinition);
+	}
 
-		if (!(dataTransformerEndpoints == null || dataTransformerEndpoints.length == 0)) {
-			routeDefinition.to(dataTransformerEndpoints).to("log:" + routeId);
+	private RouteDefinition configureTimerEndpoint(Object timerEndpoint) {
+		if (timerEndpoint instanceof Endpoint) {
+			return getRouteBuilder().from((Endpoint) timerEndpoint);
 		}
+		
+		return getRouteBuilder().from((String) timerEndpoint);
+		
+	}
+	
+	private void configureSinks(Object[] dataSinkEndpoints, String routeId, RouteDefinition routeDefinition) {
+		if (dataSinkEndpoints instanceof Endpoint[]) {
+			routeDefinition.to((Endpoint) dataSinkEndpoints[0]).to("log:" + routeId);
+		} else {
+			routeDefinition.to((String) dataSinkEndpoints[0]).to("log:" + routeId);
+		}
+	}
+	
+	private void configureTransformers(Object[] dataTransformerEndpoints, String routeId,
+			RouteDefinition routeDefinition) {
+		if (!(dataTransformerEndpoints == null || dataTransformerEndpoints.length == 0)) {
+			if (dataTransformerEndpoints instanceof Endpoint[]) {
+				routeDefinition.to(RouteCreatorHelper.castToEndpointArray(dataTransformerEndpoints)).to("log:" + routeId);
+			} else {
+				routeDefinition.to(RouteCreatorHelper.castToStringArray(dataTransformerEndpoints)).to("log:" + routeId);
+			}
+		}
+	}
 
-		routeDefinition.to(dataSinkEndpoints[0]).to("log:" + routeId);
+	private void configureSource(RouteDefinition routeDefinition, Object dataSourceEndpoint, String routeId) {
+		if (dataSourceEndpoint instanceof Endpoint) {
+			routeDefinition.pollEnrich(((Endpoint) dataSourceEndpoint).getEndpointUri(), TIMEOUT).log("Source : " + routeId);
+		} else {
+			routeDefinition.pollEnrich((String) dataSourceEndpoint, TIMEOUT).log("Source : " + routeId);
+		}
 	}
 
 }

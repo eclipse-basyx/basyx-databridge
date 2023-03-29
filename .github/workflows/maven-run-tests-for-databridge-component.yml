@@ -41,6 +41,8 @@ jobs:
       run: mvn install -f basyx.components.databridge.camel-prometheus/pom.xml
     - name: Install DataBridge Component-Camel-Timer
       run: mvn install -f basyx.components.databridge.camel-timer/pom.xml
+    - name: Install DataBridge Component-Camel-PLC4X
+      run: mvn install -f basyx.components.databridge.camel-plc4x/pom.xml
     - name: Install DataBridge Component-Camel-JSONata
       run: mvn install -f basyx.components.databridge.transformer.camel-jsonata/pom.xml
     - name: Install DataBridge Component-Camel-JSONJackson

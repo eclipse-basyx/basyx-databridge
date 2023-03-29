@@ -29,7 +29,6 @@ import java.util.Map;
 import org.apache.camel.CamelContext;
 import org.apache.camel.health.HealthCheckRegistry;
 import org.apache.camel.impl.DefaultCamelContext;
-import org.apache.camel.impl.health.ContextHealthCheck;
 import org.apache.camel.impl.health.DefaultHealthCheckRegistry;
 import org.apache.camel.impl.health.RoutesHealthCheckRepository;
 import org.eclipse.basyx.components.IComponent;
@@ -99,9 +98,8 @@ public class DataBridgeComponent implements IComponent {
 		camelContext.addRoutes(new HealthCheckRouteBuilder());
 	}
 
-	private DefaultHealthCheckRegistry configureHealthCheckRegistry() {
-		DefaultHealthCheckRegistry registry = new DefaultHealthCheckRegistry();
-		registry.register(new ContextHealthCheck());
+	private HealthCheckRegistry configureHealthCheckRegistry() {
+		HealthCheckRegistry registry = new DefaultHealthCheckRegistry();
 		registry.register(new RoutesHealthCheckRepository());
 		return registry;
 	}

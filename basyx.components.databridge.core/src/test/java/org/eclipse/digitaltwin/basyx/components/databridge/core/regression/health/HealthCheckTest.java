@@ -31,7 +31,6 @@ import java.io.IOException;
 import org.apache.camel.CamelContext;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.health.HealthCheckRegistry;
-import org.apache.camel.impl.health.ContextHealthCheck;
 import org.apache.camel.impl.health.DefaultHealthCheckRegistry;
 import org.apache.camel.impl.health.RoutesHealthCheckRepository;
 import org.apache.camel.test.junit5.CamelTestSupport;
@@ -83,7 +82,6 @@ class HealthCheckTest extends CamelTestSupport {
 
 	private DefaultHealthCheckRegistry configureHealthCheckRegistry() {
 		DefaultHealthCheckRegistry registry = new DefaultHealthCheckRegistry();
-		registry.register(new ContextHealthCheck());
 		registry.register(new RoutesHealthCheckRepository());
 		return registry;
 	}
@@ -100,7 +98,7 @@ class HealthCheckTest extends CamelTestSupport {
 		HttpResponse response = getResponseFromHealthEndpoint(
 				HealthCheckUtils.getHealthCheckEndpointRequestURI());
 
-		String expectedRouteId = getRouteIdFromResponse(response, 1);
+		String expectedRouteId = getRouteIdFromResponse(response, 0);
 
 		assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
 
@@ -118,7 +116,7 @@ class HealthCheckTest extends CamelTestSupport {
 		HttpResponse response = getResponseFromHealthEndpoint(
 				HealthCheckUtils.getHealthCheckEndpointRequestURI());
 
-		String expectedRouteId = getRouteIdFromResponse(response, 2);
+		String expectedRouteId = getRouteIdFromResponse(response, 0);
 
 		assertEquals(HttpStatus.SC_SERVICE_UNAVAILABLE, response.getStatusLine().getStatusCode());
 

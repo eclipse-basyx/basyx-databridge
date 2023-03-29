@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2021 the Eclipse BaSyx Authors
+ * Copyright (C) 2023 the Eclipse BaSyx Authors
  * 
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -22,35 +22,33 @@
  * 
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
-package org.eclipse.digitaltwin.basyx.components.databridge.core.configuration.entity;
+package org.eclipse.digitaltwin.basyx.components.databridge.camelplc4x.configuration;
 
 /**
- * An generic class of Route Entity. parent of all configuration class
- * @author haque
+ * Represents PLC4X's tags
+ * 
+ * @author danish
  *
  */
-public abstract class RouteEntity {
-	private String uniqueId;
+public class Tag {
 	
-	public RouteEntity() {
-		this.uniqueId = null;
-	}
+	private String name;
+	private String value;
 	
-	public RouteEntity(String uniqueId) {
-		this.uniqueId = uniqueId;
+	public Tag() {}
+
+	public Tag(String name, String value) {
+		super();
+		this.name = name;
+		this.value = value;
 	}
 
-	public String getUniqueId() {
-		return uniqueId;
+	public String getName() {
+		return name;
 	}
 
-	public void setUniqueId(String uniqueId) {
-		this.uniqueId = uniqueId;
+	public String getValue() {
+		return value;
 	}
-	
-	/**
-	 * Retrieves the connection URI of the configuration
-	 * @return
-	 */
-	public abstract Object getConnectionURI();
+
 }
