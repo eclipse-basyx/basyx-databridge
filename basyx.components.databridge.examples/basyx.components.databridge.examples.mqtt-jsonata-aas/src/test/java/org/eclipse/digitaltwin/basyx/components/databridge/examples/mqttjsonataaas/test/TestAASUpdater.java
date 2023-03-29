@@ -76,8 +76,7 @@ public class TestAASUpdater {
 		registry = new InMemoryRegistry();
 
 		aasContextConfig = new BaSyxContextConfiguration(4001, "");
-		BaSyxAASServerConfiguration aasConfig = new BaSyxAASServerConfiguration(AASServerBackend.INMEMORY,
-				"aasx/updatertest.aasx");
+		BaSyxAASServerConfiguration aasConfig = new BaSyxAASServerConfiguration(AASServerBackend.INMEMORY, "aasx/updatertest.aasx");
 		aasServer = new AASServerComponent(aasContextConfig, aasConfig);
 		aasServer.setRegistry(registry);
 	}
@@ -110,19 +109,19 @@ public class TestAASUpdater {
 		updater.startComponent();
 		System.out.println("UPDATER STARTED");
 		System.out.println("PUBLISH EVENT to PropertyB");
-
+		
 		publishNewDatapoint("PropertyB");
-
+		
 		waitForPropagation();
-
+		
 		checkIfPropertyIsUpdated();
-
+		
 		System.out.println("PUBLISH EVENT to PropertyC");
-
+		
 		publishNewDatapoint("PropertyC");
-
+		
 		waitForPropagation();
-
+		
 		checkIfPropertyIsUpdatedInEncodedAASEndpoint();
 		updater.stopComponent();
 		aasServer.stopComponent();
@@ -134,26 +133,25 @@ public class TestAASUpdater {
 
 	private void checkIfPropertyIsUpdated() throws InterruptedException {
 		ConnectedAssetAdministrationShell aas = getAAS(deviceAASPlainId);
-
+		
 		ISubmodelElement updatedProp = getSubmodelElement(aas, "ConnectedSubmodel", "ConnectedPropertyB");
 
 		Object propValue = updatedProp.getValue();
-
+		
 		assertEquals("858383", propValue);
 	}
-
+	
 	private void checkIfPropertyIsUpdatedInEncodedAASEndpoint() throws InterruptedException {
 		ConnectedAssetAdministrationShell aas = getAAS(deviceAASIriId);
-
+		
 		ISubmodelElement updatedProp = getSubmodelElement(aas, "ConnectedTestSubmodel", "ConnectedPropertyC");
-
+		
 		Object propValue = updatedProp.getValue();
-
+		
 		assertEquals("858383", propValue);
 	}
 
-	private void publishNewDatapoint(String topic)
-			throws MqttException, MqttSecurityException, MqttPersistenceException {
+	private void publishNewDatapoint(String topic) throws MqttException, MqttSecurityException, MqttPersistenceException {
 		String json = "{\"Account\":{\"Account Name\":\"Firefly\",\"Order\":[{\"OrderID\":\"order103\",\"Product\":[{\"Product Name\":\"Bowler Hat\",\"ProductID\":858383,\"SKU\":\"0406654608\",\"Description\":{\"Colour\":\"Purple\",\"Width\":300,\"Height\":200,\"Depth\":210,\"Weight\":0.75},\"Price\":34.45,\"Quantity\":2},{\"Product Name\":\"Trilby hat\",\"ProductID\":858236,\"SKU\":\"0406634348\",\"Description\":{\"Colour\":\"Orange\",\"Width\":300,\"Height\":200,\"Depth\":210,\"Weight\":0.6},\"Price\":21.67,\"Quantity\":1}]},{\"OrderID\":\"order104\",\"Product\":[{\"Product Name\":\"Bowler Hat\",\"ProductID\":858383,\"SKU\":\"040657863\",\"Description\":{\"Colour\":\"Purple\",\"Width\":300,\"Height\":200,\"Depth\":210,\"Weight\":0.75},\"Price\":34.45,\"Quantity\":4},{\"ProductID\":345664,\"SKU\":\"0406654603\",\"Product Name\":\"Cloak\",\"Description\":{\"Colour\":\"Black\",\"Width\":30,\"Height\":20,\"Depth\":210,\"Weight\":2},\"Price\":107.99,\"Quantity\":1}]}]}}";
 		MqttClient mqttClient = new MqttClient("tcp://localhost:1884", "testClient", new MemoryPersistence());
 		mqttClient.connect();
@@ -168,12 +166,11 @@ public class TestAASUpdater {
 		final IConfig classPathConfig = new ResourceLoaderConfig(classpathLoader);
 		mqttBroker.startServer(classPathConfig);
 	}
-
-	private ISubmodelElement getSubmodelElement(ConnectedAssetAdministrationShell aas, String submodelId,
-			String submodelElementId) {
+	
+	private ISubmodelElement getSubmodelElement(ConnectedAssetAdministrationShell aas, String submodelId, String submodelElementId) {
 		ISubmodel sm = aas.getSubmodels().get(submodelId);
 		ISubmodelElement updatedProp = sm.getSubmodelElement(submodelElementId);
-
+		
 		return updatedProp;
 	}
 
