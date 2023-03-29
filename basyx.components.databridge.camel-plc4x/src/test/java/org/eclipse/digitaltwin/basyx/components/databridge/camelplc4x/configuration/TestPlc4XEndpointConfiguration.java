@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.camel.component.plc4x.Plc4XEndpoint;
-import org.eclipse.digitaltwin.basyx.components.databridge.camelplc4x.configuration.factory.Plc4xDefaultConfigurationFactory;
+import org.eclipse.digitaltwin.basyx.components.databridge.camelplc4x.configuration.factory.Plc4XDefaultConfigurationFactory;
 import org.eclipse.digitaltwin.basyx.components.databridge.core.configuration.entity.DataSourceConfiguration;
 import org.junit.Test;
 
@@ -41,14 +41,14 @@ import org.junit.Test;
  * @author danish
  *
  */
-public class TestPlc4xEndpointConfiguration {
+public class TestPlc4XEndpointConfiguration {
 	
 	private static final String EXPECTED_CONNECTION_URI = "plc4x:modbus-tcp://localhost:502/?period=100";
 	private static final Map<String, Object> EXPECTED_TAGS = Collections.singletonMap("value-1", "holding-register:1");
 	
 	@Test
 	public void configureEndpoint() {
-		Plc4xDefaultConfigurationFactory plc4xDefaultConfigurationFactory = new Plc4xDefaultConfigurationFactory(TestPlc4xEndpointConfiguration.class.getClassLoader());
+		Plc4XDefaultConfigurationFactory plc4xDefaultConfigurationFactory = new Plc4XDefaultConfigurationFactory(TestPlc4XEndpointConfiguration.class.getClassLoader());
 		
 		List<DataSourceConfiguration> dataSourceConfigurations = plc4xDefaultConfigurationFactory.create();
 		

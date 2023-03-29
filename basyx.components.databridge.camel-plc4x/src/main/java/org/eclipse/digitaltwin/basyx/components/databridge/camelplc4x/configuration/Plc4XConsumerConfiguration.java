@@ -40,16 +40,16 @@ import org.eclipse.digitaltwin.basyx.components.databridge.core.configuration.en
  * @author danish
  *
  */
-public class Plc4xConsumerConfiguration extends DataSourceConfiguration {
+public class Plc4XConsumerConfiguration extends DataSourceConfiguration {
 	private String driver;
 	private String servicePath = "";
 	private String options = "";
 	private List<Tag> tags;
 
-	public Plc4xConsumerConfiguration() {
+	public Plc4XConsumerConfiguration() {
 	}
 
-	public Plc4xConsumerConfiguration(String uniqueId, String serverUrl, int serverPort, String driver,
+	public Plc4XConsumerConfiguration(String uniqueId, String serverUrl, int serverPort, String driver,
 			String servicePath, String options, List<Tag> tags) {
 		super(uniqueId, serverUrl, serverPort);
 		this.driver = driver;
@@ -78,14 +78,13 @@ public class Plc4xConsumerConfiguration extends DataSourceConfiguration {
 		return createPlc4xEndpoint();
 	}
 
-	private Endpoint createPlc4xEndpoint() {
-		Endpoint plc4xEndpoint1 = new Plc4XEndpoint(getConnectionString(), new Plc4XComponent());
+	private Plc4XEndpoint createPlc4xEndpoint() {
+		Plc4XEndpoint plc4xEndpoint = new Plc4XEndpoint(getConnectionString(), new Plc4XComponent());
 		
 		Map<String, Object> tagMap = this.tags.stream().map(this::toMap).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+		plc4xEndpoint.setTags(tagMap);
 
-		((Plc4XEndpoint) plc4xEndpoint1).setTags(tagMap);
-
-		return plc4xEndpoint1;
+		return plc4xEndpoint;
 	}
 
 	private String getConnectionString() {

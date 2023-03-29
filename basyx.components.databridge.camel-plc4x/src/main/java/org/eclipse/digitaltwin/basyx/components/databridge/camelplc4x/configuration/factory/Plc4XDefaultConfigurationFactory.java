@@ -24,7 +24,7 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.components.databridge.camelplc4x.configuration.factory;
 
-import org.eclipse.digitaltwin.basyx.components.databridge.camelplc4x.configuration.Plc4xConsumerConfiguration;
+import org.eclipse.digitaltwin.basyx.components.databridge.camelplc4x.configuration.Plc4XConsumerConfiguration;
 import org.eclipse.digitaltwin.basyx.components.databridge.core.configuration.factory.DataSourceConfigurationFactory;
 
 /**
@@ -33,14 +33,14 @@ import org.eclipse.digitaltwin.basyx.components.databridge.core.configuration.fa
  * @author danish
  *
  */
-public class Plc4xDefaultConfigurationFactory extends DataSourceConfigurationFactory {
+public class Plc4XDefaultConfigurationFactory extends DataSourceConfigurationFactory {
 	public static final String DEFAULT_FILE_PATH = "plc4xconsumer.json";
 	
-	public Plc4xDefaultConfigurationFactory(ClassLoader loader) {
-		super(DEFAULT_FILE_PATH, loader, Plc4xConsumerConfiguration.class);
+	public Plc4XDefaultConfigurationFactory(ClassLoader loader) {
+		super(DEFAULT_FILE_PATH, loader, Plc4XConsumerConfiguration.class);
 	}
 	
-	public Plc4xDefaultConfigurationFactory(String filePath, ClassLoader loader) {
-		super(filePath, loader, Plc4xConsumerConfiguration.class);
+	public Plc4XDefaultConfigurationFactory(String filePath, ClassLoader loader) {
+		super(filePath, loader, Plc4XConsumerConfiguration.class);
 	}
 }
