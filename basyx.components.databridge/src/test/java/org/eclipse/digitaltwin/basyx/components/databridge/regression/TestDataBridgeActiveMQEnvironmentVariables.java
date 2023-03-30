@@ -92,7 +92,6 @@ public class TestDataBridgeActiveMQEnvironmentVariables extends DataBridgeSuiteA
 		EnvironmentVariableHelper.setEnvironmentVariablesForTesting(environmentVariables);
 	}
 
-	
 	private static void startUpdaterComponent() {
 		DataBridgeExecutable.main(new String[] {});
 	}
