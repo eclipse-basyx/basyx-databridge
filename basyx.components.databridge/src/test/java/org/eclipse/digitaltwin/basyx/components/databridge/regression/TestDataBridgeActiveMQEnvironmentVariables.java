@@ -64,14 +64,17 @@ public class TestDataBridgeActiveMQEnvironmentVariables extends DataBridgeSuiteA
 		startUpdaterComponent();
 	}
 	
-	private static void setUpEnvironmentVariables() {
-		Map<String, String> environmentVariables = RoutesConfigurationTestEnvironmentVariables.get();
-		EnvironmentVariableHelper.setEnvironmentVariablesForTesting(environmentVariables);
-	}
-
-	
-	private static void startUpdaterComponent() {
-		DataBridgeExecutable.main(new String[] {});
+	@AfterClass
+	public static void tearDown() {
+		aasServer.stopComponent();
+		
+		try {
+			activeMQBroker.stop();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		stopDataBridgeComponent();
 	}
 	
 	@Override
@@ -84,22 +87,19 @@ public class TestDataBridgeActiveMQEnvironmentVariables extends DataBridgeSuiteA
 		return new AASAggregatorProxy(AAS_AGGREGATOR_URL);
 	}
 	
+	private static void setUpEnvironmentVariables() {
+		Map<String, String> environmentVariables = RoutesConfigurationTestEnvironmentVariables.get();
+		EnvironmentVariableHelper.setEnvironmentVariablesForTesting(environmentVariables);
+	}
+
+	
+	private static void startUpdaterComponent() {
+		DataBridgeExecutable.main(new String[] {});
+	}
+	
 	private static void stopDataBridgeComponent() {
 		if(DataBridgeExecutable.getDataBridgeComponent() != null) {
 			DataBridgeExecutable.getDataBridgeComponent().stopComponent();
 		}
-	}
-	
-	@AfterClass
-	public static void tearDown() {
-		aasServer.stopComponent();
-		
-		try {
-			activeMQBroker.stop();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		stopDataBridgeComponent();
 	}
 }
