@@ -37,7 +37,7 @@ import java.util.Map;
  *
  */
 public class EnvironmentVariableHelper {
-	public static void setEnvironmentVariablesForTesting(Map<String, String> newenv) throws ClassNotFoundException, IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
+	public static void setEnvironmentVariablesForTesting(Map<String, String> newenv) {
 		try {
 			Class<?> processEnvironmentClass = getProcessEnvironmentClass();
 			Field theEnvironment = getAccessibleField(processEnvironmentClass, "theEnvironment");
@@ -46,6 +46,8 @@ public class EnvironmentVariableHelper {
 			setNewEnvironmentVariables(theCaseInsensitiveEnvironmentField, newenv);
 		} catch (NoSuchFieldException e) {
 			setVariableToUnmodifiableMap(newenv);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -67,19 +69,23 @@ public class EnvironmentVariableHelper {
 		env.putAll(newenv);
 	}
 
-	private static void setVariableToUnmodifiableMap(Map<String, String> newenv) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-		Class<?>[] classes = Collections.class.getDeclaredClasses();
-		Map<String, String> currentEnvironmentVariables = System.getenv();
-		for (Class<?> cl : classes) {
-			if ("java.util.Collections$UnmodifiableMap".equals(cl.getName())) {
-				Field field = cl.getDeclaredField("m");
-				field.setAccessible(true);
-				Object obj = field.get(currentEnvironmentVariables);
-				@SuppressWarnings("unchecked")
-				Map<String, String> map = (Map<String, String>) obj;
-				map.clear();
-				map.putAll(newenv);
+	private static void setVariableToUnmodifiableMap(Map<String, String> newenv) {
+		try {
+			Class<?>[] classes = Collections.class.getDeclaredClasses();
+			Map<String, String> currentEnvironmentVariables = System.getenv();
+			for (Class<?> cl : classes) {
+				if ("java.util.Collections$UnmodifiableMap".equals(cl.getName())) {
+					Field field = cl.getDeclaredField("m");
+					field.setAccessible(true);
+					Object obj = field.get(currentEnvironmentVariables);
+					@SuppressWarnings("unchecked")
+					Map<String, String> map = (Map<String, String>) obj;
+					map.clear();
+					map.putAll(newenv);
+				}
 			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 	}
 }
