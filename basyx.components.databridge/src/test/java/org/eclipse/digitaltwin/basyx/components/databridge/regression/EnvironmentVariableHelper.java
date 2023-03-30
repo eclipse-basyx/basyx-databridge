@@ -71,21 +71,21 @@ public class EnvironmentVariableHelper {
 
 	private static void setVariableToUnmodifiableMap(Map<String, String> newenv) {
 		try {
-		Class<?>[] classes = Collections.class.getDeclaredClasses();
-		Map<String, String> currentEnvironmentVariables = System.getenv();
-		for (Class<?> cl : classes) {
-			if ("java.util.Collections$UnmodifiableMap".equals(cl.getName())) {
-				Field field = cl.getDeclaredField("m");
-				field.setAccessible(true);
-				Object obj = field.get(currentEnvironmentVariables);
-				@SuppressWarnings("unchecked")
-				Map<String, String> map = (Map<String, String>) obj;
-				map.clear();
-				map.putAll(newenv);
+			Class<?>[] classes = Collections.class.getDeclaredClasses();
+			Map<String, String> currentEnvironmentVariables = System.getenv();
+			for (Class<?> cl : classes) {
+				if ("java.util.Collections$UnmodifiableMap".equals(cl.getName())) {
+					Field field = cl.getDeclaredField("m");
+					field.setAccessible(true);
+					Object obj = field.get(currentEnvironmentVariables);
+					@SuppressWarnings("unchecked")
+					Map<String, String> map = (Map<String, String>) obj;
+					map.clear();
+					map.putAll(newenv);
+				}
 			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
-	} catch (Exception e) {
-		throw new RuntimeException(e);
-	}
 	}
 }
