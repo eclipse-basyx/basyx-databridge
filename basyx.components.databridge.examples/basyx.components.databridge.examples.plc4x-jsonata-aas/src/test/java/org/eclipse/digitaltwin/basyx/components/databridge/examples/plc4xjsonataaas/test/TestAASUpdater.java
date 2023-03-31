@@ -184,7 +184,7 @@ public class TestAASUpdater {
 	private static void startModbusListener() throws UnknownHostException {
 		modbusTCPListener = new ModbusTCPListener(3);
 		modbusTCPListener.setAddress(InetAddress.getByName(HOST));
-		modbusTCPListener.setPort(502);
+		modbusTCPListener.setPort(50200);
 		modbusTCPListener.start();
 	}
 
