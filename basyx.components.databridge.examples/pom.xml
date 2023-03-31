@@ -27,6 +27,7 @@
 		<module>basyx.components.databridge.examples.httppolling-jsonata-aas</module>
 		<module>basyx.components.databridge.examples.httppolling-jsonata-delegator</module>
 		<module>basyx.components.databridge.examples.prometheus-jsonata-aas</module>
+		<module>basyx.components.databridge.examples.plc4x-jsonata-aas</module>
 	</modules>
 
 	<packaging>pom</packaging>
