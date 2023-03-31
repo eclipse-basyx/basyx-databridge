@@ -29,6 +29,8 @@ package org.eclipse.digitaltwin.basyx.components.databridge.regression;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.digitaltwin.basyx.components.databridge.executable.RoutesConfigurationLoader;
+
 /**
  * Provides test environment variables corresponding to the activeMQ integration
  * config files
@@ -44,14 +46,20 @@ public class RoutesConfigurationTestEnvironmentVariables {
 		putAasServer(variables);
 		
 		putJSONataTransformers(variables);
+		putJSONataTransformersFiles(variables);
 
 		putActiveMQ(variables);
 		
 		return variables;
 	}
 
+	private static void putJSONataTransformersFiles(Map<String, String> variables) {
+		variables.put(RoutesConfigurationLoader.JSONATA_ENV_VAR_NAME, "[\"jsonataA.json\", \"jsonataB.json\"]");
+	}
+
 	private static void putActiveMQ(Map<String, String> variables) {
-		variables.put("activemqconsumer.json", "[\r\n"
+		// Here an underscore is used instead of a "." to enable tests for support for both variants 
+		variables.put("activemqconsumer_json", "[\r\n"
 				+ "	{\r\n"
 				+ "		\"uniqueId\": \"property1\",\r\n"
 				+ "		\"serverUrl\": \"127.0.0.1\",\r\n"
