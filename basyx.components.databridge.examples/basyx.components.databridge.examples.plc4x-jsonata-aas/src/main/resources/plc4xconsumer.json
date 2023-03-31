@@ -2,7 +2,7 @@
 	{
 		"uniqueId": "property1",
 		"serverUrl": "localhost",
-		"serverPort": 502,
+		"serverPort": 50201,
 		"driver": "modbus-tcp",
 		"servicePath": "",
 		"options": "",
