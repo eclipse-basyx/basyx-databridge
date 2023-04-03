@@ -78,7 +78,7 @@ public class TestAASUpdater {
 	private static BaSyxContextConfiguration aasContextConfig;
 
 	@BeforeClass
-	public static void setUp() throws Exception {
+	public static void setUp() throws UnknownHostException {
 		configureModbus();
 		
 		startModbusListener();
@@ -102,7 +102,7 @@ public class TestAASUpdater {
 	}
 
 	@Test
-	public void test() throws Exception {
+	public void getUpdatedPropertyValue() {
 		String expectedValue = wrapStringValue("251");
 		
 		assertPropertyValue(expectedValue);
