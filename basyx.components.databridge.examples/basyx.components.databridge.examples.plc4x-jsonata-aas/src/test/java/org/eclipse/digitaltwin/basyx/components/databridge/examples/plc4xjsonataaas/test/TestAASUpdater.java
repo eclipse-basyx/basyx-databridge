@@ -26,7 +26,6 @@ package org.eclipse.digitaltwin.basyx.components.databridge.examples.plc4xjsonat
 
 import static org.junit.Assert.assertEquals;
 
-import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.concurrent.TimeUnit;
 
@@ -47,13 +46,12 @@ import org.eclipse.digitaltwin.basyx.components.databridge.camelplc4x.configurat
 import org.eclipse.digitaltwin.basyx.components.databridge.core.component.DataBridgeComponent;
 import org.eclipse.digitaltwin.basyx.components.databridge.core.configuration.factory.RoutesConfigurationFactory;
 import org.eclipse.digitaltwin.basyx.components.databridge.core.configuration.route.core.RoutesConfiguration;
+import org.eclipse.digitaltwin.basyx.components.databridge.examples.plc4xjsonataaas.Modbus;
 import org.eclipse.digitaltwin.basyx.components.databridge.transformer.cameljsonata.configuration.factory.JsonataDefaultConfigurationFactory;
 import org.eclipse.digitaltwin.basyx.components.databridge.transformer.cameljsonjackson.configuration.factory.JsonJacksonDefaultConfigurationFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import net.wimpi.modbus.ModbusCoupler;
-import net.wimpi.modbus.net.ModbusTCPListener;
 import net.wimpi.modbus.procimg.ProcessImage;
 import net.wimpi.modbus.procimg.SimpleInputRegister;
 import net.wimpi.modbus.procimg.SimpleProcessImage;
@@ -68,20 +66,20 @@ import net.wimpi.modbus.procimg.SimpleRegister;
 public class TestAASUpdater {
 	
 	private static final String HOST = "127.0.0.1";
+	private static final int PORT = 50201;
+	private static final int THREAD_POOL_SIZE = 3;	
 	
 	private static AASServerComponent aasServer;
 	private static DataBridgeComponent updaterComponent;
 	private static InMemoryRegistry registry = new InMemoryRegistry();
-	private static ModbusTCPListener modbusTCPListener;
+	private static Modbus modbus;
 
 	private static IIdentifier deviceAASPlainId = new CustomId("TestUpdatedDeviceAAS");
 	private static BaSyxContextConfiguration aasContextConfig;
 
 	@BeforeClass
 	public static void setUp() throws UnknownHostException {
-		configureModbus();
-		
-		startModbusListener();
+		configureAndStartModbus();
 
 		configureAasServer();
 		
@@ -98,7 +96,7 @@ public class TestAASUpdater {
 		
 		aasServer.stopComponent();
 		
-		modbusTCPListener.stop();
+		modbus.stop();
 	}
 
 	@Test
@@ -116,9 +114,8 @@ public class TestAASUpdater {
 		ConnectedAssetAdministrationShell aas = getAAS(deviceAASPlainId);
 
 		ISubmodelElement updatedProp = getSubmodelElement(aas, "ConnectedSubmodel", "ConnectedPropertyA");
-
-		String propValue = (String) updatedProp.getValue();
-		return propValue;
+		
+		return (String) updatedProp.getValue();
 	}
 
 	private static void startAasServer() {
@@ -163,8 +160,8 @@ public class TestAASUpdater {
 
 	private ConnectedAssetAdministrationShell getAAS(IIdentifier identifier) {
 		ConnectedAssetAdministrationShellManager manager = new ConnectedAssetAdministrationShellManager(registry);
-		ConnectedAssetAdministrationShell aas = manager.retrieveAAS(identifier);
-		return aas;
+		
+		return manager.retrieveAAS(identifier);
 	}
 	
 	private static void configureAasServer() {
@@ -175,23 +172,10 @@ public class TestAASUpdater {
 		aasServer.setRegistry(registry);
 	}
 
-	private static void configureModbus() throws UnknownHostException {
-		ProcessImage image = createProcessImage();
-		
-		configureModbusCoupler(image);
-	}
-
-	private static void startModbusListener() throws UnknownHostException {
-		modbusTCPListener = new ModbusTCPListener(3);
-		modbusTCPListener.setAddress(InetAddress.getByName(HOST));
-		modbusTCPListener.setPort(50201);
-		modbusTCPListener.start();
-	}
-
-	private static void configureModbusCoupler(ProcessImage image) {
-		ModbusCoupler.getReference().setProcessImage(image);
-        ModbusCoupler.getReference().setMaster(false);
-        ModbusCoupler.getReference().setUnitID(15);
+	private static void configureAndStartModbus() throws UnknownHostException {
+		modbus = new Modbus(THREAD_POOL_SIZE, HOST, PORT);
+		modbus.configureDefaultModbusCoupler(createProcessImage());
+		modbus.start();
 	}
 
 	private static ProcessImage createProcessImage() {
