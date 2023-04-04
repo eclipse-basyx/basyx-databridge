@@ -53,14 +53,12 @@ public class TestDataBridgePlc4X extends DataBridgeSuitePlc4X {
 	
 	private static final String HOST = "127.0.0.1";
 	private static final int PORT = 50201;
-	private static final int THREAD_POOL_SIZE = 3;	
+	private static final int THREAD_POOL_SIZE = 3;
+	private static final String AAS_AGGREGATOR_URL = "http://localhost:4001";
 	
+	protected static IIdentifier deviceAAS = new CustomId("TestUpdatedDeviceAAS");
 	private static AASServerComponent aasServer;
 	private static Modbus modbus;
-
-	protected static IIdentifier deviceAAS = new CustomId("TestUpdatedDeviceAAS");
-	
-	private static final String AAS_AGGREGATOR_URL = "http://localhost:4001";
 	
 	@BeforeClass
 	public static void setUp() throws IOException {
