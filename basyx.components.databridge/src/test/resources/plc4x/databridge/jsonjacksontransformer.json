@@ -1,0 +1,7 @@
+[
+	{
+		"uniqueId": "dataValueToJson",
+		"operation": "marshal",
+		"jacksonModules": ""
+	}
+]
