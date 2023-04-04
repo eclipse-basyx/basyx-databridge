@@ -51,18 +51,6 @@ public class Modbus {
 		this.port = port;
 	}
 
-	public int getPoolSize() {
-		return threadPoolSize;
-	}
-
-	public String getHost() {
-		return host;
-	}
-
-	public int getPort() {
-		return port;
-	}
-
 	/**
 	 * Configure the Singleton pattern {@link ModbusCoupler}, to couple the slave
 	 * side with a master side or with a device.
