@@ -43,7 +43,7 @@ import org.junit.Test;
  */
 public class TestPlc4XEndpointConfiguration {
 	
-	private static final String EXPECTED_CONNECTION_URI = "plc4x:modbus-tcp://localhost:502/?period=100";
+	private static final String EXPECTED_CONNECTION_URI = "plc4x:modbus-tcp://localhost:502?period=100";
 	private static final Map<String, Object> EXPECTED_TAGS = Collections.singletonMap("value-1", "holding-register:1");
 	
 	@Test

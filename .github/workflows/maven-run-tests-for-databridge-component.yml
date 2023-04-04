@@ -65,5 +65,7 @@ jobs:
       run: mvn test -f basyx.components.databridge.examples/basyx.components.databridge.examples.httppolling-jsonata-aas/pom.xml
     - name: Test HTTP Polling Delegator
       run: mvn test -f basyx.components.databridge.examples/basyx.components.databridge.examples.httppolling-jsonata-delegator/pom.xml
+    - name: Test PLC4X Jackson Jsonata AAS
+      run: mvn test -f basyx.components.databridge.examples/basyx.components.databridge.examples.plc4x-jsonata-aas/pom.xml
     - name: Test DataBridge Executable
       run: mvn test -f basyx.components.databridge/pom.xml

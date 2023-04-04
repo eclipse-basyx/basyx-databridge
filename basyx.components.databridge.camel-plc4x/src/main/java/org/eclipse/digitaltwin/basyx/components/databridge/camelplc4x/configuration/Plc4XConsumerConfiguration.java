@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 import org.apache.camel.Endpoint;
 import org.apache.camel.component.plc4x.Plc4XComponent;
 import org.apache.camel.component.plc4x.Plc4XEndpoint;
+import org.apache.camel.impl.DefaultCamelContext;
 import org.eclipse.digitaltwin.basyx.components.databridge.core.configuration.entity.DataSourceConfiguration;
 
 /**
@@ -83,15 +84,20 @@ public class Plc4XConsumerConfiguration extends DataSourceConfiguration {
 		
 		Map<String, Object> tagMap = this.tags.stream().map(this::toMap).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 		plc4xEndpoint.setTags(tagMap);
+		plc4xEndpoint.setCamelContext(new DefaultCamelContext());
 
 		return plc4xEndpoint;
 	}
 
 	private String getConnectionString() {
-		return "plc4x:" + this.driver + "://" + getServerUrl() + ":" + getServerPort() + "/" + getServicePath() + "?" + getOptions();
+		return "plc4x:" + this.driver + "://" + getServerUrl() + ":" + getServerPort() + getServicePathIfAvailable() + "?" + getOptions();
 	}
 	
 	private Map.Entry<String, Object> toMap(Tag tag) {
 		return new AbstractMap.SimpleEntry<>(tag.getName(), tag.getValue());
+	}
+	
+	private String getServicePathIfAvailable() {
+		return getServicePath().isEmpty() ? "" : "/" + getServicePath();
 	}
 }
