@@ -24,6 +24,7 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.components.databridge.camelopcua.configuration;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.digitaltwin.basyx.components.databridge.core.configuration.entity.DataSourceConfiguration;
 
 /**
@@ -37,17 +38,19 @@ public class OpcuaConsumerConfiguration extends DataSourceConfiguration {
 	private String nodeInformation;
 	private String username;
 	private String password;
+	private Long requestedPublishingInterval;
 
 	public OpcuaConsumerConfiguration() {
 	}
 
 	public OpcuaConsumerConfiguration(String uniqueId, String serverUrl, int serverPort, String pathToService,
-			String nodeInformation, String username, String password) {
+			String nodeInformation, String username, String password, Long requestedPublishingInterval) {
 		super(uniqueId, serverUrl, serverPort);
 		this.pathToService = pathToService;
 		this.nodeInformation = nodeInformation;
 		this.username = username;
 		this.password = password;
+		this.requestedPublishingInterval = requestedPublishingInterval;
 	}
 
 	public String getPathToService() {
@@ -82,9 +85,21 @@ public class OpcuaConsumerConfiguration extends DataSourceConfiguration {
 		this.password = password;
 	}
 
+	public Long getRequestedPublishingInterval() {
+		return requestedPublishingInterval;
+	}
+
+	public void setRequestedPublishingInterval(Long requestedPublishingInterval) {
+		this.requestedPublishingInterval = requestedPublishingInterval;
+	}
+
 	public String getConnectionURI() {
 		String credentials = username == null || password == null ? "" : username + ":" + password + "@";
 		return "milo-client:opc.tcp://" + credentials + getServerUrl() + ":" + getServerPort() + "/" + pathToService
-				+ "?allowedSecurityPolicies=None&node=RAW(" + nodeInformation + ")";
+				+ "?allowedSecurityPolicies=None&node=RAW(" + nodeInformation + ")" + getRequestedPublishingIntervalIfConfigured();
+	}
+
+	private String getRequestedPublishingIntervalIfConfigured() {
+		return this.requestedPublishingInterval == null ? StringUtils.EMPTY : "&requestedPublishingInterval=" + this.requestedPublishingInterval;
 	}
 }

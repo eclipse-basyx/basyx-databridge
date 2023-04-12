@@ -117,7 +117,7 @@ public class TestAASUpdater {
 		updater = new DataBridgeComponent(configuration);
 		updater.startComponent();
 		System.out.println("UPDATER STARTED");
-		Thread.sleep(5000);
+		Thread.sleep(3000);
 		System.out.println("CHECK PROPERTY");
 		checkProperty();
 	}
