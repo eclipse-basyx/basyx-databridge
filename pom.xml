@@ -1,0 +1,81 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.eclipse.digitaltwin.basyx</groupId>
+	<artifactId>databridge.parent</artifactId>
+	<version>${revision}</version>
+	<packaging>pom</packaging>
+	<name>DataBridge Parent</name>
+	<description>Parent POM for Eclipse BaSyx DataBridge</description>
+
+	<modules>
+		<module>databridge.component</module>
+		<module>databridge.core</module>
+		<module>databridge.examples</module>
+		<module>databridge.executable</module>
+	</modules>
+
+	<licenses>
+		<license>
+			<name>MIT</name>
+			<url>https://opensource.org/licenses/MIT</url>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<organization>Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V.</organization>
+			<id>fschnicke</id>
+			<name>Frank Schnicke</name>
+			<email>frank.schnicke@iese.fraunhofer.de</email>
+		</developer>
+	</developers>
+	<properties>
+		<java.version>11</java.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<revision>0.0.1-SNAPSHOT</revision>
+		<camel.version>3.20.4</camel.version>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>flatten-maven-plugin</artifactId>
+				<version>1.4.1</version>
+				<configuration></configuration>
+				<executions>
+					<!-- enable flattening -->
+					<execution>
+						<id>flatten</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>flatten</goal>
+						</goals>
+					</execution>
+					<!-- ensure proper cleanup -->
+					<execution>
+						<id>flatten.clean</id>
+						<phase>clean</phase>
+						<goals>
+							<goal>clean</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+	
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.apache.camel</groupId>
+				<artifactId>camel-bom</artifactId>
+				<version>${camel.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+</project>

@@ -1,0 +1,30 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.eclipse.digitaltwin.basyx</groupId>
+		<artifactId>databridge.parent</artifactId>
+		<version>${revision}</version>
+	</parent>
+	<artifactId>databridge.component</artifactId>
+	<name>DataBridge Component Parent</name>
+	<description>Parent of all DataBridge Components</description>
+	<packaging>pom</packaging>
+
+	<modules>
+		<module>databridge.component.camel-aas</module>
+		<module>databridge.component.camel-activemq</module>
+		<module>databridge.component.camel-hono</module>
+		<module>databridge.component.camel-http</module>
+		<module>databridge.component.camel-httppolling</module>
+		<module>databridge.component.camel-jsonata</module>
+		<module>databridge.component.camel-jsonjackson</module>
+		<module>databridge.component.camel-kafka</module>
+		<module>databridge.component.camel-opcua</module>
+		<module>databridge.component.camel-paho</module>
+		<module>databridge.component.camel-plc4x</module>
+		<module>databridge.component.camel-prometheus</module>
+		<module>databridge.component.camel-timer</module>
+	</modules>
+</project>
