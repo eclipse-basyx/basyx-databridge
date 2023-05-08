@@ -5,13 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
             <groupId>org.eclipse.digitaltwin.basyx</groupId>
-            <artifactId>databridge.examples</artifactId>
-            <version>${revision}</version>
+            <artifactId>basyx.components.databridge.examples</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>databridge.examples.httppolling-jsonata-aas</artifactId>
-    <name>HTTPPolling Jsonata AAS</name>
-    <description>An integration example of timer + httppolling as data source, Jsonata as transformer and AAS as data sink</description>
+    <artifactId>basyx.components.databridge.examples.prometheus-jsonata-aas</artifactId>
+    <name>Prometheus Jsonata AAS</name>
+    <description>An integration example of timer + prometheus as data source, Jsonata as transformer and AAS as data sink</description>
 
     <packaging>jar</packaging>
 
@@ -57,7 +57,7 @@
 
         <dependency>
             <groupId>org.eclipse.digitaltwin.basyx</groupId>
-            <artifactId>basyx.components.databridge.camel-httppolling</artifactId>
+            <artifactId>basyx.components.databridge.camel-prometheus</artifactId>
             <version>0.0.1-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
@@ -112,16 +112,5 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.mock-server</groupId>
-            <artifactId>mockserver-netty</artifactId>
-            <version>5.13.2</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.mock-server</groupId>
-            <artifactId>mockserver-client-java</artifactId>
-            <version>5.13.2</version>
-        </dependency>
     </dependencies>
 </project>
