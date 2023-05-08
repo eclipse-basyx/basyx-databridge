@@ -10,8 +10,8 @@
 	<description>Parent POM for Eclipse BaSyx DataBridge</description>
 
 	<modules>
-		<module>databridge.component</module>
 		<module>databridge.core</module>
+		<module>databridge.component</module>
 		<module>databridge.examples</module>
 		<module>databridge.executable</module>
 	</modules>
