@@ -51,19 +51,19 @@
 
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
-			<artifactId>databridge.component.camel-kafka</artifactId>
+			<artifactId>databridge.camel-kafka</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
-			<artifactId>databridge.component.camel-aas</artifactId>
+			<artifactId>databridge.camel-aas</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
-			<artifactId>databridge.component.camel-jsonata</artifactId>
+			<artifactId>databridge.camel-jsonata</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 

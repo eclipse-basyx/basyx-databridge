@@ -11,9 +11,21 @@
 
 	<modules>
 		<module>databridge.core</module>
-		<module>databridge.component</module>
+		<module>databridge.camel-aas</module>
+		<module>databridge.camel-activemq</module>
+		<module>databridge.camel-hono</module>
+		<module>databridge.camel-http</module>
+		<module>databridge.camel-httppolling</module>
+		<module>databridge.camel-jsonata</module>
+		<module>databridge.camel-jsonjackson</module>
+		<module>databridge.camel-kafka</module>
+		<module>databridge.camel-opcua</module>
+		<module>databridge.camel-paho</module>
+		<module>databridge.camel-plc4x</module>
+		<module>databridge.camel-prometheus</module>
+		<module>databridge.camel-timer</module>
 		<module>databridge.examples</module>
-		<module>databridge.executable</module>
+		<module>databridge.component</module>
 	</modules>
 
 	<licenses>
