@@ -24,8 +24,8 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.databridge.component.prometheus.configuration.factory;
 
-import org.eclipse.digitaltwin.basyx.components.databridge.core.configuration.factory.DataSinkConfigurationFactory;
 import org.eclipse.digitaltwin.basyx.databridge.component.prometheus.configuration.PrometheusConsumerConfiguration;
+import org.eclipse.digitaltwin.basyx.databridge.core.configuration.factory.DataSinkConfigurationFactory;
 
 /**
  * A default configuration factory for polling Prometheus data from a default file location

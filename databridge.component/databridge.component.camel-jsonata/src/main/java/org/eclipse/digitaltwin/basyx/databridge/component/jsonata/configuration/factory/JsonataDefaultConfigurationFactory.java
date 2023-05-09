@@ -27,9 +27,9 @@ package org.eclipse.digitaltwin.basyx.databridge.component.jsonata.configuration
 import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
-import org.eclipse.digitaltwin.basyx.components.databridge.core.configuration.entity.DataTransformerConfiguration;
-import org.eclipse.digitaltwin.basyx.components.databridge.core.configuration.factory.DataTransformerConfigurationFactory;
 import org.eclipse.digitaltwin.basyx.databridge.component.jsonata.configuration.JsonataTransformerConfiguration;
+import org.eclipse.digitaltwin.basyx.databridge.core.configuration.entity.DataTransformerConfiguration;
+import org.eclipse.digitaltwin.basyx.databridge.core.configuration.factory.DataTransformerConfigurationFactory;
 
 /**
  * Jsonata default configuration factory from default path

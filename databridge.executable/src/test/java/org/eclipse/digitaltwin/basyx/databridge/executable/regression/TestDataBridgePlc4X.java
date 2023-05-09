@@ -34,7 +34,7 @@ import org.eclipse.basyx.components.aas.configuration.AASServerBackend;
 import org.eclipse.basyx.components.aas.configuration.BaSyxAASServerConfiguration;
 import org.eclipse.basyx.components.configuration.BaSyxContextConfiguration;
 import org.eclipse.basyx.submodel.metamodel.api.identifier.IIdentifier;
-import org.eclipse.digitaltwin.basyx.components.databridge.examples.plc4xjsonataaas.Modbus;
+import org.eclipse.digitaltwin.basyx.databridge.examples.plc4xjsonataaas.Modbus;
 import org.eclipse.digitaltwin.basyx.databridge.executable.DataBridgeExecutable;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

@@ -24,7 +24,7 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.databridge.component.aas.configuration;
 
-import org.eclipse.digitaltwin.basyx.components.databridge.core.configuration.entity.DataSinkConfiguration;
+import org.eclipse.digitaltwin.basyx.databridge.core.configuration.entity.DataSinkConfiguration;
 
 /**
  * An implementation of AAS data sink configuration

@@ -45,13 +45,13 @@
 
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
-			<artifactId>basyx.components.databridge.core</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<artifactId>databridge.core</artifactId>
+			<version>${revision}</version>
 		</dependency>
 		
 		<dependency>
             <groupId>org.eclipse.digitaltwin.basyx</groupId>
-            <artifactId>basyx.components.databridge.camel-httppolling</artifactId>
+            <artifactId>databridge.component.camel-httppolling</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         
@@ -69,7 +69,7 @@
 
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
-			<artifactId>basyx.components.databridge.transformer.camel-jsonata</artifactId>
+			<artifactId>databridge.component.camel-jsonata</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		

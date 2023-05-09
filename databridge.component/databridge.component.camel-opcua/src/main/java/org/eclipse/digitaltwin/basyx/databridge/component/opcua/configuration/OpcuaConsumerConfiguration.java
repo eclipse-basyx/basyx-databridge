@@ -25,7 +25,7 @@
 package org.eclipse.digitaltwin.basyx.databridge.component.opcua.configuration;
 
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.digitaltwin.basyx.components.databridge.core.configuration.entity.DataSourceConfiguration;
+import org.eclipse.digitaltwin.basyx.databridge.core.configuration.entity.DataSourceConfiguration;
 
 /**
  * An implementation of OpcUa consumer configuration

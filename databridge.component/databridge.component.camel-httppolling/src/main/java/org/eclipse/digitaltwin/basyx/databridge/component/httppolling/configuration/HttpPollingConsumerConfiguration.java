@@ -24,7 +24,7 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.databridge.component.httppolling.configuration;
 
-import org.eclipse.digitaltwin.basyx.components.databridge.core.configuration.entity.DataSourceConfiguration;
+import org.eclipse.digitaltwin.basyx.databridge.core.configuration.entity.DataSourceConfiguration;
 
 /**
  * An implementation of httppolling consumer configuration

@@ -31,8 +31,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.camel.component.plc4x.Plc4XEndpoint;
-import org.eclipse.digitaltwin.basyx.components.databridge.core.configuration.entity.DataSourceConfiguration;
 import org.eclipse.digitaltwin.basyx.databridge.component.plc4x.configuration.factory.Plc4XDefaultConfigurationFactory;
+import org.eclipse.digitaltwin.basyx.databridge.core.configuration.entity.DataSourceConfiguration;
 import org.junit.Test;
 
 /**

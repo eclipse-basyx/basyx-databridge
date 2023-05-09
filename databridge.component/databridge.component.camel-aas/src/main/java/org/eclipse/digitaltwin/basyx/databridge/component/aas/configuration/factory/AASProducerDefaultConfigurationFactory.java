@@ -24,8 +24,8 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.databridge.component.aas.configuration.factory;
 
-import org.eclipse.digitaltwin.basyx.components.databridge.core.configuration.factory.DataSinkConfigurationFactory;
 import org.eclipse.digitaltwin.basyx.databridge.component.aas.configuration.AASDatasinkConfiguration;
+import org.eclipse.digitaltwin.basyx.databridge.core.configuration.factory.DataSinkConfigurationFactory;
 
 /**
  * A default configuration factory for AAS producer

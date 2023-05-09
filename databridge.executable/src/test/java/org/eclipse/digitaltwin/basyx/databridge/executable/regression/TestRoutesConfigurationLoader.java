@@ -30,8 +30,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.Collections;
 import java.util.Map;
 
-import org.eclipse.digitaltwin.basyx.components.databridge.camelactivemq.configuration.ActiveMQConsumerConfiguration;
-import org.eclipse.digitaltwin.basyx.components.databridge.core.configuration.route.core.RoutesConfiguration;
+import org.eclipse.digitaltwin.basyx.databridge.component.activemq.configuration.ActiveMQConsumerConfiguration;
+import org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.core.RoutesConfiguration;
 import org.eclipse.digitaltwin.basyx.databridge.executable.RoutesConfigurationLoader;
 import org.junit.AfterClass;
 import org.junit.Test;

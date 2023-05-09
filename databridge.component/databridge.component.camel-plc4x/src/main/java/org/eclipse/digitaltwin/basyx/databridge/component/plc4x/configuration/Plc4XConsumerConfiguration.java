@@ -33,7 +33,7 @@ import org.apache.camel.Endpoint;
 import org.apache.camel.component.plc4x.Plc4XComponent;
 import org.apache.camel.component.plc4x.Plc4XEndpoint;
 import org.apache.camel.impl.DefaultCamelContext;
-import org.eclipse.digitaltwin.basyx.components.databridge.core.configuration.entity.DataSourceConfiguration;
+import org.eclipse.digitaltwin.basyx.databridge.core.configuration.entity.DataSourceConfiguration;
 
 /**
  * An implementation of PLC4X consumer configuration

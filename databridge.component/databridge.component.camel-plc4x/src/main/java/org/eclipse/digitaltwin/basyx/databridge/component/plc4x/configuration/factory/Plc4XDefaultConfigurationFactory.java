@@ -24,8 +24,8 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.databridge.component.plc4x.configuration.factory;
 
-import org.eclipse.digitaltwin.basyx.components.databridge.core.configuration.factory.DataSourceConfigurationFactory;
 import org.eclipse.digitaltwin.basyx.databridge.component.plc4x.configuration.Plc4XConsumerConfiguration;
+import org.eclipse.digitaltwin.basyx.databridge.core.configuration.factory.DataSourceConfigurationFactory;
 
 /**
  * A default configuration factory for PLC4X from a default file path

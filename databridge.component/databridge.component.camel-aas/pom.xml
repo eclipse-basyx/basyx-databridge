@@ -29,8 +29,8 @@
 
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
-			<artifactId>basyx.components.databridge.core</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<artifactId>databridge.core</artifactId>
+			<version>${revision}</version>
 		</dependency>
 
 		<!-- logging -->

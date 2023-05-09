@@ -30,7 +30,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.digitaltwin.basyx.components.databridge.camelhttppolling.configuration.HttpPollingConsumerConfiguration;
+import org.eclipse.digitaltwin.basyx.databridge.component.httppolling.configuration.HttpPollingConsumerConfiguration;
 
 
 /**

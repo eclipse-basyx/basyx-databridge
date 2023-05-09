@@ -24,8 +24,8 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.databridge.component.timer.configuration.factory;
 
-import org.eclipse.digitaltwin.basyx.components.databridge.core.configuration.factory.DataSourceConfigurationFactory;
 import org.eclipse.digitaltwin.basyx.databridge.component.timer.configuration.TimerConsumerConfiguration;
+import org.eclipse.digitaltwin.basyx.databridge.core.configuration.factory.DataSourceConfigurationFactory;
 
 /**
  * A default configuration factory for Camels Timer from a default path

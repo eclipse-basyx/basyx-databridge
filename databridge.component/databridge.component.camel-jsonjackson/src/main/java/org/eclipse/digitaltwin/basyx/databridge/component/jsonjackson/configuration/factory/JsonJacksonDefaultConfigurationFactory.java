@@ -24,8 +24,8 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.databridge.component.jsonjackson.configuration.factory;
 
-import org.eclipse.digitaltwin.basyx.components.databridge.core.configuration.factory.DataTransformerConfigurationFactory;
 import org.eclipse.digitaltwin.basyx.databridge.component.jsonjackson.configuration.JsonJacksonTransformerConfiguration;
+import org.eclipse.digitaltwin.basyx.databridge.core.configuration.factory.DataTransformerConfigurationFactory;
 
 /**
  * JsonJackson default configuration factory from default path

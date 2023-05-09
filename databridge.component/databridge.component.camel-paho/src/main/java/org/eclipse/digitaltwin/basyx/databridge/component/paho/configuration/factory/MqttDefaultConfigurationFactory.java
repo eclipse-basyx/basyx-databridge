@@ -24,8 +24,8 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.databridge.component.paho.configuration.factory;
 
-import org.eclipse.digitaltwin.basyx.components.databridge.core.configuration.factory.DataSourceConfigurationFactory;
 import org.eclipse.digitaltwin.basyx.databridge.component.paho.configuration.MqttConsumerConfiguration;
+import org.eclipse.digitaltwin.basyx.databridge.core.configuration.factory.DataSourceConfigurationFactory;
 
 /**
  * A default configuration factory for MQTT from a default file path

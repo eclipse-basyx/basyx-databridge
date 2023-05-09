@@ -24,8 +24,8 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.databridge.executable;
 
-import org.eclipse.digitaltwin.basyx.components.databridge.core.component.DataBridgeComponent;
-import org.eclipse.digitaltwin.basyx.components.databridge.core.configuration.route.core.RoutesConfiguration;
+import org.eclipse.digitaltwin.basyx.databridge.core.component.DataBridgeComponent;
+import org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.core.RoutesConfiguration;
 
 /**
  * Starts the stand-alone databridge component

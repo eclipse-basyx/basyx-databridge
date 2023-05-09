@@ -45,25 +45,25 @@
 
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
-			<artifactId>basyx.components.databridge.core</artifactId>
+			<artifactId>databridge.core</artifactId>
+			<version>${revision}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.digitaltwin.basyx</groupId>
+			<artifactId>databridge.component.camel-opcua</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
-			<artifactId>basyx.components.databridge.camel-opcua</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.eclipse.digitaltwin.basyx</groupId>
-			<artifactId>basyx.components.databridge.camel-aas</artifactId>
+			<artifactId>databridge.component.camel-aas</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
-			<artifactId>basyx.components.databridge.transformer.camel-jsonjackson</artifactId>
+			<artifactId>databridge.component.camel-jsonjackson</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		
@@ -75,7 +75,7 @@
 		
 		<dependency>
             <groupId>org.eclipse.digitaltwin.basyx</groupId>
-            <artifactId>basyx.components.databridge.camel-timer</artifactId>
+            <artifactId>databridge.component.camel-timer</artifactId>
             <version>0.0.1-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
@@ -138,7 +138,7 @@
 		
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
-			<artifactId>basyx.components.databridge.transformer.camel-jsonata</artifactId>
+			<artifactId>databridge.component.camel-jsonata</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 

@@ -24,7 +24,7 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.databridge.component.jsonjackson.configuration;
 
-import org.eclipse.digitaltwin.basyx.components.databridge.core.configuration.entity.DataTransformerConfiguration;
+import org.eclipse.digitaltwin.basyx.databridge.core.configuration.entity.DataTransformerConfiguration;
 
 /**
  * An implementation of JsonJackson transformer configuration using camel

@@ -36,7 +36,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.eclipse.digitaltwin.basyx.components.databridge.core.configuration.factory.ConfigurationFactory;
+import org.eclipse.digitaltwin.basyx.databridge.core.configuration.factory.ConfigurationFactory;
 import org.reflections.Reflections;
 import org.reflections.scanners.Scanners;
 import org.reflections.util.ConfigurationBuilder;
@@ -53,7 +53,7 @@ import org.slf4j.LoggerFactory;
 public class DataBridgeUtils {
 	private static Logger logger = LoggerFactory.getLogger(DataBridgeUtils.class);
 
-	public static final String PACKAGE_PREFIX = "org.eclipse.digitaltwin.basyx.components.databridge";
+	public static final String PACKAGE_PREFIX = "org.eclipse.digitaltwin.basyx.databridge.component";
 	protected static final String PACKAGE_SUFFIX = "configuration.factory";
 	protected static final String FACTORY_SUFFIX = "DefaultConfigurationFactory";
 	protected static final String CONSUMER = "consumer";

@@ -45,25 +45,25 @@
 
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
-			<artifactId>basyx.components.databridge.core</artifactId>
+			<artifactId>databridge.core</artifactId>
+			<version>${revision}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.digitaltwin.basyx</groupId>
+			<artifactId>databridge.component.camel-kafka</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
-			<artifactId>basyx.components.databridge.camel-kafka</artifactId>
+			<artifactId>databridge.component.camel-aas</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
-			<artifactId>basyx.components.databridge.camel-aas</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.eclipse.digitaltwin.basyx</groupId>
-			<artifactId>basyx.components.databridge.transformer.camel-jsonata</artifactId>
+			<artifactId>databridge.component.camel-jsonata</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 

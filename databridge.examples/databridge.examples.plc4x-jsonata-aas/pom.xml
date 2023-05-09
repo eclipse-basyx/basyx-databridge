@@ -44,31 +44,31 @@
 
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
-			<artifactId>basyx.components.databridge.core</artifactId>
+			<artifactId>databridge.core</artifactId>
+			<version>${revision}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.digitaltwin.basyx</groupId>
+			<artifactId>databridge.component.camel-aas</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
-			<artifactId>basyx.components.databridge.camel-aas</artifactId>
+			<artifactId>databridge.component.camel-plc4x</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
-			<artifactId>basyx.components.databridge.camel-plc4x</artifactId>
+			<artifactId>databridge.component.camel-jsonata</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
-			<artifactId>basyx.components.databridge.transformer.camel-jsonata</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.eclipse.digitaltwin.basyx</groupId>
-			<artifactId>basyx.components.databridge.transformer.camel-jsonjackson</artifactId>
+			<artifactId>databridge.component.camel-jsonjackson</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 

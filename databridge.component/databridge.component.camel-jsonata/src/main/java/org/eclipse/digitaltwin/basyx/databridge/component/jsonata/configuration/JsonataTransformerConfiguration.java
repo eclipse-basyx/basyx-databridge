@@ -26,7 +26,7 @@ package org.eclipse.digitaltwin.basyx.databridge.component.jsonata.configuration
 
 import java.io.File;
 
-import org.eclipse.digitaltwin.basyx.components.databridge.core.configuration.entity.DataTransformerConfiguration;
+import org.eclipse.digitaltwin.basyx.databridge.core.configuration.entity.DataTransformerConfiguration;
 
 /**
  * An implementation of Jsonata transformer configuration

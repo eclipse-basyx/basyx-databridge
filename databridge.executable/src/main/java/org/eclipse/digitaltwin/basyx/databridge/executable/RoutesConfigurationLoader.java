@@ -33,14 +33,14 @@ import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.eclipse.digitaltwin.basyx.components.databridge.core.configuration.entity.DataSinkConfiguration;
-import org.eclipse.digitaltwin.basyx.components.databridge.core.configuration.entity.DataSourceConfiguration;
-import org.eclipse.digitaltwin.basyx.components.databridge.core.configuration.entity.DataTransformerConfiguration;
-import org.eclipse.digitaltwin.basyx.components.databridge.core.configuration.factory.DataSinkConfigurationFactory;
-import org.eclipse.digitaltwin.basyx.components.databridge.core.configuration.factory.DataSourceConfigurationFactory;
-import org.eclipse.digitaltwin.basyx.components.databridge.core.configuration.factory.DataTransformerConfigurationFactory;
-import org.eclipse.digitaltwin.basyx.components.databridge.core.configuration.factory.RoutesConfigurationFactory;
-import org.eclipse.digitaltwin.basyx.components.databridge.core.configuration.route.core.RoutesConfiguration;
+import org.eclipse.digitaltwin.basyx.databridge.core.configuration.entity.DataSinkConfiguration;
+import org.eclipse.digitaltwin.basyx.databridge.core.configuration.entity.DataSourceConfiguration;
+import org.eclipse.digitaltwin.basyx.databridge.core.configuration.entity.DataTransformerConfiguration;
+import org.eclipse.digitaltwin.basyx.databridge.core.configuration.factory.DataSinkConfigurationFactory;
+import org.eclipse.digitaltwin.basyx.databridge.core.configuration.factory.DataSourceConfigurationFactory;
+import org.eclipse.digitaltwin.basyx.databridge.core.configuration.factory.DataTransformerConfigurationFactory;
+import org.eclipse.digitaltwin.basyx.databridge.core.configuration.factory.RoutesConfigurationFactory;
+import org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.core.RoutesConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
