@@ -367,7 +367,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-failsafe-plugin</artifactId>
-						<version>3.0.0-M7</version>
+						<version>3.1.0</version>
 						<configuration>
 							<systemPropertyVariables>
 								<VOLUME_MAPPING>${project.basedir}/src/test/resources/mqtt/databridge</VOLUME_MAPPING>
