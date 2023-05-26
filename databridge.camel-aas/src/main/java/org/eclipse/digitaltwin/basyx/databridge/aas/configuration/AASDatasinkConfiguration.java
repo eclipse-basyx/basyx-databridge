@@ -30,7 +30,7 @@ import org.eclipse.digitaltwin.basyx.databridge.core.configuration.entity.DataSi
 /**
  * An implementation of AAS data sink configuration
  * 
- * @author haque
+ * @author haque, kammognie
  *
  */
 public class AASDatasinkConfiguration extends DataSinkConfiguration {
@@ -54,7 +54,7 @@ public class AASDatasinkConfiguration extends DataSinkConfiguration {
 	public AASDatasinkConfiguration(String submodelEndpoint, String idShortPath) {
 		this(submodelEndpoint, idShortPath, null, ApiType.BASYX.getName());
 	}
-	
+
 	public String getType() {
 		return type;
 	}
