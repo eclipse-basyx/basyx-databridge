@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2021 the Eclipse BaSyx Authors
+ * Copyright (C) 2023 the Eclipse BaSyx Authors
  * 
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -22,35 +22,45 @@
  * 
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
-package org.eclipse.digitaltwin.basyx.databridge.aas;
+package org.eclipse.digitaltwin.basyx.databridge.aas.http;
 
-import org.apache.camel.Exchange;
-import org.apache.camel.support.DefaultProducer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPatch;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
 
 /**
- * Producer implementation of AAS
+ * A helper class for sending HTTP requests
+ * 
+ * @author danish
  *
  */
-public class AASProducer extends DefaultProducer {
-	private static final Logger LOG = LoggerFactory.getLogger(AASProducer.class);
+public class HTTPRequest {
 	
-	private AASEndpoint endpoint;
-
-	public AASProducer(AASEndpoint endpoint) {
-		super(endpoint);
-		this.endpoint = endpoint;
-		endpoint.connectToElement();
+	public static void patchRequest(String url, String content) throws IOException {
+		CloseableHttpClient client = HttpClientBuilder.create().build();
+		HttpPatch patchRequest = createPatchRequest(url, content);
 		
-		LOG.info("Creating AAS Producer for endpoint " + endpoint.getEndpointUri());
+        HttpResponse response = client.execute(patchRequest);
+
+        HttpEntity responseEntity = response.getEntity();
+
+        EntityUtils.consume(responseEntity);
 	}
 
-	@Override
-	public void process(Exchange exchange) throws Exception {
-		Object messageBody = exchange.getMessage().getBody(String.class);
-		
-		endpoint.setPropertyValue(messageBody);
+	private static HttpPatch createPatchRequest(String url, String content) throws UnsupportedEncodingException {
+		HttpPatch patchRequest = new HttpPatch(url);
+
+		patchRequest.setHeader("Content-type", "application/json");
+		patchRequest.setEntity(new StringEntity(content));
+
+		return patchRequest;
 	}
 
 }

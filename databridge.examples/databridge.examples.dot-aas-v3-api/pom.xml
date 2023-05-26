@@ -8,16 +8,16 @@
 		<version>${revision}</version>
 	</parent>
 
-	<artifactId>databridge.examples.mqtt-jsonata-aas</artifactId>
-	<name>MQTT Jsonata AAS</name>
-	<description>An integration example of MQTT as data source, Jsonata as transformer and AAS as data sink</description>
+	<artifactId>databridge.examples.dot-aas-v3-api</artifactId>
+	<name>DotAAS-V3 API Example</name>
+	<description>An integration example demonstrating the usage of DotAAS-V3 API</description>
 
 
 	<packaging>jar</packaging>
 
 	<properties>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.source>11</maven.compiler.source>
+		<maven.compiler.target>11</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
@@ -90,12 +90,6 @@
 			<version>1.4.0</version>
 		</dependency>
 
-		<dependency>
-			<groupId>org.eclipse.basyx</groupId>
-			<artifactId>basyx.components.AASServer</artifactId>
-			<version>1.2.0</version>
-		</dependency>
-
 		<!-- JUnit 4 for running JUnit tests -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -118,5 +112,20 @@
 			</exclusions>
 		</dependency>
 		
+		<!-- https://mvnrepository.com/artifact/org.mock-server/mockserver-netty -->
+		<dependency>
+			<groupId>org.mock-server</groupId>
+			<artifactId>mockserver-netty</artifactId>
+			<version>5.15.0</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.mock-server/mockserver-client-java -->
+		<dependency>
+			<groupId>org.mock-server</groupId>
+			<artifactId>mockserver-client-java</artifactId>
+			<version>5.15.0</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 </project>

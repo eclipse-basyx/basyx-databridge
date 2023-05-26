@@ -31,6 +31,7 @@
 		<module>databridge.examples.httppolling-jsonata-delegator</module>
 		<module>databridge.examples.prometheus-jsonata-aas</module>
 		<module>databridge.examples.plc4x-jsonata-aas</module>
+		<module>databridge.examples.dot-aas-v3-api</module>
 	</modules>
 
 	<packaging>pom</packaging>

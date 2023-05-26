@@ -7,7 +7,8 @@
 	{
 		"uniqueId": "ConnectedSubmodel/ConnectedPropertyB",
 		"submodelEndpoint": "http://localhost:4001/shells/TestUpdatedDeviceAAS/aas/submodels/ConnectedSubmodel/submodel",
-		"idShortPath": "ConnectedPropertyB"
+		"idShortPath": "ConnectedPropertyB",
+		"api": "BaSyx"
 	},
 	{
 		"uniqueId": "ConnectedTestSubmodel/ConnectedPropertyC",

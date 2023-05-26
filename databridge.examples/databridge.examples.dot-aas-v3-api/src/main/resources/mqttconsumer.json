@@ -1,0 +1,8 @@
+[
+	{
+		"uniqueId": "mqttSource",
+		"serverUrl": "localhost",
+		"serverPort": 1884,
+		"topic": "DotAASV3ConformantProperty"
+	}
+]

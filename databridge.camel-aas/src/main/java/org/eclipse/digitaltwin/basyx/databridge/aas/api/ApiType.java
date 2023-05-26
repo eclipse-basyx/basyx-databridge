@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2021 the Eclipse BaSyx Authors
+ * Copyright (C) 2023 the Eclipse BaSyx Authors
  * 
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -22,35 +22,31 @@
  * 
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
-package org.eclipse.digitaltwin.basyx.databridge.aas;
-
-import org.apache.camel.Exchange;
-import org.apache.camel.support.DefaultProducer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+package org.eclipse.digitaltwin.basyx.databridge.aas.api;
 
 /**
- * Producer implementation of AAS
+ * An Enum to define supported API types
+ * 
+ * @author danish
  *
  */
-public class AASProducer extends DefaultProducer {
-	private static final Logger LOG = LoggerFactory.getLogger(AASProducer.class);
+public enum ApiType {
+	BASYX("BaSyx"),
+	DOT_AAS_V3("DotAAS-V3");
 	
-	private AASEndpoint endpoint;
+    private final String name;
 
-	public AASProducer(AASEndpoint endpoint) {
-		super(endpoint);
-		this.endpoint = endpoint;
-		endpoint.connectToElement();
-		
-		LOG.info("Creating AAS Producer for endpoint " + endpoint.getEndpointUri());
-	}
+    ApiType(String name) {
+        this.name = name;
+    }
 
-	@Override
-	public void process(Exchange exchange) throws Exception {
-		Object messageBody = exchange.getMessage().getBody(String.class);
-		
-		endpoint.setPropertyValue(messageBody);
-	}
+    /**
+     * Convenient method to get the name of the Api type
+     * 
+     * @return the name of the ApiType
+     */
+    public String getName() {
+        return name;
+    }
 
 }
