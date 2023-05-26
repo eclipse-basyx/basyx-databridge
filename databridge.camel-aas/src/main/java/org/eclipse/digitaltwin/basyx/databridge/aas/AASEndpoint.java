@@ -36,18 +36,15 @@ import org.apache.camel.spi.UriParam;
 import org.apache.camel.spi.UriPath;
 import org.apache.camel.support.DefaultEndpoint;
 import org.eclipse.basyx.submodel.metamodel.connected.submodelelement.dataelement.ConnectedProperty;
+import org.eclipse.basyx.submodel.metamodel.map.submodelelement.dataelement.property.valuetype.ValueType;
+import org.eclipse.basyx.submodel.metamodel.map.submodelelement.dataelement.property.valuetype.ValueTypeHelper;
 import org.eclipse.basyx.vab.modelprovider.VABElementProxy;
 import org.eclipse.basyx.vab.modelprovider.api.IModelProvider;
 import org.eclipse.basyx.vab.protocol.http.connector.HTTPConnectorFactory;
 import org.eclipse.digitaltwin.basyx.databridge.aas.api.ApiType;
+import org.eclipse.digitaltwin.basyx.databridge.aas.http.HTTPRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.eclipse.digitaltwin.basyx.databridge.aas.utils.AASEndpointUtil.createBaSyxApiProxyUrl;
-import static org.eclipse.digitaltwin.basyx.databridge.aas.utils.AASEndpointUtil.createDotAasApiProxyUrl;
-import static org.eclipse.digitaltwin.basyx.databridge.aas.utils.AASEndpointUtil.wrapStringValue;
-import static org.eclipse.digitaltwin.basyx.databridge.aas.utils.AASEndpointUtil.setPropertyValueUsingBaSyxAPI;
-import static org.eclipse.digitaltwin.basyx.databridge.aas.utils.AASEndpointUtil.setPropertyValueUsingDotAasV3Api;
 
 /**
  * AAS component which can connect to Asset Administration Shells via a given
@@ -132,9 +129,9 @@ public class AASEndpoint extends DefaultEndpoint {
 
 	public void setPropertyValue(Object content) throws IOException {
 		if (api.equals(ApiType.BASYX)) {
-			setPropertyValueUsingBaSyxAPI(content, connectedProperty);
+			setPropertyValueUsingBaSyxAPI(content);
 		} else {
-			setPropertyValueUsingDotAasV3Api(getFullProxyUrl() + API_V3_SUFFIX, wrapStringValue(content.toString()));
+			setPropertyValueUsingDotAasV3Api(wrapStringValue(content.toString()));
 		}
 
 		logger.info("Transferred message={}", content.toString());
@@ -153,12 +150,70 @@ public class AASEndpoint extends DefaultEndpoint {
 		VABElementProxy proxy = new VABElementProxy("", provider);
 		this.connectedProperty = new ConnectedProperty(proxy);
 	}
-	
+
+	private void setPropertyValueUsingBaSyxAPI(Object messageBody) {
+		connectedProperty.setValue(getContent(messageBody));
+	}
+
+	private void setPropertyValueUsingDotAasV3Api(String content) throws IOException {
+		HTTPRequest.patchRequest(getFullProxyUrl() + API_V3_SUFFIX, content);
+	}
+
+	private String createDotAasApiProxyUrl() {
+		String proxyUrl = String.format("%s/submodel-elements/%s", getSubmodelEndpoint(), propertyPath);
+
+		logger.info("Proxy URL: " + proxyUrl);
+
+		return proxyUrl;
+	}
+
+	private String createBaSyxApiProxyUrl() {
+		String proxyUrl = String.format("%s/submodelElements/%s", getSubmodelEndpoint(), propertyPath);
+
+		logger.info("Proxy URL: " + proxyUrl);
+
+		return proxyUrl;
+	}
+
+	private String wrapStringValue(String content) {
+		if (content.isEmpty())
+			return content;
+
+		return "\"" + content + "\"";
+	}
+
+	private Object getContent(Object messageBody) {
+		if (connectedProperty.getValueType().equals(ValueType.String)) {
+			return removeQuotesFromString(messageBody.toString());
+		}
+
+		return ValueTypeHelper.getJavaObject(messageBody, connectedProperty.getValueType());
+	}
+
+	private static String removeQuotesFromString(String messageBody) {
+		if (messageBody == null)
+			return null;
+
+		if (messageBody.startsWith("\"") && messageBody.endsWith("\"")) {
+			return messageBody.substring(1, messageBody.length() - 1);
+		}
+
+		return messageBody;
+	}
+
+	private String getSubmodelEndpoint() {
+		String submodelEndpoint = this.getEndpointBaseUri().substring(4);
+
+		logger.info("SubmodelEndpoint " + submodelEndpoint);
+
+		return submodelEndpoint;
+	}
+
 	private String getFullProxyUrl() {
 		if (api.equals(ApiType.BASYX))
-			return createBaSyxApiProxyUrl(this.getEndpointBaseUri(), this.propertyPath);
+			return createBaSyxApiProxyUrl();
 
-		return createDotAasApiProxyUrl(this.getEndpointBaseUri(), this.propertyPath);
+		return createDotAasApiProxyUrl();
 	}
 
 }
