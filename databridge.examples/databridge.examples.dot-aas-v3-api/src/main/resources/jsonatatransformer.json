@@ -1,0 +1,8 @@
+[
+	{
+		"uniqueId": "weight",
+		"queryPath": "weight.jsonata",
+		"inputType": "JsonString",
+		"outputType": "JsonString"
+	}
+]

@@ -24,20 +24,12 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.databridge.examples.mqttjsonataaas.test;
 
-import static org.junit.Assert.assertEquals;
+import static org.mockserver.model.HttpRequest.request;
+import static org.mockserver.model.HttpResponse.response;
+
 import java.io.IOException;
 
-import org.eclipse.basyx.aas.manager.ConnectedAssetAdministrationShellManager;
-import org.eclipse.basyx.aas.metamodel.connected.ConnectedAssetAdministrationShell;
-import org.eclipse.basyx.aas.metamodel.map.descriptor.CustomId;
-import org.eclipse.basyx.aas.registration.memory.InMemoryRegistry;
-import org.eclipse.basyx.components.aas.AASServerComponent;
-import org.eclipse.basyx.components.aas.configuration.AASServerBackend;
-import org.eclipse.basyx.components.aas.configuration.BaSyxAASServerConfiguration;
-import org.eclipse.basyx.components.configuration.BaSyxContextConfiguration;
-import org.eclipse.basyx.submodel.metamodel.api.ISubmodel;
-import org.eclipse.basyx.submodel.metamodel.api.identifier.IIdentifier;
-import org.eclipse.basyx.submodel.metamodel.api.submodelelement.ISubmodelElement;
+import org.apache.http.HttpStatus;
 import org.eclipse.digitaltwin.basyx.databridge.aas.configuration.factory.AASProducerDefaultConfigurationFactory;
 import org.eclipse.digitaltwin.basyx.databridge.core.component.DataBridgeComponent;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.factory.RoutesConfigurationFactory;
@@ -53,6 +45,10 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockserver.client.MockServerClient;
+import org.mockserver.integration.ClientAndServer;
+import org.mockserver.model.Header;
+import org.mockserver.verify.VerificationTimes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,22 +60,21 @@ import io.moquette.broker.config.ResourceLoaderConfig;
 
 public class TestAASUpdater {
 	
+	private static final String PROPERTY_VALUE = "\"0.75\"";
+	private static final String PROPERTY_VALUE_PATH = "/submodels/submodelId/submodel/submodel-elements/DotAASV3ConformantApiProperty/$value";
+
 	private static Logger logger = LoggerFactory.getLogger(TestAASUpdater.class);
 	
-	private static AASServerComponent aasServer;
 	private static DataBridgeComponent updater;
-	private static InMemoryRegistry registry = new InMemoryRegistry();
 	protected static Server mqttBroker;
-
-	protected static IIdentifier deviceAASPlainId = new CustomId("TestUpdatedDeviceAAS");
-	protected static IIdentifier deviceAASIriId = new CustomId("https://example.com/ids/aas/7053_6021_1032_9066");
-	private static BaSyxContextConfiguration aasContextConfig;
+	
+	private static ClientAndServer mockServer;
 
 	@BeforeClass
 	public static void setUp() throws IOException {
+		configureAndStartMockserver();
+		
 		configureAndStartMqttBroker();
-
-		configureAndStartAasServer();
 		
 		configureAndStartUpdaterComponent();
 	}
@@ -87,34 +82,22 @@ public class TestAASUpdater {
 	@AfterClass
 	public static void tearDown() {
 		updater.stopComponent();
-		aasServer.stopComponent();
+		mockServer.close();
 	}
 	
 	@Test
-	public void getPropertyBValue() throws MqttSecurityException, MqttPersistenceException, MqttException, InterruptedException {
-		publishNewDatapoint("PropertyB");
+	public void getDotAASV3ConformantPropertyValue() throws MqttSecurityException, MqttPersistenceException, MqttException, InterruptedException {
+		publishNewDatapoint("DotAASV3ConformantProperty");
 		
 		waitForPropagation();
 		
-		checkIfPropertyIsUpdated();
+		verifyPropertyValueUpdateRequest();
 	}
-	
-	@Test
-	public void getPropertyCValue() throws MqttSecurityException, MqttPersistenceException, MqttException, InterruptedException {
-		publishNewDatapoint("PropertyC");
-		
-		waitForPropagation();
-		
-		checkIfPropertyIsUpdatedInEncodedAASEndpoint();
-	}
-	
-	private static void configureAndStartAasServer() {
-		aasContextConfig = new BaSyxContextConfiguration(4001, "");
-		BaSyxAASServerConfiguration aasConfig = new BaSyxAASServerConfiguration(AASServerBackend.INMEMORY, "aasx/updatertest.aasx");
-		aasServer = new AASServerComponent(aasContextConfig, aasConfig);
-		aasServer.setRegistry(registry);
-		
-		aasServer.startComponent();
+
+	private static void configureAndStartMockserver() {
+		mockServer = ClientAndServer.startClientAndServer(4001);
+
+		createExpectationForPatchRequest();
 	}
 
 	private static void configureAndStartUpdaterComponent() {
@@ -141,26 +124,6 @@ public class TestAASUpdater {
 		Thread.sleep(5000);
 	}
 
-	private void checkIfPropertyIsUpdated() throws InterruptedException {
-		ConnectedAssetAdministrationShell aas = getAAS(deviceAASPlainId);
-		
-		ISubmodelElement updatedProp = getSubmodelElement(aas, "ConnectedSubmodel", "ConnectedPropertyB");
-
-		Object propValue = updatedProp.getValue();
-		
-		assertEquals("858383", propValue);
-	}
-	
-	private void checkIfPropertyIsUpdatedInEncodedAASEndpoint() throws InterruptedException {
-		ConnectedAssetAdministrationShell aas = getAAS(deviceAASIriId);
-		
-		ISubmodelElement updatedProp = getSubmodelElement(aas, "ConnectedTestSubmodel", "ConnectedPropertyC");
-		
-		Object propValue = updatedProp.getValue();
-		
-		assertEquals("858383", propValue);
-	}
-
 	private void publishNewDatapoint(String topic) throws MqttException, MqttSecurityException, MqttPersistenceException {
 		logger.info("Publishing event to {}", topic);
 		
@@ -179,17 +142,19 @@ public class TestAASUpdater {
 		mqttBroker.startServer(classPathConfig);
 	}
 	
-	private ISubmodelElement getSubmodelElement(ConnectedAssetAdministrationShell aas, String submodelId, String submodelElementId) {
-		ISubmodel sm = aas.getSubmodels().get(submodelId);
-		ISubmodelElement updatedProp = sm.getSubmodelElement(submodelElementId);
-		
-		return updatedProp;
+	@SuppressWarnings("resource")
+	private static void createExpectationForPatchRequest() {
+		new MockServerClient("localhost", 4001)
+				.when(request().withMethod("PATCH").withPath(PROPERTY_VALUE_PATH)
+						.withBody(PROPERTY_VALUE).withHeader("Content-Type", "application/json"))
+				.respond(response().withStatusCode(HttpStatus.SC_CREATED)
+						.withHeaders(new Header("Content-Type", "application/json; charset=utf-8")));
 	}
 
-	private ConnectedAssetAdministrationShell getAAS(IIdentifier identifier) {
-		ConnectedAssetAdministrationShellManager manager = new ConnectedAssetAdministrationShellManager(registry);
-		ConnectedAssetAdministrationShell aas = manager.retrieveAAS(identifier);
-		return aas;
+	@SuppressWarnings("resource")
+	private void verifyPropertyValueUpdateRequest() {
+		new MockServerClient("localhost", 4001).verify(request().withMethod("PATCH")
+				.withPath(PROPERTY_VALUE_PATH).withHeader("Content-Type", "application/json")
+				.withBody(PROPERTY_VALUE), VerificationTimes.exactly(1));
 	}
-	
 }

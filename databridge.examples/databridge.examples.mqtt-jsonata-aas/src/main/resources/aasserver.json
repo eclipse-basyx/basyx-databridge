@@ -14,11 +14,5 @@
 		"uniqueId": "ConnectedTestSubmodel/ConnectedPropertyC",
 		"submodelEndpoint": "http://localhost:4001/shells/https%3A%2F%2Fexample.com%2Fids%2Faas%2F7053_6021_1032_9066/aas/submodels/ConnectedTestSubmodel/submodel",
 		"idShortPath": "ConnectedPropertyC"
-	},
-	{
-		"uniqueId": "ConnectedTestSubmodel/ConnectedPropertyD",
-		"submodelEndpoint": "http://localhost:4002/submodels/submodelId/submodel",
-		"idShortPath": "ConnectedPropertyD",
-		"api": "DotAAS-V3"
 	}
 ]

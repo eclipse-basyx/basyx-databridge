@@ -1,0 +1,8 @@
+[
+	{
+		"datasource": "mqttSource",
+		"transformers": ["weight"],
+		"datasinks": ["ConnectedTestSubmodel/DotAASV3ConformantApiProperty"],
+		"trigger": "event"
+	}
+]

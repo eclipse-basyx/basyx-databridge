@@ -10,11 +10,5 @@
 		"queryPath": "jsonataB.jsonata",
 		"inputType": "JsonString",
 		"outputType": "JsonString"
-	},
-	{
-		"uniqueId": "jsonataD",
-		"queryPath": "jsonataD.jsonata",
-		"inputType": "JsonString",
-		"outputType": "JsonString"
 	}
 ]

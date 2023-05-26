@@ -24,6 +24,8 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.databridge.aas;
 
+import java.io.IOException;
+
 import org.apache.camel.Category;
 import org.apache.camel.Consumer;
 import org.apache.camel.Processor;
@@ -33,40 +35,53 @@ import org.apache.camel.spi.UriEndpoint;
 import org.apache.camel.spi.UriParam;
 import org.apache.camel.spi.UriPath;
 import org.apache.camel.support.DefaultEndpoint;
+import org.eclipse.basyx.submodel.metamodel.connected.submodelelement.dataelement.ConnectedProperty;
+import org.eclipse.basyx.vab.modelprovider.VABElementProxy;
+import org.eclipse.basyx.vab.modelprovider.api.IModelProvider;
+import org.eclipse.basyx.vab.protocol.http.connector.HTTPConnectorFactory;
 import org.eclipse.digitaltwin.basyx.databridge.aas.api.ApiType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.eclipse.digitaltwin.basyx.databridge.aas.utils.AASEndpointUtil.createBaSyxApiProxyUrl;
+import static org.eclipse.digitaltwin.basyx.databridge.aas.utils.AASEndpointUtil.createDotAasApiProxyUrl;
+import static org.eclipse.digitaltwin.basyx.databridge.aas.utils.AASEndpointUtil.wrapStringValue;
+import static org.eclipse.digitaltwin.basyx.databridge.aas.utils.AASEndpointUtil.setPropertyValueUsingBaSyxAPI;
+import static org.eclipse.digitaltwin.basyx.databridge.aas.utils.AASEndpointUtil.setPropertyValueUsingDotAasV3Api;
 
 /**
  * AAS component which can connect to Asset Administration Shells via a given
  * registry
  */
-@UriEndpoint(firstVersion = "1.0.0-SNAPSHOT", scheme = "aas", title = "AAS", syntax = "aas:name",
-             category = {Category.JAVA})
+@UriEndpoint(firstVersion = "1.0.0-SNAPSHOT", scheme = "aas", title = "AAS", syntax = "aas:name", category = {
+		Category.JAVA })
 public class AASEndpoint extends DefaultEndpoint {
 	private static final Logger logger = LoggerFactory.getLogger(AASEndpoint.class);
-	
+
+	private ConnectedProperty connectedProperty;
+	private static final String API_V3_SUFFIX = "/$value";
+
 	@UriPath
 	@Metadata(required = true)
 	private String name;
 
 	@UriParam(defaultValue = "")
 	private String propertyPath;
-	
+
 	@UriParam(defaultValue = "BaSyx")
 	private ApiType api;
 
 	public AASEndpoint() {
-    }
+	}
 
 	public AASEndpoint(String uri, AASComponent component) {
-        super(uri, component);
-    }
+		super(uri, component);
+	}
 
-    @Override
+	@Override
 	public Producer createProducer() throws Exception {
 		return new AASProducer(this);
-    }
+	}
 
 	@Override
 	public Consumer createConsumer(Processor processor) throws Exception {
@@ -96,13 +111,13 @@ public class AASEndpoint extends DefaultEndpoint {
 	public void setPropertyPath(String propertyPath) {
 		this.propertyPath = propertyPath;
 	}
-	
+
 	/**
 	 * The Api type for this endpoint
 	 * 
 	 * @return ApiType
 	 */
-	public ApiType getApi() {
+	protected ApiType getApi() {
 		return api;
 	}
 
@@ -111,51 +126,39 @@ public class AASEndpoint extends DefaultEndpoint {
 	 * 
 	 * @param api
 	 */
-	public void setApi(ApiType api) {
+	protected void setApi(ApiType api) {
 		this.api = api;
 	}
 
-	public String getFullProxyUrl() {
+	public void setPropertyValue(Object content) throws IOException {
+		if (api.equals(ApiType.BASYX)) {
+			setPropertyValueUsingBaSyxAPI(content, connectedProperty);
+		} else {
+			setPropertyValueUsingDotAasV3Api(getFullProxyUrl() + API_V3_SUFFIX, wrapStringValue(content.toString()));
+		}
+
+		logger.info("Transferred message={}", content.toString());
+	}
+
+	/**
+	 * Connect the Submodel Element for data dumping
+	 */
+	protected void connectToElement() {
+		if (!api.equals(ApiType.BASYX))
+			return;
+
+		HTTPConnectorFactory factory = new HTTPConnectorFactory();
+		String proxyUrl = getFullProxyUrl();
+		IModelProvider provider = factory.getConnector(proxyUrl);
+		VABElementProxy proxy = new VABElementProxy("", provider);
+		this.connectedProperty = new ConnectedProperty(proxy);
+	}
+	
+	private String getFullProxyUrl() {
 		if (api.equals(ApiType.BASYX))
-			return createBaSyxApiProxyUrl();
-		
-		return createDotAasApiProxyUrl();
+			return createBaSyxApiProxyUrl(this.getEndpointBaseUri(), this.propertyPath);
+
+		return createDotAasApiProxyUrl(this.getEndpointBaseUri(), this.propertyPath);
 	}
 
-	private String createDotAasApiProxyUrl() {
-		String proxyUrl = String.format("%s/submodel-elements/%s", this.getSubmodelEndpoint(), this.getSubmodelElementIdShortPath());
-		
-		logger.info("Proxy URL: " + proxyUrl);
-		
-		return proxyUrl;
-	}
-
-	private String createBaSyxApiProxyUrl() {
-		String proxyUrl = String.format("%s/submodelElements/%s", this.getSubmodelEndpoint(), this.getSubmodelElementIdShortPath());
-		
-		logger.info("Proxy URL: " + proxyUrl);
-		
-		return proxyUrl;
-	}
-	
-	/**
-	 * Gets the AAS URL for connection
-	 * @return
-	 */
-	private String getSubmodelEndpoint() {
-		String submodelEndpoint = this.getEndpointBaseUri().substring(4); 
-    	logger.info("SubmodelEndpoint " + submodelEndpoint);
-		return submodelEndpoint;
-	}
-	
-	/**
-	 * Gets the submodel element id for data dump
-	 * @return 
-	 */
-	private String getSubmodelElementIdShortPath() {
-		String submodelElementIdShortPath = getPropertyPath();
-    	logger.info("Submodel Element ID: " + submodelElementIdShortPath);
-		return submodelElementIdShortPath;
-	}
-	
 }

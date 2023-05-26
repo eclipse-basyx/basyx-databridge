@@ -1,0 +1,8 @@
+[
+	{
+		"uniqueId": "ConnectedTestSubmodel/DotAASV3ConformantApiProperty",
+		"submodelEndpoint": "http://localhost:4001/submodels/submodelId/submodel",
+		"idShortPath": "DotAASV3ConformantApiProperty",
+		"api": "DotAAS-V3"
+	}
+]
