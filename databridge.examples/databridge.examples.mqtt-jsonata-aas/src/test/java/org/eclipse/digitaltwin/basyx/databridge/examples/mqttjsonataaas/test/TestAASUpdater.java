@@ -25,9 +25,12 @@
 package org.eclipse.digitaltwin.basyx.databridge.examples.mqttjsonataaas.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockserver.model.HttpRequest.request;
+import static org.mockserver.model.HttpResponse.response;
 
 import java.io.IOException;
 
+import org.apache.http.HttpStatus;
 import org.eclipse.basyx.aas.manager.ConnectedAssetAdministrationShellManager;
 import org.eclipse.basyx.aas.metamodel.connected.ConnectedAssetAdministrationShell;
 import org.eclipse.basyx.aas.metamodel.map.descriptor.CustomId;
@@ -51,8 +54,15 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.MqttPersistenceException;
 import org.eclipse.paho.client.mqttv3.MqttSecurityException;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockserver.client.MockServerClient;
+import org.mockserver.integration.ClientAndServer;
+import org.mockserver.model.Header;
+import org.mockserver.verify.VerificationTimes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.moquette.broker.Server;
 import io.moquette.broker.config.ClasspathResourceLoader;
@@ -61,70 +71,101 @@ import io.moquette.broker.config.IResourceLoader;
 import io.moquette.broker.config.ResourceLoaderConfig;
 
 public class TestAASUpdater {
+	
+	private static final String PROPERTY_VALUE = "\"0.75\"";
+	private static final String PROPERTY_VALUE_PATH = "/submodels/submodelId/submodel/submodel-elements/ConnectedPropertyD/$value";
+
+	private static Logger logger = LoggerFactory.getLogger(TestAASUpdater.class);
+	
 	private static AASServerComponent aasServer;
 	private static DataBridgeComponent updater;
-	private static InMemoryRegistry registry;
+	private static InMemoryRegistry registry = new InMemoryRegistry();
 	protected static Server mqttBroker;
 
 	protected static IIdentifier deviceAASPlainId = new CustomId("TestUpdatedDeviceAAS");
 	protected static IIdentifier deviceAASIriId = new CustomId("https://example.com/ids/aas/7053_6021_1032_9066");
 	private static BaSyxContextConfiguration aasContextConfig;
+	
+	private static ClientAndServer mockServer;
 
 	@BeforeClass
 	public static void setUp() throws IOException {
-		startMqttBroker();
-		registry = new InMemoryRegistry();
-
-		aasContextConfig = new BaSyxContextConfiguration(4001, "");
-		BaSyxAASServerConfiguration aasConfig = new BaSyxAASServerConfiguration(AASServerBackend.INMEMORY, "aasx/updatertest.aasx");
-		aasServer = new AASServerComponent(aasContextConfig, aasConfig);
-		aasServer.setRegistry(registry);
-	}
-
-	@Test
-	public void test() throws Exception {
-		aasServer.startComponent();
-		System.out.println("AAS STARTED");
-		System.out.println("START UPDATER");
-		ClassLoader loader = TestAASUpdater.class.getClassLoader();
-		RoutesConfiguration configuration = new RoutesConfiguration();
-
-		// Extend configutation for connections
-		RoutesConfigurationFactory routesFactory = new RoutesConfigurationFactory(loader);
-		configuration.addRoutes(routesFactory.create());
-
-		// Extend configutation for MQTT Source
-		MqttDefaultConfigurationFactory mqttConfigFactory = new MqttDefaultConfigurationFactory(loader);
-		configuration.addDatasources(mqttConfigFactory.create());
-
-		// Extend configuration for AAS
-		AASProducerDefaultConfigurationFactory aasConfigFactory = new AASProducerDefaultConfigurationFactory(loader);
-		configuration.addDatasinks(aasConfigFactory.create());
-
-		// Extend configuration for Jsonata
-		JsonataDefaultConfigurationFactory jsonataConfigFactory = new JsonataDefaultConfigurationFactory(loader);
-		configuration.addTransformers(jsonataConfigFactory.create());
-
-		updater = new DataBridgeComponent(configuration);
-		updater.startComponent();
-		System.out.println("UPDATER STARTED");
-		System.out.println("PUBLISH EVENT to PropertyB");
+		configureAndStartMockserver();
 		
+		configureAndStartMqttBroker();
+
+		configureAndStartAasServer();
+		
+		configureAndStartUpdaterComponent();
+	}
+	
+	@AfterClass
+	public static void tearDown() {
+		updater.stopComponent();
+		aasServer.stopComponent();
+		mockServer.close();
+	}
+	
+	@Test
+	public void getPropertyBValue() throws MqttSecurityException, MqttPersistenceException, MqttException, InterruptedException {
 		publishNewDatapoint("PropertyB");
 		
 		waitForPropagation();
 		
 		checkIfPropertyIsUpdated();
-		
-		System.out.println("PUBLISH EVENT to PropertyC");
-		
+	}
+	
+	@Test
+	public void getPropertyCValue() throws MqttSecurityException, MqttPersistenceException, MqttException, InterruptedException {
 		publishNewDatapoint("PropertyC");
 		
 		waitForPropagation();
 		
 		checkIfPropertyIsUpdatedInEncodedAASEndpoint();
-		updater.stopComponent();
-		aasServer.stopComponent();
+	}
+	
+	@Test
+	public void getPropertyDValue() throws MqttSecurityException, MqttPersistenceException, MqttException, InterruptedException {
+		publishNewDatapoint("PropertyD");
+		
+		waitForPropagation();
+		
+		verifyPropertyValueUpdateRequest();
+	}
+	
+	private static void configureAndStartAasServer() {
+		aasContextConfig = new BaSyxContextConfiguration(4001, "");
+		BaSyxAASServerConfiguration aasConfig = new BaSyxAASServerConfiguration(AASServerBackend.INMEMORY, "aasx/updatertest.aasx");
+		aasServer = new AASServerComponent(aasContextConfig, aasConfig);
+		aasServer.setRegistry(registry);
+		
+		aasServer.startComponent();
+	}
+
+	private static void configureAndStartMockserver() {
+		mockServer = ClientAndServer.startClientAndServer(4002);
+
+		createExpectationForPatchRequest();
+	}
+
+	private static void configureAndStartUpdaterComponent() {
+		ClassLoader loader = TestAASUpdater.class.getClassLoader();
+		RoutesConfiguration configuration = new RoutesConfiguration();
+
+		RoutesConfigurationFactory routesFactory = new RoutesConfigurationFactory(loader);
+		configuration.addRoutes(routesFactory.create());
+
+		MqttDefaultConfigurationFactory mqttConfigFactory = new MqttDefaultConfigurationFactory(loader);
+		configuration.addDatasources(mqttConfigFactory.create());
+
+		AASProducerDefaultConfigurationFactory aasConfigFactory = new AASProducerDefaultConfigurationFactory(loader);
+		configuration.addDatasinks(aasConfigFactory.create());
+
+		JsonataDefaultConfigurationFactory jsonataConfigFactory = new JsonataDefaultConfigurationFactory(loader);
+		configuration.addTransformers(jsonataConfigFactory.create());
+
+		updater = new DataBridgeComponent(configuration);
+		updater.startComponent();
 	}
 
 	private void waitForPropagation() throws InterruptedException {
@@ -152,6 +193,8 @@ public class TestAASUpdater {
 	}
 
 	private void publishNewDatapoint(String topic) throws MqttException, MqttSecurityException, MqttPersistenceException {
+		logger.info("Publishing event to {}", topic);
+		
 		String json = "{\"Account\":{\"Account Name\":\"Firefly\",\"Order\":[{\"OrderID\":\"order103\",\"Product\":[{\"Product Name\":\"Bowler Hat\",\"ProductID\":858383,\"SKU\":\"0406654608\",\"Description\":{\"Colour\":\"Purple\",\"Width\":300,\"Height\":200,\"Depth\":210,\"Weight\":0.75},\"Price\":34.45,\"Quantity\":2},{\"Product Name\":\"Trilby hat\",\"ProductID\":858236,\"SKU\":\"0406634348\",\"Description\":{\"Colour\":\"Orange\",\"Width\":300,\"Height\":200,\"Depth\":210,\"Weight\":0.6},\"Price\":21.67,\"Quantity\":1}]},{\"OrderID\":\"order104\",\"Product\":[{\"Product Name\":\"Bowler Hat\",\"ProductID\":858383,\"SKU\":\"040657863\",\"Description\":{\"Colour\":\"Purple\",\"Width\":300,\"Height\":200,\"Depth\":210,\"Weight\":0.75},\"Price\":34.45,\"Quantity\":4},{\"ProductID\":345664,\"SKU\":\"0406654603\",\"Product Name\":\"Cloak\",\"Description\":{\"Colour\":\"Black\",\"Width\":30,\"Height\":20,\"Depth\":210,\"Weight\":2},\"Price\":107.99,\"Quantity\":1}]}]}}";
 		MqttClient mqttClient = new MqttClient("tcp://localhost:1884", "testClient", new MemoryPersistence());
 		mqttClient.connect();
@@ -160,7 +203,7 @@ public class TestAASUpdater {
 		mqttClient.close();
 	}
 
-	private static void startMqttBroker() throws IOException {
+	private static void configureAndStartMqttBroker() throws IOException {
 		mqttBroker = new Server();
 		IResourceLoader classpathLoader = new ClasspathResourceLoader();
 		final IConfig classPathConfig = new ResourceLoaderConfig(classpathLoader);
@@ -178,5 +221,21 @@ public class TestAASUpdater {
 		ConnectedAssetAdministrationShellManager manager = new ConnectedAssetAdministrationShellManager(registry);
 		ConnectedAssetAdministrationShell aas = manager.retrieveAAS(identifier);
 		return aas;
+	}
+	
+	@SuppressWarnings("resource")
+	private static void createExpectationForPatchRequest() {
+		new MockServerClient("localhost", 4002)
+				.when(request().withMethod("PATCH").withPath(PROPERTY_VALUE_PATH)
+						.withBody(PROPERTY_VALUE).withHeader("Content-Type", "application/json"))
+				.respond(response().withStatusCode(HttpStatus.SC_CREATED)
+						.withHeaders(new Header("Content-Type", "application/json; charset=utf-8")));
+	}
+
+	@SuppressWarnings("resource")
+	private void verifyPropertyValueUpdateRequest() {
+		new MockServerClient("localhost", 4002).verify(request().withMethod("PATCH")
+				.withPath(PROPERTY_VALUE_PATH).withHeader("Content-Type", "application/json")
+				.withBody(PROPERTY_VALUE), VerificationTimes.exactly(1));
 	}
 }

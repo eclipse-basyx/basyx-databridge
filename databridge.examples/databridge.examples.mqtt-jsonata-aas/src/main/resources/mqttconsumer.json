@@ -16,5 +16,11 @@
 		"serverUrl": "localhost",
 		"serverPort": 1884,
 		"topic": "PropertyC"
+	},
+	{
+		"uniqueId": "property4",
+		"serverUrl": "localhost",
+		"serverPort": 1884,
+		"topic": "PropertyD"
 	}
 ]

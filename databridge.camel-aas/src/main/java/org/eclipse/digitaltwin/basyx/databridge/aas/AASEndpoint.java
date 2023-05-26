@@ -33,6 +33,7 @@ import org.apache.camel.spi.UriEndpoint;
 import org.apache.camel.spi.UriParam;
 import org.apache.camel.spi.UriPath;
 import org.apache.camel.support.DefaultEndpoint;
+import org.eclipse.digitaltwin.basyx.databridge.aas.api.ApiType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,6 +52,9 @@ public class AASEndpoint extends DefaultEndpoint {
 
 	@UriParam(defaultValue = "")
 	private String propertyPath;
+	
+	@UriParam(defaultValue = "BaSyx")
+	private ApiType api;
 
 	public AASEndpoint() {
     }
@@ -93,10 +97,45 @@ public class AASEndpoint extends DefaultEndpoint {
 		this.propertyPath = propertyPath;
 	}
 	
+	/**
+	 * The Api type for this endpoint
+	 * 
+	 * @return ApiType
+	 */
+	public ApiType getApi() {
+		return api;
+	}
+
+	/**
+	 * Sets the Api type for this endpoint
+	 * 
+	 * @param api
+	 */
+	public void setApi(ApiType api) {
+		this.api = api;
+	}
+
 	public String getFullProxyUrl() {
-		String elemUrl = String.format("%s/submodelElements/%s", this.getSubmodelEndpoint(), this.getSubmodelElementIdShortPath());
-		logger.info("Proxy URL: " + elemUrl);
-		return elemUrl;
+		if (api.equals(ApiType.BASYX))
+			return createBaSyxApiProxyUrl();
+		
+		return createDotAasApiProxyUrl();
+	}
+
+	private String createDotAasApiProxyUrl() {
+		String proxyUrl = String.format("%s/submodel-elements/%s", this.getSubmodelEndpoint(), this.getSubmodelElementIdShortPath());
+		
+		logger.info("Proxy URL: " + proxyUrl);
+		
+		return proxyUrl;
+	}
+
+	private String createBaSyxApiProxyUrl() {
+		String proxyUrl = String.format("%s/submodelElements/%s", this.getSubmodelEndpoint(), this.getSubmodelElementIdShortPath());
+		
+		logger.info("Proxy URL: " + proxyUrl);
+		
+		return proxyUrl;
 	}
 	
 	/**

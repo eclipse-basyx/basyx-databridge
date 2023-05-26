@@ -24,10 +24,12 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.databridge.aas.configuration;
 
+import org.eclipse.digitaltwin.basyx.databridge.aas.api.ApiType;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.entity.DataSinkConfiguration;
 
 /**
  * An implementation of AAS data sink configuration
+ * 
  * @author haque
  *
  */
@@ -37,18 +39,20 @@ public class AASDatasinkConfiguration extends DataSinkConfiguration {
 	private String type;
 	private String submodelEndpoint;
 	private String idShortPath;
+	private String api;
 
 	public AASDatasinkConfiguration() {}
 	
-	public AASDatasinkConfiguration(String submodelEndpoint, String idShortPath, String uniqueId) {
+	public AASDatasinkConfiguration(String submodelEndpoint, String idShortPath, String uniqueId, String api) {
 		super(uniqueId);
 		this.type = PROPERTY_TYPE;
 		this.submodelEndpoint = submodelEndpoint;
 		this.idShortPath = idShortPath;
+		this.api = api;
 	}
 	
-	public AASDatasinkConfiguration(String aasEndpoint, String propertyPath) {
-		this(aasEndpoint, propertyPath, null);
+	public AASDatasinkConfiguration(String submodelEndpoint, String idShortPath) {
+		this(submodelEndpoint, idShortPath, null, ApiType.BASYX.getName());
 	}
 	
 	public String getType() {
@@ -75,11 +79,24 @@ public class AASDatasinkConfiguration extends DataSinkConfiguration {
 		this.idShortPath = path;
 	}
 
+	public String getApi() {
+		return api;
+	}
+
+	public void setApi(String api) {
+		this.api = api;
+	}
+
 	@Override
 	public String getConnectionURI() {
 		String endpointDefinition = "aas:";
 		endpointDefinition += this.submodelEndpoint;
 		endpointDefinition += "?propertyPath=" + this.idShortPath;
+		endpointDefinition += "&api=" + getApiIfConfigured();
 		return endpointDefinition;
+	}
+
+	private String getApiIfConfigured() {
+		return api != null ? api : ApiType.BASYX.getName();
 	}
 }
