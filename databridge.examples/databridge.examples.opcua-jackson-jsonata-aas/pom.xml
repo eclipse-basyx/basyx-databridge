@@ -84,7 +84,7 @@
 		<dependency>
 			<groupId>org.eclipse.basyx</groupId>
 			<artifactId>basyx.sdk</artifactId>
-			<version>1.2.0</version>
+			<version>1.4.0</version>
 		    <exclusions>
 		        <exclusion>
 		            <groupId>org.eclipse.milo</groupId>
