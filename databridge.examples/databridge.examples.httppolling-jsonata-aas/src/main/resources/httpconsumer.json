@@ -1,7 +1,6 @@
 [
   {
     "uniqueId": "httpsource",
-    "serverUrl": "http://127.0.0.1:2018",
-    "query": "foo"
+    "serverUrl": "http://127.0.0.1:2018/test"
   }
 ]

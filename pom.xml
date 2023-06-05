@@ -14,7 +14,6 @@
 		<module>databridge.camel-aas</module>
 		<module>databridge.camel-activemq</module>
 		<module>databridge.camel-hono</module>
-		<module>databridge.camel-http</module>
 		<module>databridge.camel-httppolling</module>
 		<module>databridge.camel-jsonata</module>
 		<module>databridge.camel-jsonjackson</module>

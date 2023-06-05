@@ -32,21 +32,10 @@ import org.eclipse.digitaltwin.basyx.databridge.core.configuration.entity.DataSo
  *
  */
 public class HttpPollingConsumerConfiguration extends DataSourceConfiguration {
-    private String query;
-
 	public HttpPollingConsumerConfiguration() {}
 	
-	public HttpPollingConsumerConfiguration(String uniqueId, String serverUrl, int serverPort, String query) {
+	public HttpPollingConsumerConfiguration(String uniqueId, String serverUrl, int serverPort) {
 		super(uniqueId, serverUrl, serverPort);
-		this.query= query;
-	}
-
-	public String getQuery() {
-		return query;
-	}
-
-	public void setQuery(String query) {
-		this.query = query;
 	}
 
 	@Override
