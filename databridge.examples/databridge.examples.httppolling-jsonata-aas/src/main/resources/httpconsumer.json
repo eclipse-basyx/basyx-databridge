@@ -1,8 +1,8 @@
 [
   {
     "uniqueId": "httpsource",
-    "serverUrl": "http://127.0.0.1:2018",
-    "serverPort": 1234,
+    "serverUrl": "http://127.0.0.1",
+    "serverPort": 2018,
     "query": "foo"
   }
 ]

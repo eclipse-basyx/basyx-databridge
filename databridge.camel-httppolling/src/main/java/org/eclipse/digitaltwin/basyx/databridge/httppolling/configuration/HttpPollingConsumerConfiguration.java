@@ -51,6 +51,6 @@ public class HttpPollingConsumerConfiguration extends DataSourceConfiguration {
 
 	@Override
 	public String getConnectionURI() {
-		return getServerUrl();
+		return getServerUrl() + ":" + getServerPort();
 	}
 }
