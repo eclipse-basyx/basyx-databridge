@@ -21,7 +21,6 @@
 		<module>databridge.camel-opcua</module>
 		<module>databridge.camel-paho</module>
 		<module>databridge.camel-plc4x</module>
-		<module>databridge.camel-prometheus</module>
 		<module>databridge.camel-timer</module>
 		<module>databridge.examples</module>
 		<module>databridge.component</module>
