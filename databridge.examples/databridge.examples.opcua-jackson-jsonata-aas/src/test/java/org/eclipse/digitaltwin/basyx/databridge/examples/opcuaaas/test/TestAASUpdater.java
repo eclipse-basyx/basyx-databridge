@@ -46,7 +46,6 @@ import org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.core.Ro
 import org.eclipse.digitaltwin.basyx.databridge.jsonata.configuration.factory.JsonataDefaultConfigurationFactory;
 import org.eclipse.digitaltwin.basyx.databridge.jsonjackson.configuration.factory.JsonJacksonDefaultConfigurationFactory;
 import org.eclipse.digitaltwin.basyx.databridge.opcua.configuration.factory.OpcuaDefaultConfigurationFactory;
-import org.eclipse.digitaltwin.basyx.databridge.timer.configuration.factory.TimerDefaultConfigurationFactory;
 import org.eclipse.milo.examples.server.ExampleServer;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -93,10 +92,6 @@ public class TestAASUpdater {
 		// Extend configutation for connections
 		RoutesConfigurationFactory routesFactory = new RoutesConfigurationFactory(loader);
 		configuration.addRoutes(routesFactory.create());
-
-		// Extend configuration for Timer
-		TimerDefaultConfigurationFactory timerConfigFactory = new TimerDefaultConfigurationFactory(loader);
-		configuration.addDatasources(timerConfigFactory.create());
 
 		// Extend configutation for Opcua Source
 		OpcuaDefaultConfigurationFactory opcuaConfigFactory = new OpcuaDefaultConfigurationFactory(loader);
