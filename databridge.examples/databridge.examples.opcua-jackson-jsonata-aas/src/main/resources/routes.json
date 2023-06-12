@@ -3,18 +3,12 @@
 		"datasource": "doublescalar",
 		"transformers": ["dataValueToJson", "jsonataExtractValue"],
 		"datasinks": ["ConnectedSubmodel/ConnectedPropertyA"],
-		"trigger": "timer",
-		"triggerData": {
-			"timerName": "timer1"
-		}
+		"trigger": "event"
 	},
 	{
 		"datasource": "integerscalar",
 		"transformers": ["dataValueToJson", "jsonataExtractValue"],
 		"datasinks": ["ConnectedSubmodel/ConnectedPropertyB"],
-		"trigger": "timer",
-		"triggerData": {
-			"timerName": "timer1"
-		}
+		"trigger": "event"
 	}
 ]

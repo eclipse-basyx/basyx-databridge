@@ -116,12 +116,6 @@
 
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
-			<artifactId>databridge.camel-http</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.eclipse.digitaltwin.basyx</groupId>
 			<artifactId>databridge.camel-httppolling</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
@@ -137,13 +131,7 @@
 			<artifactId>databridge.camel-opcua</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-
-		<dependency>
-			<groupId>org.eclipse.digitaltwin.basyx</groupId>
-			<artifactId>databridge.camel-prometheus</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-
+		
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
 			<artifactId>databridge.camel-timer</artifactId>
@@ -192,7 +180,7 @@
 		<dependency>
 			<groupId>org.eclipse.basyx</groupId>
 			<artifactId>basyx.sdk</artifactId>
-			<version>1.2.0</version>
+			<version>1.4.0</version>
 			<classifier>tests</classifier>
 			<scope>test</scope>
 			<exclusions>
