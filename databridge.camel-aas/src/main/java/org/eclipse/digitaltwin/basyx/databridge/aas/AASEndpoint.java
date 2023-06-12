@@ -28,6 +28,7 @@ import java.io.IOException;
 
 import org.apache.camel.Category;
 import org.apache.camel.Consumer;
+import org.apache.camel.PollingConsumer;
 import org.apache.camel.Processor;
 import org.apache.camel.Producer;
 import org.apache.camel.spi.Metadata;
@@ -57,6 +58,7 @@ public class AASEndpoint extends DefaultEndpoint {
 
 	private ConnectedProperty connectedProperty;
 	private static final String API_V3_SUFFIX = "/$value";
+	private Processor processor;
 
 	@UriPath
 	@Metadata(required = true)
@@ -209,11 +211,47 @@ public class AASEndpoint extends DefaultEndpoint {
 		return submodelEndpoint;
 	}
 
-	private String getFullProxyUrl() {
+	public String getFullProxyUrl() {
 		if (api.equals(ApiType.BASYX))
 			return createBaSyxApiProxyUrl();
 
 		return createDotAasApiProxyUrl();
 	}
-
+	
+	/*
+	 * AAS Polling consumer section 
+	 * 
+	 */
+	
+	@Override
+	public PollingConsumer createPollingConsumer() throws Exception {
+		// TODO Auto-generated method stub
+		AASConsumer consumer = new AASConsumer(this, processor);
+		return consumer;
+	}
+	
+	/**
+	 * Gets the submodel element id for data dump
+	 * @return 
+	 */
+	public String getSubmodelElementIdShortPath() {
+		String submodelElementIdShortPath = getPropertyPath();
+    	logger.info("Submodel Element ID: " + submodelElementIdShortPath);
+		return submodelElementIdShortPath;
+	}
+	
+	/**
+	 * Gets proxy url based on aasserver_datasource.json configuration
+	 * Without path will return getSubmodelEndpoint
+	 * With path will return createBaSyxApiProxyUrl
+	 * @return 
+	 */
+	public String getFullProxyUrlAas() {
+		
+		if (!getSubmodelElementIdShortPath().isEmpty()) {
+			return this.createBaSyxApiProxyUrl();
+		} else {
+			return this.getSubmodelEndpoint();
+		}
+	}
 }

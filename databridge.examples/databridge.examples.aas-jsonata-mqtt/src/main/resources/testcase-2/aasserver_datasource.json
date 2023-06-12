@@ -1,0 +1,14 @@
+[
+	
+	{
+		"uniqueId": "exampleAAS",
+		"submodelEndpoint": "http://localhost:5001/aasServer/shells/https%253A%252F%252Fexample.com%252Fids%252Faas%252F8132_1103_1112_1283/aas/submodels/telemetryDataStructure/submodel",
+		"path": ""
+	},
+	{
+		"uniqueId": "exampleAAS2",
+		"submodelEndpoint": "http://localhost:5001/aasServer/shells/https%253A%252F%252Fexample.com%252Fids%252Faas%252F8132_1103_1112_1283/aas/submodels/telemetryDataStructure/submodel",
+		"path": ""
+	}
+	
+]

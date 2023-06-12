@@ -1,6 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.eclipse.digitaltwin.basyx</groupId>
@@ -16,6 +15,7 @@
 	</properties>
 
 	<modules>
+		<module>databridge.examples.aas-jsonata-mqtt</module>
 		<module>databridge.examples.aasserver</module>
 		<module>databridge.examples.kafkaproducer</module>
 		<module>databridge.examples.activemqproducer</module>
@@ -27,12 +27,13 @@
 		<module>databridge.examples.mqtt-jsonata-aas</module>
 		<module>databridge.examples.httpserver</module>
 		<module>databridge.examples.opcua-jackson-jsonata-aas</module>
+		<module>databridge.examples.opcua-jackson-jsonata</module>
 		<module>databridge.examples.httppolling-jsonata-aas</module>
 		<module>databridge.examples.httppolling-jsonata-delegator</module>
 		<module>databridge.examples.prometheus-jsonata-aas</module>
 		<module>databridge.examples.plc4x-jsonata-aas</module>
 		<module>databridge.examples.dot-aas-v3-api</module>
-	</modules>
+  </modules>
 
 	<packaging>pom</packaging>
 </project>
