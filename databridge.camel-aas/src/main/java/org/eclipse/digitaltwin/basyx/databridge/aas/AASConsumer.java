@@ -122,7 +122,6 @@ public class AASConsumer extends ScheduledPollConsumer implements PollingConsume
 			ConnectedProperty prop = new ConnectedProperty(getProxy());
 			return new GSONTools(new DefaultTypeFactory()).serialize(prop.getLocalCopy());
     	}else {
-    		
     		ConnectedSubmodel sm = new ConnectedSubmodel(getProxy());
     		return new GSONTools(new DefaultTypeFactory()).serialize(SubmodelElementMapCollectionConverter.smToMap(sm.getLocalCopy()));
     	}
