@@ -9,8 +9,8 @@
 	</parent>
 
 	<artifactId>databridge.examples.kafka-jsonata-aas</artifactId>
-	<name>Kafka-JSONATA-AAS ETL</name>
-	<description>An Integration example using kafka as a data source, jsonata data transformer and aas sink</description>
+	<name>Kafka jsonATA AAS</name>
+	<description>An Integration example using kafka as a data source, jsonATA as data transformer and AAS as sink</description>
 
 
 	<packaging>jar</packaging>
@@ -111,6 +111,22 @@
 			<artifactId>kafka-clients</artifactId>
 			<version>3.4.0</version>
 		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.apache.kafka/kafka -->
+		<dependency>
+			<groupId>org.apache.kafka</groupId>
+			<artifactId>kafka_2.13</artifactId>
+			<version>3.4.0</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Zookeeper server -->
+		<dependency>
+            <groupId>org.apache.curator</groupId>
+            <artifactId>curator-test</artifactId>
+            <version>5.5.0</version>
+            <scope>test</scope>
+        </dependency>
 
 	</dependencies>
 </project>
