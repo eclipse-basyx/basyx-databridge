@@ -33,6 +33,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.curator.test.TestingServer;
@@ -41,6 +42,7 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.kafka.common.utils.Time;
+import org.awaitility.Awaitility;
 import org.eclipse.basyx.aas.manager.ConnectedAssetAdministrationShellManager;
 import org.eclipse.basyx.aas.metamodel.connected.ConnectedAssetAdministrationShell;
 import org.eclipse.basyx.aas.metamodel.map.descriptor.CustomId;
@@ -73,8 +75,6 @@ import scala.Option;
 
 /**
  * Tests the DataBridge scenario with Kafka
- *
- * @author haque, danish
  *
  */
 public class TestAASUpdater {
@@ -118,23 +118,29 @@ public class TestAASUpdater {
 	@Test
 	public void getPropertyAValue() throws Exception {
 		publishNewDatapoint("first-topic");
-
-		waitForPropagation();
-
-		checkIfPropertyIsUpdated("336.36", "ConnectedPropertyA");
+		
+		awaitAndCheckPropertyValue("336.36", "ConnectedPropertyA");
 	}
 	
 	@Test
 	public void getPropertyBValue() throws Exception {
 		publishNewDatapoint("second-topic");
-
-		waitForPropagation();
-
-		checkIfPropertyIsUpdated("858383", "ConnectedPropertyB");
+		
+		awaitAndCheckPropertyValue("858383", "ConnectedPropertyB");
+	}
+	
+	private void awaitAndCheckPropertyValue(String expectedValue, String propertyIdShort) {
+	    Awaitility.await().with().pollInterval(2, TimeUnit.SECONDS).atMost(14, TimeUnit.SECONDS).untilAsserted(() -> assertEquals(expectedValue, retrievePropertyValue(propertyIdShort)));
 	}
 
-	private void waitForPropagation() throws InterruptedException {
-		Thread.sleep(5000);
+	private Object retrievePropertyValue(String propertyIdShort) {
+		ConnectedAssetAdministrationShell aas = getAAS(deviceAASId);
+
+		ISubmodelElement updatedProp = getSubmodelElement(aas, "ConnectedSubmodel", propertyIdShort);
+
+		Object actualPropertyValue = updatedProp.getValue();
+		
+		return actualPropertyValue;
 	}
 
 	private static void configureAndStartAasServer() {
@@ -165,16 +171,6 @@ public class TestAASUpdater {
 
 		updater = new DataBridgeComponent(configuration);
 		updater.startComponent();
-	}
-
-	private void checkIfPropertyIsUpdated(String expectedPropertyValue, String propertyIdShort) throws InterruptedException {
-		ConnectedAssetAdministrationShell aas = getAAS(deviceAASId);
-
-		ISubmodelElement updatedProp = getSubmodelElement(aas, "ConnectedSubmodel", propertyIdShort);
-
-		Object actualPropertyValue = updatedProp.getValue();
-
-		assertEquals(expectedPropertyValue, actualPropertyValue);
 	}
 
 	private void publishNewDatapoint(String topic)
