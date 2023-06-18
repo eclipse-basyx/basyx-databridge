@@ -137,10 +137,8 @@ public class TestAASUpdater {
 		ConnectedAssetAdministrationShell aas = getAAS(deviceAASId);
 
 		ISubmodelElement updatedProp = getSubmodelElement(aas, "ConnectedSubmodel", propertyIdShort);
-
-		Object actualPropertyValue = updatedProp.getValue();
 		
-		return actualPropertyValue;
+		return updatedProp.getValue();
 	}
 
 	private static void configureAndStartAasServer() {
@@ -245,15 +243,14 @@ public class TestAASUpdater {
 	private ISubmodelElement getSubmodelElement(ConnectedAssetAdministrationShell aas, String submodelId,
 			String submodelElementId) {
 		ISubmodel sm = aas.getSubmodels().get(submodelId);
-		ISubmodelElement updatedProp = sm.getSubmodelElement(submodelElementId);
 
-		return updatedProp;
+		return sm.getSubmodelElement(submodelElementId);
 	}
 
 	private ConnectedAssetAdministrationShell getAAS(IIdentifier identifier) {
 		ConnectedAssetAdministrationShellManager manager = new ConnectedAssetAdministrationShellManager(registry);
-		ConnectedAssetAdministrationShell aas = manager.retrieveAAS(identifier);
-		return aas;
+
+		return manager.retrieveAAS(identifier);
 	}
 
 	private static void clearLogs() throws IOException {
