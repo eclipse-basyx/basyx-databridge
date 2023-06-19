@@ -66,7 +66,7 @@ import net.wimpi.modbus.procimg.SimpleRegister;
 public class TestAASUpdater {
 	
 	private static final String HOST = "127.0.0.1";
-	private static final int PORT = 50201;
+	private static final int PORT = 8095;
 	private static final int THREAD_POOL_SIZE = 3;	
 	
 	private static AASServerComponent aasServer;
