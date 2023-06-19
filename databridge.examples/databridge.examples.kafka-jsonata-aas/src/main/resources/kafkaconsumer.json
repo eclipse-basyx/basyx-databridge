@@ -7,7 +7,7 @@
 		"maxPollRecords": 5000,
 		"groupId": "basyx-updater",
 		"consumersCount": 1,
-		"seekTo": "latest"
+		"seekTo": "BEGINNING"
 	},
 	{
 		"uniqueId": "property2",
@@ -17,6 +17,6 @@
 		"maxPollRecords": 5000,
 		"groupId": "basyx-updater",
 		"consumersCount": 1,
-		"seekTo": "latest"
+		"seekTo": "BEGINNING"
 	}
 ]
