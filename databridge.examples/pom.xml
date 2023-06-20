@@ -27,7 +27,6 @@
 		<module>databridge.examples.mqtt-jsonata-aas</module>
 		<module>databridge.examples.httpserver</module>
 		<module>databridge.examples.opcua-jackson-jsonata-aas</module>
-		<module>databridge.examples.opcua-jackson-jsonata</module>
 		<module>databridge.examples.httppolling-jsonata-aas</module>
 		<module>databridge.examples.httppolling-jsonata-delegator</module>
 		<module>databridge.examples.plc4x-jsonata-aas</module>

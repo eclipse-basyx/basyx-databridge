@@ -4,8 +4,8 @@
 		"serverUrl": "broker.mqttdashboard.com",
 		"serverPort": 1883,
 		"topic": "aas/pressure",
-		"clientId": "mqttx_0009be28",
-		"userName": "masud",
+		"clientId": "mqttx_c18f5405",
+		"userName": "test",
 		"password": "123456"
 	},
 	
@@ -14,8 +14,8 @@
 		"serverUrl": "broker.mqttdashboard.com",
 		"serverPort": 1883,
 		"topic": "aas/rotation",
-		"clientId": "mqttx_0009be28",
-		"userName": "masud",
+		"clientId": "mqttx_71d9ee48",
+		"userName": "test",
 		"password": "123456"
 	}
 ]
