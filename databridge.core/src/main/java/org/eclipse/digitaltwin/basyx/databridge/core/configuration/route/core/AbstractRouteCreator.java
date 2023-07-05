@@ -51,13 +51,13 @@ public abstract class AbstractRouteCreator implements IRouteCreator {
 
 	@Override
 	public void addRouteToRouteBuilder(RouteConfiguration routeConfig) {
-		Object dataSourceEndpoint = RouteCreatorHelper.getDataSourceEndpoint(routesConfiguration, routeConfig.getDatasource());
-		Object[] dataSinkEndpoints = RouteCreatorHelper.getDataSinkEndpoints(routesConfiguration, routeConfig.getDatasinks());
-		Object[] dataTransformerEndpoints = RouteCreatorHelper.getDataTransformerEndpoints(routesConfiguration, routeConfig.getTransformers());
+		String dataSourceEndpoint = RouteCreatorHelper.getDataSourceEndpoint(routesConfiguration, routeConfig.getDatasource());
+		String[] dataSinkEndpoints = RouteCreatorHelper.getDataSinkEndpoints(routesConfiguration, routeConfig.getDatasinks());
+		String[] dataTransformerEndpoints = RouteCreatorHelper.getDataTransformerEndpoints(routesConfiguration, routeConfig.getTransformers());
 		String routeId = routeConfig.getRouteId();
 
 		configureRoute(routeConfig, dataSourceEndpoint, dataSinkEndpoints, dataTransformerEndpoints, routeId);
 	}
 
-	protected abstract void configureRoute(RouteConfiguration routeConfig, Object dataSourceEndpoint, Object[] dataSinkEndpoints, Object[] dataTransformerEndpoints, String routeId);
+	protected abstract void configureRoute(RouteConfiguration routeConfig, String dataSourceEndpoint, String[] dataSinkEndpoints, String[] dataTransformerEndpoints, String routeId);
 }

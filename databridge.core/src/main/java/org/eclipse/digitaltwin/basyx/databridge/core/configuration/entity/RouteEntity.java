@@ -52,5 +52,5 @@ public abstract class RouteEntity {
 	 * Retrieves the connection URI of the configuration
 	 * @return
 	 */
-	public abstract Object getConnectionURI();
+	public abstract String getConnectionURI();
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2021 the Eclipse BaSyx Authors
+ * Copyright (C) 2023 the Eclipse BaSyx Authors
  * 
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -22,29 +22,33 @@
  * 
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
-package org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.event;
+package org.eclipse.digitaltwin.basyx.databridge.plc4x.configuration;
 
-import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.model.RouteDefinition;
-import org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.core.AbstractRouteCreator;
-import org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.core.RouteConfiguration;
-import org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.core.RoutesConfiguration;
+/**
+ * Represents PLC4X's endpoint options
+ * 
+ * @author danish
+ *
+ */
+public class Option {
+	
+	private String name;
+	private String value;
+	
+	public Option() {}
 
-public class EventRouteCreator extends AbstractRouteCreator {
-
-	public EventRouteCreator(RouteBuilder routeBuilder, RoutesConfiguration routesConfiguration) {
-		super(routeBuilder, routesConfiguration);
+	public Option(String name, String value) {
+		super();
+		this.name = name;
+		this.value = value;
 	}
 
-	@Override
-	protected void configureRoute(RouteConfiguration routeConfiguration, String dataSourceEndpoint, String[] dataSinkEndpoints, String[] dataTransformerEndpoints, String routeId) {
-		RouteDefinition routeDefinition = getRouteBuilder().from(dataSourceEndpoint).routeId(routeId).to("log:" + routeId);
+	public String getName() {
+		return name;
+	}
 
-		if (!(dataTransformerEndpoints == null || dataTransformerEndpoints.length == 0)) {
-			routeDefinition.to(dataTransformerEndpoints).to("log:" + routeId);
-		}
-
-		routeDefinition.to(dataSinkEndpoints[0]).to("log:" + routeId);
+	public String getValue() {
+		return value;
 	}
 
 }
