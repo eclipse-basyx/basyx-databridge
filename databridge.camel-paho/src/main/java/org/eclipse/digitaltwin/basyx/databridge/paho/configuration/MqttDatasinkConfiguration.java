@@ -41,7 +41,7 @@ public class MqttDatasinkConfiguration extends DataSinkConfiguration{
 		this.userName = userName;
 	}
 
-	public String getPassword() { // change to private?
+	public String getPassword() {
 		return password;
 	}
 
@@ -85,7 +85,6 @@ public class MqttDatasinkConfiguration extends DataSinkConfiguration{
 
 	@Override
 	public Object getConnectionURI() {
-		// TODO Auto-generated method stub
 		return "paho:" + getTopic() + buildOptions() + ":" + getServerPort();
 	}
 

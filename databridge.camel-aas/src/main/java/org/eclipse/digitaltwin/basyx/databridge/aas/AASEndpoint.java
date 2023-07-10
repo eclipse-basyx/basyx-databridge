@@ -211,7 +211,7 @@ public class AASEndpoint extends DefaultEndpoint {
 		return submodelEndpoint;
 	}
 
-	public String getFullProxyUrl() {
+	private String getFullProxyUrl() {
 		if (api.equals(ApiType.BASYX))
 			return createBaSyxApiProxyUrl();
 
@@ -225,7 +225,6 @@ public class AASEndpoint extends DefaultEndpoint {
 	
 	@Override
 	public PollingConsumer createPollingConsumer() throws Exception {
-		// TODO Auto-generated method stub
 		AASConsumer consumer = new AASConsumer(this, processor);
 		return consumer;
 	}
@@ -241,7 +240,6 @@ public class AASEndpoint extends DefaultEndpoint {
 	}
 	
 	/**
-	 * Gets proxy url based on aasserver_datasource.json configuration
 	 * Without path will return getSubmodelEndpoint
 	 * With path will return createBaSyxApiProxyUrl
 	 * @return 

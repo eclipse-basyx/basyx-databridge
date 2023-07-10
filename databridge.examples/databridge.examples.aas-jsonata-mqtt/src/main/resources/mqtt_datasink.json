@@ -5,7 +5,7 @@
 		"serverPort": 1883,
 		"topic": "aas/pressure",
 		"clientId": "mqttx_c18f5405",
-		"userName": "test",
+		"userName": "test1",
 		"password": "123456"
 	},
 	
@@ -15,7 +15,7 @@
 		"serverPort": 1883,
 		"topic": "aas/rotation",
 		"clientId": "mqttx_71d9ee48",
-		"userName": "test",
+		"userName": "test1",
 		"password": "123456"
 	}
 ]

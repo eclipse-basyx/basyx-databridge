@@ -4,20 +4,20 @@ import org.eclipse.digitaltwin.basyx.databridge.core.configuration.entity.DataSo
 
 public class AASDataSourceConfiguration extends DataSourceConfiguration{
 
-	private String path;
+	private String idShortPath;
 	private String submodelEndpoint;
 	
-	public AASDataSourceConfiguration(String uniqueId, String serverUrl, int serverPort, String path, String submodelEndpoint) {
+	public AASDataSourceConfiguration(String uniqueId, String serverUrl, int serverPort, String idShortPath, String submodelEndpoint) {
 		super(uniqueId, serverUrl, serverPort);
 		this.submodelEndpoint = submodelEndpoint;
 	}
 
 	public String getPath() {
-		return path;
+		return idShortPath;
 	}
 
-	public void setPath(String path) {
-		this.path = path;
+	public void setPath(String idShortPath) {
+		this.idShortPath = idShortPath;
 	}
 	
 	public String getSubmodelEndpoint() {
@@ -30,7 +30,6 @@ public class AASDataSourceConfiguration extends DataSourceConfiguration{
 	
 	@Override
 	public Object getConnectionURI() {
-		// TODO Auto-generated method stub
 		return "aas:" + getSubmodelEndpoint() + "?propertyPath=" + getPath();
 	}
 

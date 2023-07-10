@@ -9,11 +9,9 @@ public class AASDatasourceDefaultConfigurationFactory extends DataSourceConfigur
 	
 	public AASDatasourceDefaultConfigurationFactory(ClassLoader loader) {
 		super(FILE_PATH, loader, AASDataSourceConfiguration.class);
-		// TODO Auto-generated constructor stub
 	}
 	
 	public AASDatasourceDefaultConfigurationFactory(String filePath, ClassLoader loader) {
 		super(filePath, loader, AASDataSourceConfiguration.class);
-		// TODO Auto-generated constructor stub
 	}
 }

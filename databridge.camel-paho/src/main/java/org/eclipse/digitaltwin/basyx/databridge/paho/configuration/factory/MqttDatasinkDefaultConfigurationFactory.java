@@ -9,7 +9,6 @@ public class MqttDatasinkDefaultConfigurationFactory extends DataSinkConfigurati
 
 	public MqttDatasinkDefaultConfigurationFactory(ClassLoader loader) {
 		super(FILE_PATH, loader, MqttDatasinkConfiguration.class);
-		// TODO Auto-generated constructor stub
 	}
 
 	public MqttDatasinkDefaultConfigurationFactory(String filePath, ClassLoader loader) {

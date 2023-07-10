@@ -25,12 +25,11 @@ public class AASConsumer extends ScheduledPollConsumer implements PollingConsume
 	
 	
 	private static final Logger logger = LoggerFactory.getLogger(AASConsumer.class);
-	private final AASEndpoint endpoint;
+	
 	private VABElementProxy proxy;
 	
 	public AASConsumer(AASEndpoint endpoint, Processor processor) {
 		super(endpoint, processor);
-		this.endpoint = endpoint;
 		// TODO Auto-generated constructor stub
 		
 		//Start connection according to aasserver_datasource.json  
@@ -97,7 +96,7 @@ public class AASConsumer extends ScheduledPollConsumer implements PollingConsume
 	private void connectToSmElement() {
 
 		HTTPConnectorFactory factory = new HTTPConnectorFactory();
-    	String proxyUrl = this.endpoint.getFullProxyUrlAas();
+    	String proxyUrl = this.getEndpoint().getFullProxyUrlAas();
     	IModelProvider provider = factory.getConnector(proxyUrl);
     	this.proxy = new VABElementProxy("", provider);
 	}
