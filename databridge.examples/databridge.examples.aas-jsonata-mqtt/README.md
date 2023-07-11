@@ -8,10 +8,10 @@
  
 - With properties basic workflow
 
-![Work Flow -1](https://github.com/masud-svg/demo-photo/blob/master/Capture.PNG)
+![Work Flow -1](./src/main/resources/image/work_flow_diagram_1.PNG)
 
 - Without properties basic workflow
 
-![Work Flow -2](https://github.com/masud-svg/demo-photo/blob/master/Capture1.PNG)
+![Work Flow -2](./src/main/resources/image/work_flow_diagram_2.PNG)
 
 - *In order to run without properties work flow, required configuration file exists in  `databridge.examples/databridge.examples.aas-jsonata-mqtt/src/main/resources/testcase-2`*
