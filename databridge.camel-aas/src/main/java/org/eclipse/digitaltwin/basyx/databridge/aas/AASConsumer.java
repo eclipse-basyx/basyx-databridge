@@ -54,20 +54,17 @@ public class AASConsumer extends ScheduledPollConsumer implements PollingConsume
 	}
 
 	@Override
-	protected int poll() throws Exception {
-		// TODO Auto-generated method stub
+	protected int poll() throws Exception {		
 		return 0;
 	}
 
 	@Override
 	public Exchange receive() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Exchange receiveNoWait() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -76,7 +73,6 @@ public class AASConsumer extends ScheduledPollConsumer implements PollingConsume
 	 */
 	@Override
 	public Exchange receive(long timeout) {
-		// TODO Auto-generated method stub
 
 		// Polling data periodically
 		pollingDataFromDataSource();
