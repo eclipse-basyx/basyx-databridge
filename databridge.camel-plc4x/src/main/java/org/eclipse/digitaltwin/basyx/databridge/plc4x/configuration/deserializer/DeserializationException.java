@@ -22,50 +22,23 @@
  * 
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
-package org.eclipse.digitaltwin.basyx.databridge.plc4x.configuration;
-
-import java.util.Objects;
+package org.eclipse.digitaltwin.basyx.databridge.plc4x.configuration.deserializer;
 
 /**
- * Represents PLC4X's endpoint options
+ * Indicates that the provided serialized string is invalid
  * 
  * @author danish
  *
  */
-public class Option {
+public class DeserializationException extends RuntimeException {
 	
-	private String name;
-	private String value;
-	
-	public Option() {}
+	private static final long serialVersionUID = 1L;
 
-	public Option(String name, String value) {
-		super();
-		this.name = name;
-		this.value = value;
+	public DeserializationException() {
 	}
 
-	public String getName() {
-		return name;
+	public DeserializationException(String message) {
+		super(message);
 	}
-
-	public String getValue() {
-		return value;
-	}
-	
-	@Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null || getClass() != obj.getClass())
-            return false;
-        Option other = (Option) obj;
-        return Objects.equals(name, other.name) && Objects.equals(value, other.value);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, value);
-    }
 
 }

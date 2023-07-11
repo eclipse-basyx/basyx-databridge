@@ -5,7 +5,7 @@
 		"serverPort": 8095,
 		"driver": "modbus-tcp",
 		"servicePath": "",
-		"options": [],
+		"options": "",
 		"tags": [
 			{
 				"name": "value_1",

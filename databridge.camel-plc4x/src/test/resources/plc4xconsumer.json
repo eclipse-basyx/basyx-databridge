@@ -5,12 +5,7 @@
 		"serverPort": 502,
 		"driver": "modbus-tcp",
 		"servicePath": "",
-		"options": [
-			{
-				"name": "period",
-				"value": "100"
-			}
-		],
+		"options": "period=100",
 		"tags": [
 			{
 				"name": "value-1",

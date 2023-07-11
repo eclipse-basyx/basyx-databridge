@@ -28,6 +28,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import org.apache.http.client.utils.URIBuilder;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.entity.DataSourceConfiguration;
+import org.eclipse.digitaltwin.basyx.databridge.plc4x.configuration.deserializer.OptionDeserializer;
 
 /**
  * An implementation of PLC4X consumer configuration
@@ -42,14 +43,14 @@ public class Plc4XConsumerConfiguration extends DataSourceConfiguration {
 	
 	private String driver;
 	private String servicePath = "";
-	private List<Option> options;
+	private String options;
 	private List<Tag> tags;
 
 	public Plc4XConsumerConfiguration() {
 	}
 
 	public Plc4XConsumerConfiguration(String uniqueId, String serverUrl, int serverPort, String driver,
-			String servicePath, List<Option> options, List<Tag> tags) {
+			String servicePath, String options, List<Tag> tags) {
 		super(uniqueId, serverUrl, serverPort);
 		this.driver = driver;
 		this.servicePath = servicePath;
@@ -66,7 +67,7 @@ public class Plc4XConsumerConfiguration extends DataSourceConfiguration {
 	}
 
 	public List<Option> getOptions() {
-		return options;
+		return new OptionDeserializer().deserialize(options);
 	}
 
 	public List<Tag> getTags() {
@@ -95,10 +96,12 @@ public class Plc4XConsumerConfiguration extends DataSourceConfiguration {
 	}
 
 	private void addOptionsIfConfigured(URIBuilder uriBuilder) {
-		if (options == null || options.isEmpty())
+		List<Option> optionList = getOptions();
+		
+		if (optionList.isEmpty())
 			return;
 		
-		options.stream().forEach(option -> uriBuilder.addParameter(option.getName(), option.getValue()));
+		optionList.stream().forEach(option -> uriBuilder.addParameter(option.getName(), option.getValue()));
 	}
 	
 	private String buildConnectionUri(URIBuilder uriBuilder) {
