@@ -136,10 +136,10 @@ public class TestAASUpdater {
 		String[] topicArray = new String[]{"aas/pressure","aas/rotation"};
 		
 		// Checking test case - 1
-		//checkUseCaseA(topicArray, idShortArray);
+		checkUseCaseA(topicArray, idShortArray);
 	
 		// Checking test case for use case - 1
-		checkUseCaseB(topicArray, idShortArray);
+		//checkUseCaseB(topicArray, idSShortArray);
 		
 	}
 	
