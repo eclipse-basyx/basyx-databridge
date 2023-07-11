@@ -43,14 +43,14 @@ public class Plc4XConsumerConfiguration extends DataSourceConfiguration {
 	
 	private String driver;
 	private String servicePath = "";
-	private String options;
+	private Object options;
 	private List<Tag> tags;
 
 	public Plc4XConsumerConfiguration() {
 	}
 
 	public Plc4XConsumerConfiguration(String uniqueId, String serverUrl, int serverPort, String driver,
-			String servicePath, String options, List<Tag> tags) {
+			String servicePath, Object options, List<Tag> tags) {
 		super(uniqueId, serverUrl, serverPort);
 		this.driver = driver;
 		this.servicePath = servicePath;

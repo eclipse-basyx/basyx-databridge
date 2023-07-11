@@ -27,6 +27,7 @@ package org.eclipse.digitaltwin.basyx.databridge.plc4x.configuration;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -36,24 +37,43 @@ import org.eclipse.digitaltwin.basyx.databridge.plc4x.configuration.deserializer
 import org.eclipse.digitaltwin.basyx.databridge.plc4x.configuration.deserializer.OptionDeserializer;
 import org.junit.Test;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 /**
- * Tests the bahavior of {@link OptionDeserializer}
+ * Tests the behavior of {@link OptionDeserializer}
  * 
  * @author danish
  *
  */
 public class TestOptionDeserializer {
 
-	private static final String SINGLE_OPTION = "option1=value1";
+	private static final String SINGLE_OPTION_STRING_TYPE = "option1=value1";
 	private static final String MULTIPLE_OPTIONS = "option1=value1&option2=value2&option3=value3";
 	private static final String INVALID_OPTION = "option1:value1&option2=value2";
+	private static final Type OPTION_LIST_TYPE = new TypeToken<Object>() {}.getType();
+	private static final Object SINGLE_OPTION_OBJECT_TYPE = new Gson().fromJson("[\r\n"
+			+ "			{\r\n"
+			+ "				\"name\": \"option4\",\r\n"
+			+ "				\"value\": \"value4\"\r\n"
+			+ "			}\r\n"
+			+ "		]", OPTION_LIST_TYPE);
 
 	@Test
-	public void deserializeSingleOption() {
+	public void deserializeSingleStringTypeOption() {
 		List<Option> expectedOptions = new ArrayList<>(Arrays.asList(new Option("option1", "value1")));
 
-		List<Option> actualOptions = new OptionDeserializer().deserialize(SINGLE_OPTION);
+		List<Option> actualOptions = new OptionDeserializer().deserialize(SINGLE_OPTION_STRING_TYPE);
 
+		assertEqualOptions(expectedOptions, actualOptions);
+	}
+	
+	@Test
+	public void deserializeSingleObjectTypeOption() {
+		List<Option> expectedOptions = new ArrayList<>(Arrays.asList(new Option("option4", "value4")));
+		
+		List<Option> actualOptions = new OptionDeserializer().deserialize(SINGLE_OPTION_OBJECT_TYPE);
+		
 		assertEqualOptions(expectedOptions, actualOptions);
 	}
 

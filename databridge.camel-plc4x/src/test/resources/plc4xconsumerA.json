@@ -2,13 +2,18 @@
 	{
 		"uniqueId": "property1",
 		"serverUrl": "localhost",
-		"serverPort": 8095,
+		"serverPort": 502,
 		"driver": "modbus-tcp",
 		"servicePath": "",
-		"options": [],
+		"options": [
+			{
+				"name": "period",
+				"value": "100"
+			}
+		],
 		"tags": [
 			{
-				"name": "value_1",
+				"name": "value-1",
 				"value": "holding-register:1"
 			}
 		]

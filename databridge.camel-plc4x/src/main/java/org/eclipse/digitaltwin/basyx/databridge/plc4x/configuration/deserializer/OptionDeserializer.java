@@ -24,10 +24,14 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.databridge.plc4x.configuration.deserializer;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.digitaltwin.basyx.databridge.plc4x.configuration.Option;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 /**
  * Custom deserializer for {@link Option}
@@ -39,19 +43,41 @@ public class OptionDeserializer {
 
 	private static final String OPTION_DELIMITER = "&";
 	private static final String OPTION_VALUE_SEPARATOR = "=";
-
+	
 	/**
-	 * Deserializes the provided serialized option string into list of {@link Option}
+	 * Deserializes the provided serialized option into list of {@link Option}
 	 * 
 	 * @param serializedOption
 	 * @return list of Option
 	 * 
 	 * @throws DeserializationException
 	 */
-	public List<Option> deserialize(String serializedOption) throws DeserializationException {
+	public List<Option> deserialize(Object serializedOption) throws DeserializationException {
+		if (serializedOption == null)
+			return new ArrayList<>();
+		
+		if (serializedOption instanceof String)
+			return deserialize((String) serializedOption);
+		
+		if (serializedOption instanceof List<?>)
+			return deserialize((List<?>) serializedOption);
+			
+		throw new DeserializationException("Invalid format specified for 'options'");
+	}
+
+	private List<Option> deserialize(List<?> serializedOption) {
+		Gson gson = new Gson();
+		String json = gson.toJson(serializedOption);
+		
+		Type optionListType = new TypeToken<List<Option>>() {}.getType();
+		
+		return gson.fromJson(json, optionListType);
+	}
+	
+	private List<Option> deserialize(String serializedOption) {
 		List<Option> optionsList = new ArrayList<>();
 
-		if (serializedOption == null || serializedOption.isEmpty())
+		if (serializedOption.isEmpty())
 			return optionsList;
 
 		String[] options = serializedOption.split(OPTION_DELIMITER);

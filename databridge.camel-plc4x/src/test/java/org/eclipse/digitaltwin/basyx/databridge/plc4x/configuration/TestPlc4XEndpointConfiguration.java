@@ -32,7 +32,6 @@ import org.apache.camel.component.plc4x.Plc4XEndpoint;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.entity.DataSourceConfiguration;
 import org.eclipse.digitaltwin.basyx.databridge.plc4x.configuration.factory.Plc4XDefaultConfigurationFactory;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -47,23 +46,32 @@ public class TestPlc4XEndpointConfiguration {
 	
 	private Plc4XEndpoint endpoint;
 	
-	@Before
-	public void setup() {
-		Plc4XDefaultConfigurationFactory plc4xDefaultConfigurationFactory = new Plc4XDefaultConfigurationFactory(TestPlc4XEndpointConfiguration.class.getClassLoader());
+	@After
+	public void tearDown() throws IOException {
+		if (endpoint != null)
+			endpoint.close();
+	}
+	
+	@Test
+	public void configureEndpointWithConcreteOptionType() {
+		setup("plc4xconsumerA.json");
+		
+		assertEquals(EXPECTED_ENDPOINT_URI, endpoint.getEndpointUri());
+	}
+	
+	@Test
+	public void configureEndpointWithOptionsAsString() {
+		setup("plc4xconsumerB.json");
+		
+		assertEquals(EXPECTED_ENDPOINT_URI, endpoint.getEndpointUri());
+	}
+	
+	private void setup(String filePath) {
+		Plc4XDefaultConfigurationFactory plc4xDefaultConfigurationFactory = new Plc4XDefaultConfigurationFactory(filePath, TestPlc4XEndpointConfiguration.class.getClassLoader());
 		
 		List<DataSourceConfiguration> dataSourceConfigurations = plc4xDefaultConfigurationFactory.create();
 		
 		endpoint = new Plc4XEndpoint((String) dataSourceConfigurations.get(0).getConnectionURI(), new Plc4XComponent());
-	}
-	
-	@After
-	public void tearDown() throws IOException {
-		endpoint.close();
-	}
-	
-	@Test
-	public void configureEndpoint() throws IOException {
-		assertEquals(EXPECTED_ENDPOINT_URI, endpoint.getEndpointUri());
 	}
 
 }
