@@ -45,7 +45,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<revision>0.0.1-SNAPSHOT</revision>
-		<camel.version>3.20.4</camel.version>
+		<camel.version>3.21.0</camel.version>
 	</properties>
 
 	<build>

@@ -24,16 +24,11 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.databridge.plc4x.configuration;
 
-import java.util.AbstractMap;
+import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import org.apache.camel.Endpoint;
-import org.apache.camel.component.plc4x.Plc4XComponent;
-import org.apache.camel.component.plc4x.Plc4XEndpoint;
-import org.apache.camel.impl.DefaultCamelContext;
+import org.apache.http.client.utils.URIBuilder;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.entity.DataSourceConfiguration;
+import org.eclipse.digitaltwin.basyx.databridge.plc4x.configuration.deserializer.OptionDeserializer;
 
 /**
  * An implementation of PLC4X consumer configuration
@@ -42,16 +37,20 @@ import org.eclipse.digitaltwin.basyx.databridge.core.configuration.entity.DataSo
  *
  */
 public class Plc4XConsumerConfiguration extends DataSourceConfiguration {
+	
+	private static final String PLC4X_PROTOCOL_NAME = "plc4x:";
+	private static final String TAG_PREFIX = "tag.";
+	
 	private String driver;
 	private String servicePath = "";
-	private String options = "";
+	private Object options;
 	private List<Tag> tags;
 
 	public Plc4XConsumerConfiguration() {
 	}
 
 	public Plc4XConsumerConfiguration(String uniqueId, String serverUrl, int serverPort, String driver,
-			String servicePath, String options, List<Tag> tags) {
+			String servicePath, Object options, List<Tag> tags) {
 		super(uniqueId, serverUrl, serverPort);
 		this.driver = driver;
 		this.servicePath = servicePath;
@@ -67,37 +66,50 @@ public class Plc4XConsumerConfiguration extends DataSourceConfiguration {
 		return driver;
 	}
 
-	public String getOptions() {
-		return options;
+	public List<Option> getOptions() {
+		return new OptionDeserializer().deserialize(options);
 	}
 
 	public List<Tag> getTags() {
 		return tags;
 	}
 
-	public Endpoint getConnectionURI() {
-		return createPlc4xEndpoint();
-	}
-
-	private Plc4XEndpoint createPlc4xEndpoint() {
-		Plc4XEndpoint plc4xEndpoint = new Plc4XEndpoint(getConnectionString(), new Plc4XComponent());
+	public String getConnectionURI() {
+		URIBuilder uriBuilder = new URIBuilder();
+		uriBuilder.setScheme(PLC4X_PROTOCOL_NAME + driver);
+		uriBuilder.setHost(getServerUrl());
+		uriBuilder.setPort(getServerPort());
+		uriBuilder.setPath(servicePath);
 		
-		Map<String, Object> tagMap = this.tags.stream().map(this::toMap).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-		plc4xEndpoint.setTags(tagMap);
-		plc4xEndpoint.setCamelContext(new DefaultCamelContext());
-
-		return plc4xEndpoint;
+		addOptionsIfConfigured(uriBuilder);
+		
+		addTagsIfConfigured(uriBuilder);
+		
+		return buildConnectionUri(uriBuilder);
 	}
 
-	private String getConnectionString() {
-		return "plc4x:" + this.driver + "://" + getServerUrl() + ":" + getServerPort() + getServicePathIfAvailable() + "?" + getOptions();
+	private void addTagsIfConfigured(URIBuilder uriBuilder) {
+		if (tags == null || tags.isEmpty())
+			return;
+		
+		tags.stream().forEach(tag -> uriBuilder.addParameter(TAG_PREFIX + tag.getName(), tag.getValue()));
+	}
+
+	private void addOptionsIfConfigured(URIBuilder uriBuilder) {
+		List<Option> optionList = getOptions();
+		
+		if (optionList.isEmpty())
+			return;
+		
+		optionList.stream().forEach(option -> uriBuilder.addParameter(option.getName(), option.getValue()));
 	}
 	
-	private Map.Entry<String, Object> toMap(Tag tag) {
-		return new AbstractMap.SimpleEntry<>(tag.getName(), tag.getValue());
-	}
-	
-	private String getServicePathIfAvailable() {
-		return getServicePath().isEmpty() ? "" : "/" + getServicePath();
+	private String buildConnectionUri(URIBuilder uriBuilder) {
+		try {
+			return uriBuilder.build().toString();
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+			throw new RuntimeException("Exception occurred while creating Plc4XEndpoint");
+		}
 	}
 }
