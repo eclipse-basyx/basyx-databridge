@@ -84,7 +84,7 @@ public class MqttDatasinkConfiguration extends DataSinkConfiguration{
 	}
 
 	@Override
-	public Object getConnectionURI() {
+	public String getConnectionURI() {
 		return "paho:" + getTopic() + buildOptions() + ":" + getServerPort();
 	}
 
