@@ -29,7 +29,7 @@ public class AASDataSourceConfiguration extends DataSourceConfiguration{
 	}
 	
 	@Override
-	public Object getConnectionURI() {
+	public String getConnectionURI() {
 		return "aas:" + getSubmodelEndpoint() + "?propertyPath=" + getPath();
 	}
 
