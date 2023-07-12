@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2021 the Eclipse BaSyx Authors
+ * Copyright (C) 2023 the Eclipse BaSyx Authors
  * 
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -22,29 +22,23 @@
  * 
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
-package org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.event;
+package org.eclipse.digitaltwin.basyx.databridge.plc4x.configuration.deserializer;
 
-import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.model.RouteDefinition;
-import org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.core.AbstractRouteCreator;
-import org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.core.RouteConfiguration;
-import org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.core.RoutesConfiguration;
+/**
+ * Indicates that the provided serialized string is invalid
+ * 
+ * @author danish
+ *
+ */
+public class DeserializationException extends RuntimeException {
+	
+	private static final long serialVersionUID = 1L;
 
-public class EventRouteCreator extends AbstractRouteCreator {
-
-	public EventRouteCreator(RouteBuilder routeBuilder, RoutesConfiguration routesConfiguration) {
-		super(routeBuilder, routesConfiguration);
+	public DeserializationException() {
 	}
 
-	@Override
-	protected void configureRoute(RouteConfiguration routeConfiguration, String dataSourceEndpoint, String[] dataSinkEndpoints, String[] dataTransformerEndpoints, String routeId) {
-		RouteDefinition routeDefinition = getRouteBuilder().from(dataSourceEndpoint).routeId(routeId).to("log:" + routeId);
-
-		if (!(dataTransformerEndpoints == null || dataTransformerEndpoints.length == 0)) {
-			routeDefinition.to(dataTransformerEndpoints).to("log:" + routeId);
-		}
-
-		routeDefinition.to(dataSinkEndpoints[0]).to("log:" + routeId);
+	public DeserializationException(String message) {
+		super(message);
 	}
 
 }

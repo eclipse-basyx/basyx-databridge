@@ -23,16 +23,15 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.databridge.plc4x.configuration;
+
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Collections;
+import java.io.IOException;
 import java.util.List;
-import java.util.Map;
-
+import org.apache.camel.component.plc4x.Plc4XComponent;
 import org.apache.camel.component.plc4x.Plc4XEndpoint;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.entity.DataSourceConfiguration;
 import org.eclipse.digitaltwin.basyx.databridge.plc4x.configuration.factory.Plc4XDefaultConfigurationFactory;
+import org.junit.After;
 import org.junit.Test;
 
 /**
@@ -43,24 +42,36 @@ import org.junit.Test;
  */
 public class TestPlc4XEndpointConfiguration {
 	
-	private static final String EXPECTED_CONNECTION_URI = "plc4x:modbus-tcp://localhost:502?period=100";
-	private static final Map<String, Object> EXPECTED_TAGS = Collections.singletonMap("value-1", "holding-register:1");
+	private static final String EXPECTED_ENDPOINT_URI = "plc4x:modbus-tcp://localhost:502?period=100&tag.value-1=holding-register%3A1";
+	
+	private Plc4XEndpoint endpoint;
+	
+	@After
+	public void tearDown() throws IOException {
+		if (endpoint != null)
+			endpoint.close();
+	}
 	
 	@Test
-	public void configureEndpoint() {
-		Plc4XDefaultConfigurationFactory plc4xDefaultConfigurationFactory = new Plc4XDefaultConfigurationFactory(TestPlc4XEndpointConfiguration.class.getClassLoader());
+	public void configureEndpointWithConcreteOptionType() {
+		setup("plc4xconsumerA.json");
+		
+		assertEquals(EXPECTED_ENDPOINT_URI, endpoint.getEndpointUri());
+	}
+	
+	@Test
+	public void configureEndpointWithOptionsAsString() {
+		setup("plc4xconsumerB.json");
+		
+		assertEquals(EXPECTED_ENDPOINT_URI, endpoint.getEndpointUri());
+	}
+	
+	private void setup(String filePath) {
+		Plc4XDefaultConfigurationFactory plc4xDefaultConfigurationFactory = new Plc4XDefaultConfigurationFactory(filePath, TestPlc4XEndpointConfiguration.class.getClassLoader());
 		
 		List<DataSourceConfiguration> dataSourceConfigurations = plc4xDefaultConfigurationFactory.create();
 		
-		Plc4XEndpoint endpoint = (Plc4XEndpoint) dataSourceConfigurations.get(0).getConnectionURI();
-		
-		assertEquals(EXPECTED_CONNECTION_URI, endpoint.getEndpointUri());
-		assertEqualTag(EXPECTED_TAGS, endpoint.getTags());
-	}
-
-	private void assertEqualTag(Map<String, Object> expectedTags, Map<String, Object> actualTags) {
-		assertTrue(actualTags.containsKey("value-1"));
-		assertEquals(expectedTags.get("value-1"), actualTags.get("value-1"));
+		endpoint = new Plc4XEndpoint((String) dataSourceConfigurations.get(0).getConnectionURI(), new Plc4XComponent());
 	}
 
 }
