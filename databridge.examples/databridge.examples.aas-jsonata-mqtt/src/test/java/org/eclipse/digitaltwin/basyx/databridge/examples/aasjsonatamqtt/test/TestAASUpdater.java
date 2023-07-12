@@ -139,7 +139,7 @@ public class TestAASUpdater {
 		checkUseCaseA(topicArray, idShortArray);
 	
 		// Checking test case for use case - 1
-		//checkUseCaseB(topicArray, idSShortArray);
+		//checkUseCaseB(topicArray, idShortArray);
 		
 	}
 	
@@ -147,11 +147,11 @@ public class TestAASUpdater {
 		
 		// Checking idShortA
 		String propValueA = (String) checkAASsubmodelElementsProperty(idShortArray[0]);
-		receiveNewData(topicArray[0], propValueA, "test-1");
+		receiveUseCaseMessageA(topicArray[0], propValueA);
 			
 		// Checking idShortB 
 		String propValueB = (String) checkAASsubmodelElementsProperty(idShortArray[1]);
-		receiveNewData(topicArray[1], propValueB, "test-1");
+		receiveUseCaseMessageA(topicArray[1], propValueB);
 	}
 
 	
@@ -159,11 +159,11 @@ public class TestAASUpdater {
 		
 		// Checking idShort0
 		String subModelA = checkAASsubmodelElements(idShortArray);
-		receiveNewData(topicArray[0], subModelA, "test-2");
+		receiveUseCaseMessageB(topicArray[0], subModelA);
 		
 		// Checking idShort1
 		String subModelB = checkAASsubmodelElements(idShortArray);
-		receiveNewData(topicArray[1], subModelB, "test-2");
+		receiveUseCaseMessageB(topicArray[1], subModelB);
 	}
 	
 
@@ -210,13 +210,12 @@ public class TestAASUpdater {
 		return propValue;
 	}
 	
-	private static void receiveNewData(String currentTopic, String propValue, String testType) throws MqttException, MqttSecurityException, MqttPersistenceException, InterruptedException {
+	private static void receiveUseCaseMessageA(String currentTopic, String propValue) throws MqttException, MqttSecurityException, MqttPersistenceException, InterruptedException {
 
 		try {
 			
-			MqttClient mqttClient = new MqttClient(mqtt_broker_url, client_id, new MemoryPersistence());
-			MqttConnectOptions connOpts = setUpMqttConnection(user_name, password);
-			mqttClient.connect(connOpts);
+			// Initiate Conn
+			MqttClient mqttClient = mqttConnectionInitiate();
 
 			mqttClient.setCallback(new MqttCallback() {
 
@@ -228,17 +227,9 @@ public class TestAASUpdater {
 				@Override
 				public void messageArrived(String topic, MqttMessage message) throws Exception {
 					
-					if(testType.equals("test-1") && currentTopic.equals(topic)) {
-						String receivedMessage = new String(message.getPayload(), StandardCharsets.UTF_8);
-						receivedMessage = receivedMessage.substring(1, receivedMessage.length() - 1);
-						assertEquals(propValue, receivedMessage);
-					}else if(testType.equals("test-2") && currentTopic.equals(topic)){
-						
-						String receivedMessage = new String(message.getPayload(), StandardCharsets.UTF_8);
-						
-						ObjectMapper mapper = new ObjectMapper();
-						assertEquals(mapper.readTree(receivedMessage), mapper.readTree(propValue));
-					}
+					String receivedMessage = new String(message.getPayload(), StandardCharsets.UTF_8);
+					receivedMessage = receivedMessage.substring(1, receivedMessage.length() - 1);
+					assertEquals(propValue, receivedMessage);
 				}
 
 				@Override
@@ -255,6 +246,54 @@ public class TestAASUpdater {
 		} catch (MqttException me) {
             me.printStackTrace();
 		}
+	}
+	
+	private static void receiveUseCaseMessageB(String currentTopic, String propValue) throws MqttException, MqttSecurityException, MqttPersistenceException, InterruptedException {
+
+		try {
+			
+			// Initiate Conn
+			MqttClient mqttClient = mqttConnectionInitiate();
+
+			mqttClient.setCallback(new MqttCallback() {
+
+				@Override
+				public void connectionLost(Throwable cause) {
+					logger.info("Connection Lost : "+cause.getMessage());
+				}
+
+				@Override
+				public void messageArrived(String topic, MqttMessage message) throws Exception {					
+						
+					String receivedMessage = new String(message.getPayload(), StandardCharsets.UTF_8);
+					
+					ObjectMapper mapper = new ObjectMapper();
+					assertEquals(mapper.readTree(receivedMessage), mapper.readTree(propValue));
+				}
+
+				@Override
+				public void deliveryComplete(IMqttDeliveryToken token) {
+					
+				}
+			});
+
+			mqttClient.subscribe(currentTopic);
+			waitForPropagation();
+			mqttClient.disconnect();
+			mqttClient.close();
+
+		} catch (MqttException me) {
+            me.printStackTrace();
+		}
+	}
+	
+	private static MqttClient mqttConnectionInitiate() throws MqttException {
+		
+		MqttClient mqttClient = new MqttClient(mqtt_broker_url, client_id, new MemoryPersistence());
+		MqttConnectOptions connOpts = setUpMqttConnection(user_name, password);
+		mqttClient.connect(connOpts);
+		
+		return mqttClient;
 	}
 	
 	private static void configureAndStartMqttBroker() throws IOException {
