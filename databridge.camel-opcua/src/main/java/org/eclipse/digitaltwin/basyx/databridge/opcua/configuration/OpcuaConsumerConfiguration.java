@@ -24,8 +24,17 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.databridge.opcua.configuration;
 
+import org.apache.camel.component.milo.server.MiloServerEndpoint;
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.basyx.vab.protocol.opcua.exception.OpcUaException;
+import org.eclipse.basyx.vab.protocol.opcua.types.MessageSecurityMode;
+import org.eclipse.basyx.vab.protocol.opcua.types.SecurityPolicy;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.entity.DataSourceConfiguration;
+import org.eclipse.milo.opcua.stack.core.security.SecurityAlgorithm;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * An implementation of OpcUa consumer configuration
@@ -38,19 +47,23 @@ public class OpcuaConsumerConfiguration extends DataSourceConfiguration {
 	private String nodeInformation;
 	private String username;
 	private String password;
-	private Long requestedPublishingInterval;
+	private Map<String, String> configuration = new HashMap<>();
 
 	public OpcuaConsumerConfiguration() {
 	}
 
 	public OpcuaConsumerConfiguration(String uniqueId, String serverUrl, int serverPort, String pathToService,
-			String nodeInformation, String username, String password, Long requestedPublishingInterval) {
+			String nodeInformation, String username, String password, String securityPolicy,
+									  Long requestedPublishingInterval) {
 		super(uniqueId, serverUrl, serverPort);
 		this.pathToService = pathToService;
 		this.nodeInformation = nodeInformation;
 		this.username = username;
 		this.password = password;
-		this.requestedPublishingInterval = requestedPublishingInterval;
+
+		this.configuration.put("allowedSecurityPolicies", securityPolicy == null ? SecurityPolicy.None.name() :
+				SecurityPolicy.valueOf(securityPolicy).name());
+		this.configuration.put("requestedPublishingInterval", String.valueOf(requestedPublishingInterval));
 	}
 
 	public String getPathToService() {
@@ -85,21 +98,38 @@ public class OpcuaConsumerConfiguration extends DataSourceConfiguration {
 		this.password = password;
 	}
 
+	public String getSecurityPolicy() {
+		return this.configuration.get("allowedSecurityPolicies");
+	}
+
+	public void setSecurityPolicy(SecurityPolicy securityPolicy) {
+		this.configuration.put("allowedSecurityPolicies", securityPolicy.name());
+	}
+
 	public Long getRequestedPublishingInterval() {
-		return requestedPublishingInterval;
+		return Long.valueOf(this.configuration.get("requestedPublishingInterval"));
 	}
 
 	public void setRequestedPublishingInterval(Long requestedPublishingInterval) {
-		this.requestedPublishingInterval = requestedPublishingInterval;
+		this.configuration.put("requestedPublishingInterval", String.valueOf(requestedPublishingInterval));
 	}
 
 	public String getConnectionURI() {
-		String credentials = username == null || password == null ? "" : username + ":" + password + "@";
-		return "milo-client:opc.tcp://" + credentials + getServerUrl() + ":" + getServerPort() + "/" + pathToService
-				+ "?allowedSecurityPolicies=None&node=RAW(" + nodeInformation + ")" + getRequestedPublishingIntervalIfConfigured();
-	}
+		String credentials = username == null || password == null ? StringUtils.EMPTY : username + ":" + password + "@";
+		String parameters = this.configuration.entrySet()
+				.parallelStream()
+				.filter(entry -> entry.getValue() != null)
+				.map(entry -> String.format("%s:%s", entry.getKey(), entry.getValue()))
+				.collect(Collectors.joining("&"));
 
-	private String getRequestedPublishingIntervalIfConfigured() {
-		return this.requestedPublishingInterval == null ? StringUtils.EMPTY : "&requestedPublishingInterval=" + this.requestedPublishingInterval;
+		return String.format(
+				"milo-client:opc.tcp://%s%s:%d/%s?node=RAW(%s)%s",
+				credentials,
+				getServerUrl(),
+				getServerPort(),
+				getPathToService(),
+				getNodeInformation(),
+				this.configuration.size() > 0 ? "&" + parameters : StringUtils.EMPTY
+		);
 	}
 }
