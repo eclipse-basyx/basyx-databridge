@@ -38,8 +38,9 @@ import java.util.stream.Collectors;
 
 /**
  * An implementation of OpcUa consumer configuration
- * 
+ *
  * @author Daniele Rossi
+ * @see <a href="https://camel.apache.org/components/3.20.x/milo-client-component.html">Documentation Apache Camel - OPC UA Client Parameters</a>
  *
  */
 public class OpcuaConsumerConfiguration extends DataSourceConfiguration {
