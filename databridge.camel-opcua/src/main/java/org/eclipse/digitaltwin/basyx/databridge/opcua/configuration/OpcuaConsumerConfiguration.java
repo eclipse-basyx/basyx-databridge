@@ -24,13 +24,13 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.databridge.opcua.configuration;
 
-import org.apache.camel.component.milo.server.MiloServerEndpoint;
+import com.google.gson.annotations.JsonAdapter;
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.basyx.vab.protocol.opcua.exception.OpcUaException;
-import org.eclipse.basyx.vab.protocol.opcua.types.MessageSecurityMode;
 import org.eclipse.basyx.vab.protocol.opcua.types.SecurityPolicy;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.entity.DataSourceConfiguration;
-import org.eclipse.milo.opcua.stack.core.security.SecurityAlgorithm;
+import org.eclipse.digitaltwin.basyx.databridge.opcua.configuration.factory.OpcuaConsumerConfigurationDeserializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,7 +43,10 @@ import java.util.stream.Collectors;
  * @see <a href="https://camel.apache.org/components/3.20.x/milo-client-component.html">Documentation Apache Camel - OPC UA Client Parameters</a>
  *
  */
+@JsonAdapter(OpcuaConsumerConfigurationDeserializer.class)
 public class OpcuaConsumerConfiguration extends DataSourceConfiguration {
+	protected static Logger logger = LoggerFactory.getLogger(OpcuaConsumerConfiguration.class);
+
 	private String pathToService;
 	private String nodeInformation;
 	private String username;
@@ -53,18 +56,28 @@ public class OpcuaConsumerConfiguration extends DataSourceConfiguration {
 	public OpcuaConsumerConfiguration() {
 	}
 
-	public OpcuaConsumerConfiguration(String uniqueId, String serverUrl, int serverPort, String pathToService,
-			String nodeInformation, String username, String password, String securityPolicy,
-									  Long requestedPublishingInterval) {
+	public OpcuaConsumerConfiguration(
+			String uniqueId,
+			String serverUrl,
+			int serverPort,
+			String pathToService,
+			String nodeInformation,
+			String username,
+			String password,
+			Map<String, String> configuration
+	) {
 		super(uniqueId, serverUrl, serverPort);
+
 		this.pathToService = pathToService;
 		this.nodeInformation = nodeInformation;
 		this.username = username;
 		this.password = password;
+		this.configuration = configuration;
 
-		this.configuration.put("allowedSecurityPolicies", securityPolicy == null ? SecurityPolicy.None.name() :
-				SecurityPolicy.valueOf(securityPolicy).name());
-		this.configuration.put("requestedPublishingInterval", String.valueOf(requestedPublishingInterval));
+		if (!this.configuration.containsKey("allowedSecurityPolicies"))
+			this.configuration.put("allowedSecurityPolicies", SecurityPolicy.None.name());
+		if (!this.configuration.containsKey("requestedPublishingInterval"))
+			this.configuration.put("requestedPublishingInterval", "1000");
 	}
 
 	public String getPathToService() {
@@ -99,28 +112,20 @@ public class OpcuaConsumerConfiguration extends DataSourceConfiguration {
 		this.password = password;
 	}
 
-	public String getSecurityPolicy() {
-		return this.configuration.get("allowedSecurityPolicies");
+	public Map<String, String> getConfiguration() {
+		return configuration;
 	}
 
-	public void setSecurityPolicy(SecurityPolicy securityPolicy) {
-		this.configuration.put("allowedSecurityPolicies", securityPolicy.name());
-	}
-
-	public Long getRequestedPublishingInterval() {
-		return Long.valueOf(this.configuration.get("requestedPublishingInterval"));
-	}
-
-	public void setRequestedPublishingInterval(Long requestedPublishingInterval) {
-		this.configuration.put("requestedPublishingInterval", String.valueOf(requestedPublishingInterval));
+	public void setConfiguration(Map<String, String> configuration) {
+		this.configuration = configuration;
 	}
 
 	public String getConnectionURI() {
 		String credentials = username == null || password == null ? StringUtils.EMPTY : username + ":" + password + "@";
 		String parameters = this.configuration.entrySet()
 				.parallelStream()
-				.filter(entry -> entry.getValue() != null)
-				.map(entry -> String.format("%s:%s", entry.getKey(), entry.getValue()))
+				.filter(entry -> entry.getValue() != null && !entry.getValue().isEmpty())
+				.map(entry -> String.format("%s=%s", entry.getKey(), entry.getValue()))
 				.collect(Collectors.joining("&"));
 
 		return String.format(
@@ -130,7 +135,7 @@ public class OpcuaConsumerConfiguration extends DataSourceConfiguration {
 				getServerPort(),
 				getPathToService(),
 				getNodeInformation(),
-				this.configuration.size() > 0 ? "&" + parameters : StringUtils.EMPTY
+				parameters.length() > 0 ? "&" + parameters : StringUtils.EMPTY
 		);
 	}
 }

@@ -39,6 +39,8 @@ public abstract class DataSourceConfiguration extends RouteEntity {
 	
 	public DataSourceConfiguration(String uniqueId, String serverUrl, int serverPort) {
 		super(uniqueId);
+		this.serverUrl = serverUrl;
+		this.serverPort = serverPort;
 	}
 
 	public String getServerUrl() {
