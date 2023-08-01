@@ -24,33 +24,60 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.databridge.opcua.configuration;
 
+import com.google.gson.annotations.JsonAdapter;
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.basyx.vab.protocol.opcua.types.SecurityPolicy;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.entity.DataSourceConfiguration;
+import org.eclipse.digitaltwin.basyx.databridge.opcua.configuration.factory.OpcuaConsumerConfigurationDeserializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * An implementation of OpcUa consumer configuration
- * 
+ *
  * @author Daniele Rossi
+ * @see <a href="https://camel.apache.org/components/3.20.x/milo-client-component.html">Documentation Apache Camel - OPC UA Client Parameters</a>
  *
  */
+@JsonAdapter(OpcuaConsumerConfigurationDeserializer.class)
 public class OpcuaConsumerConfiguration extends DataSourceConfiguration {
+	protected static Logger logger = LoggerFactory.getLogger(OpcuaConsumerConfiguration.class);
+
 	private String pathToService;
 	private String nodeInformation;
 	private String username;
 	private String password;
-	private Long requestedPublishingInterval;
+	private Map<String, String> configuration = new HashMap<>();
 
 	public OpcuaConsumerConfiguration() {
 	}
 
-	public OpcuaConsumerConfiguration(String uniqueId, String serverUrl, int serverPort, String pathToService,
-			String nodeInformation, String username, String password, Long requestedPublishingInterval) {
+	public OpcuaConsumerConfiguration(
+			String uniqueId,
+			String serverUrl,
+			int serverPort,
+			String pathToService,
+			String nodeInformation,
+			String username,
+			String password,
+			Map<String, String> configuration
+	) {
 		super(uniqueId, serverUrl, serverPort);
+
 		this.pathToService = pathToService;
 		this.nodeInformation = nodeInformation;
 		this.username = username;
 		this.password = password;
-		this.requestedPublishingInterval = requestedPublishingInterval;
+		this.configuration = configuration;
+
+		if (!this.configuration.containsKey("allowedSecurityPolicies"))
+			this.configuration.put("allowedSecurityPolicies", SecurityPolicy.None.name());
+		if (!this.configuration.containsKey("requestedPublishingInterval"))
+			this.configuration.put("requestedPublishingInterval", "1000");
 	}
 
 	public String getPathToService() {
@@ -85,21 +112,30 @@ public class OpcuaConsumerConfiguration extends DataSourceConfiguration {
 		this.password = password;
 	}
 
-	public Long getRequestedPublishingInterval() {
-		return requestedPublishingInterval;
+	public Map<String, String> getConfiguration() {
+		return configuration;
 	}
 
-	public void setRequestedPublishingInterval(Long requestedPublishingInterval) {
-		this.requestedPublishingInterval = requestedPublishingInterval;
+	public void setConfiguration(Map<String, String> configuration) {
+		this.configuration = configuration;
 	}
 
 	public String getConnectionURI() {
-		String credentials = username == null || password == null ? "" : username + ":" + password + "@";
-		return "milo-client:opc.tcp://" + credentials + getServerUrl() + ":" + getServerPort() + "/" + pathToService
-				+ "?allowedSecurityPolicies=None&node=RAW(" + nodeInformation + ")" + getRequestedPublishingIntervalIfConfigured();
-	}
+		String credentials = username == null || password == null ? StringUtils.EMPTY : username + ":" + password + "@";
+		String parameters = this.configuration.entrySet()
+				.parallelStream()
+				.filter(entry -> entry.getValue() != null && !entry.getValue().isEmpty())
+				.map(entry -> String.format("%s=%s", entry.getKey(), entry.getValue()))
+				.collect(Collectors.joining("&"));
 
-	private String getRequestedPublishingIntervalIfConfigured() {
-		return this.requestedPublishingInterval == null ? StringUtils.EMPTY : "&requestedPublishingInterval=" + this.requestedPublishingInterval;
+		return String.format(
+				"milo-client:opc.tcp://%s%s:%d/%s?node=RAW(%s)%s",
+				credentials,
+				getServerUrl(),
+				getServerPort(),
+				getPathToService(),
+				getNodeInformation(),
+				parameters.length() > 0 ? "&" + parameters : StringUtils.EMPTY
+		);
 	}
 }
