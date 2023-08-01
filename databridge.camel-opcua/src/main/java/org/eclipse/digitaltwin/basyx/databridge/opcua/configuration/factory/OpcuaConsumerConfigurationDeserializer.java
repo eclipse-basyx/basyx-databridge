@@ -13,10 +13,13 @@ public class OpcuaConsumerConfigurationDeserializer implements JsonDeserializer<
         JsonObject object = jsonElement.getAsJsonObject();
         Map<String, String> ctx = new HashMap<>();
 
+        if (object.has("requestedPublishingInterval"))
+            ctx.put("requestedPublishingInterval", object.get("requestedPublishingInterval").getAsString());
+
         object.get("parameters").getAsJsonObject()
                 .entrySet()
                 .parallelStream()
-                .filter(o -> !o.getValue().isJsonNull())
+                .filter(o -> !o.getValue().isJsonNull() && !ctx.containsKey(o.getValue().getAsString()))
                 .forEach(o -> ctx.put(o.getKey(), o.getValue().getAsString()));
 
         return new OpcuaConsumerConfiguration(
