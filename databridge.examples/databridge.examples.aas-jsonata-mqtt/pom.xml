@@ -10,7 +10,6 @@
 	<name>AAS to MQTT Data Sink</name>
 	<description>An Integration example using timer as a trigger, aas as a data source and mqtt sink</description>
 
-
 	<packaging>jar</packaging>
 
 	<properties>
@@ -47,13 +46,11 @@
 			<version>${revision}</version>
 		</dependency>
 
-
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
 			<artifactId>databridge.camel-aas</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-
 
 		<dependency>
 			<groupId>com.fasterxml.jackson.datatype</groupId>
@@ -72,7 +69,6 @@
 			<artifactId>databridge.camel-paho</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-
 
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
@@ -114,8 +110,6 @@
 			<artifactId>basyx.components.lib</artifactId>
 			<version>1.4.0</version>
 		</dependency>
-
-		
 
 		<!-- JUnit 4 for running JUnit tests -->
 		<dependency>
@@ -163,7 +157,5 @@
 		    <artifactId>json</artifactId>
 		    <version>20140107</version>
 		</dependency>
-
-		
 	</dependencies>
 </project>

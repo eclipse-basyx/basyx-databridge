@@ -22,26 +22,26 @@
  * 
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
-package org.eclipse.digitaltwin.basyx.databridge.paho.configuration.factory;
-import org.eclipse.digitaltwin.basyx.databridge.core.configuration.factory.DataSinkConfigurationFactory;
-import org.eclipse.digitaltwin.basyx.databridge.paho.configuration.MqttDatasinkConfiguration;
+package org.eclipse.digitaltwin.basyx.databridge.aas.configuration.factory;
+
+import org.eclipse.digitaltwin.basyx.databridge.aas.configuration.AASConsumerConfiguration;
+import org.eclipse.digitaltwin.basyx.databridge.core.configuration.factory.DataSourceConfigurationFactory;
 
 /**
- * A default configuration factory for MQTT producer from a default file path
+ * A default configuration factory for AAS consumer
  * @author rana
  *
  */
 
-public class MqttDatasinkDefaultConfigurationFactory extends DataSinkConfigurationFactory{
-
-	private static final String DEFAULT_FILE_PATH = "mqttdatasink.json";
-
-	public MqttDatasinkDefaultConfigurationFactory(ClassLoader loader) {
-		super(DEFAULT_FILE_PATH, loader, MqttDatasinkConfiguration.class);
+public class AASConsumerDefaultConfigurationFactory extends DataSourceConfigurationFactory {
+	
+	private static final String DEFAULT_FILE_PATH = "aasconsumer.json";
+	
+	public AASConsumerDefaultConfigurationFactory(ClassLoader loader) {
+		super(DEFAULT_FILE_PATH, loader, AASConsumerConfiguration.class);
 	}
-
-	public MqttDatasinkDefaultConfigurationFactory(String filePath, ClassLoader loader) {
-		super(filePath, loader, MqttDatasinkConfiguration.class);
+	
+	public AASConsumerDefaultConfigurationFactory(String filePath, ClassLoader loader) {
+		super(filePath, loader, AASConsumerConfiguration.class);
 	}
-
 }

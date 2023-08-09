@@ -2,7 +2,7 @@ package org.eclipse.digitaltwin.basyx.databridge.examples.aasjsonatamqtt;
 
 import org.eclipse.basyx.aas.metamodel.map.descriptor.CustomId;
 import org.eclipse.basyx.submodel.metamodel.api.identifier.IIdentifier;
-import org.eclipse.digitaltwin.basyx.databridge.aas.configuration.factory.AASDatasourceDefaultConfigurationFactory;
+import org.eclipse.digitaltwin.basyx.databridge.aas.configuration.factory.AASConsumerDefaultConfigurationFactory;
 import org.eclipse.digitaltwin.basyx.databridge.core.component.DataBridgeComponent;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.factory.RoutesConfigurationFactory;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.core.RoutesConfiguration;
@@ -34,7 +34,7 @@ public class AASConsumer {
 		
 		
 		// Configures AAS Datasource
-		AASDatasourceDefaultConfigurationFactory aasSourceConfigFactory = new AASDatasourceDefaultConfigurationFactory(loader);
+		AASConsumerDefaultConfigurationFactory aasSourceConfigFactory = new AASConsumerDefaultConfigurationFactory(loader);
 		configuration.addDatasources(aasSourceConfigFactory.create());
 		
 		
