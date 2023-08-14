@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class OpcuaConsumerConfigurationDeserializer implements JsonDeserializer<OpcuaConsumerConfiguration> {
+
     @Override
     public OpcuaConsumerConfiguration deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         JsonObject object = jsonElement.getAsJsonObject();
@@ -16,11 +17,13 @@ public class OpcuaConsumerConfigurationDeserializer implements JsonDeserializer<
         if (object.has("requestedPublishingInterval"))
             ctx.put("requestedPublishingInterval", object.get("requestedPublishingInterval").getAsString());
 
-        object.get("parameters").getAsJsonObject()
-                .entrySet()
-                .parallelStream()
-                .filter(o -> !o.getValue().isJsonNull() && !ctx.containsKey(o.getValue().getAsString()))
-                .forEach(o -> ctx.put(o.getKey(), o.getValue().getAsString()));
+        if (object.has("parameters")) {
+            object.get("parameters").getAsJsonObject()
+                    .entrySet()
+                    .parallelStream()
+                    .filter(o -> !o.getValue().isJsonNull() && !ctx.containsKey(o.getValue().getAsString()))
+                    .forEach(o -> ctx.put(o.getKey(), o.getValue().getAsString()));
+        }
 
         return new OpcuaConsumerConfiguration(
                 object.get("uniqueId").getAsString(),
