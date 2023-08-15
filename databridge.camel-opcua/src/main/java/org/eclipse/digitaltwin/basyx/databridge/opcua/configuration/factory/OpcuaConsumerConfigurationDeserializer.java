@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class OpcuaConsumerConfigurationDeserializer implements JsonDeserializer<OpcuaConsumerConfiguration> {
-
+  
     @Override
     public OpcuaConsumerConfiguration deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         JsonObject object = jsonElement.getAsJsonObject();
