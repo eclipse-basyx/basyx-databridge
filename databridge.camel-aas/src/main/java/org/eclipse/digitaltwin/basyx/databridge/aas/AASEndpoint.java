@@ -223,7 +223,4 @@ public class AASEndpoint extends DefaultEndpoint {
 		return new AASConsumer(this, processor);
 	}
 	
-	
-
-	
 }

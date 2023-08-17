@@ -1,8 +1,8 @@
 [
 	{
-		"datasource": "exampleAAS",
+		"datasource": "exampleAAS1",
 		"transformers": ["jsonataA"],
-		"datasinks":["exampleMQTT"],
+		"datasinks":["exampleMQTT1"],
 		"trigger": "timer",
 		"triggerData": {
 			"timerName": "timer1"
@@ -11,11 +11,19 @@
 	{
 		"datasource": "exampleAAS2",
 		"transformers": ["jsonataA"],
-		"datasinks":["exampleMQTT1"],
+		"datasinks":["exampleMQTT2"],
+		"trigger": "timer",
+		"triggerData": {
+			"timerName": "timer1"
+		}
+	},
+	{
+		"datasource": "exampleAAS3",
+		"transformers": ["jsonataB"],
+		"datasinks":["exampleMQTT3"],
 		"trigger": "timer",
 		"triggerData": {
 			"timerName": "timer1"
 		}
 	}
-	
 ]

@@ -35,7 +35,7 @@ import org.eclipse.digitaltwin.basyx.databridge.core.configuration.entity.DataSi
 
 public class MqttDatasinkConfiguration extends DataSinkConfiguration{
 	
-	private static final String MQTT_PROTOCOL_NAME = "paho:";
+	private static final String MQTT_PROTOCOL_NAME = "paho";
 	
 	private String serverUrl;
 	private int serverPort;
@@ -118,19 +118,11 @@ public class MqttDatasinkConfiguration extends DataSinkConfiguration{
 
 	@Override
 	public String getConnectionURI() {
-		URIBuilder uriBuilder = new URIBuilder();
-		uriBuilder.setScheme(MQTT_PROTOCOL_NAME);
-		uriBuilder.setPath(getTopic() + buildOptions() + ":");
 		
-		return buildConnectionUri(uriBuilder);
-	}
-	
-	private String buildConnectionUri(URIBuilder uriBuilder) {
-		try {
-			return uriBuilder.build().toString();
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-			throw new RuntimeException("Exception occurred while creating MqttEnd point");
-		}
+		String connUri = "paho:";
+		connUri += getTopic();
+		connUri += buildOptions()+ ":" ;
+		connUri += getServerPort();
+		return connUri;
 	}
 }
