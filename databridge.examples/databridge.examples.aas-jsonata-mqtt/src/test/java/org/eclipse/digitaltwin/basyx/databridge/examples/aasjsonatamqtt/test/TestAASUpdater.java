@@ -70,7 +70,7 @@ import io.moquette.broker.config.IResourceLoader;
 import io.moquette.broker.config.ResourceLoaderConfig;
 
 /**
- * A test of aas-jsonata-mqtt
+ * A test of aas-jsonata-mqtt 
  * @author rana
  *
  */
