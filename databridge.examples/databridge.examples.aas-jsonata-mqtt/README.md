@@ -10,7 +10,7 @@
 
 ![Work Flow -1](./src/main/resources/image/work_flow_diagram_1.PNG)
 
-- Without properties basic workflow
+- Blank "idShortPath" basic workflow
 
 ![Work Flow -2](./src/main/resources/image/work_flow_diagram_2.PNG)
 
