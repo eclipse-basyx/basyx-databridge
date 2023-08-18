@@ -37,7 +37,7 @@ import org.eclipse.basyx.components.aas.configuration.AASServerBackend;
 import org.eclipse.basyx.components.aas.configuration.BaSyxAASServerConfiguration;
 import org.eclipse.basyx.components.configuration.BaSyxContextConfiguration;
 import org.eclipse.basyx.submodel.metamodel.api.identifier.IIdentifier;
-import org.eclipse.digitaltwin.basyx.databridge.aas.configuration.factory.AASConsumerDefaultConfigurationFactory;
+import org.eclipse.digitaltwin.basyx.databridge.aas.configuration.factory.AASDataSourceDefaultConfigurationFactory;
 import org.eclipse.digitaltwin.basyx.databridge.core.component.DataBridgeComponent;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.factory.RoutesConfigurationFactory;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.core.RoutesConfiguration;
@@ -221,7 +221,7 @@ public class TestAASUpdater {
 		TimerDefaultConfigurationFactory timerConfigFactory = new TimerDefaultConfigurationFactory(loader);
 		configuration.addDatasources(timerConfigFactory.create());
 
-		AASConsumerDefaultConfigurationFactory aasSourceConfigFactory = new AASConsumerDefaultConfigurationFactory(
+		AASDataSourceDefaultConfigurationFactory aasSourceConfigFactory = new AASDataSourceDefaultConfigurationFactory(
 				loader);
 		configuration.addDatasources(aasSourceConfigFactory.create());
 

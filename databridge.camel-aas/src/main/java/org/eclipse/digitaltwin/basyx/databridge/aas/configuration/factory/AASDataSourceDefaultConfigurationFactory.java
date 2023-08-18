@@ -24,7 +24,7 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.databridge.aas.configuration.factory;
 
-import org.eclipse.digitaltwin.basyx.databridge.aas.configuration.AASConsumerConfiguration;
+import org.eclipse.digitaltwin.basyx.databridge.aas.configuration.AASDataSourceConfiguration;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.factory.DataSourceConfigurationFactory;
 
 /**
@@ -33,15 +33,15 @@ import org.eclipse.digitaltwin.basyx.databridge.core.configuration.factory.DataS
  *
  */
 
-public class AASConsumerDefaultConfigurationFactory extends DataSourceConfigurationFactory {
+public class AASDataSourceDefaultConfigurationFactory extends DataSourceConfigurationFactory {
 	
 	private static final String DEFAULT_FILE_PATH = "aasconsumer.json";
 	
-	public AASConsumerDefaultConfigurationFactory(ClassLoader loader) {
-		super(DEFAULT_FILE_PATH, loader, AASConsumerConfiguration.class);
+	public AASDataSourceDefaultConfigurationFactory(ClassLoader loader) {
+		super(DEFAULT_FILE_PATH, loader, AASDataSourceConfiguration.class);
 	}
 	
-	public AASConsumerDefaultConfigurationFactory(String filePath, ClassLoader loader) {
-		super(filePath, loader, AASConsumerConfiguration.class);
+	public AASDataSourceDefaultConfigurationFactory(String filePath, ClassLoader loader) {
+		super(filePath, loader, AASDataSourceConfiguration.class);
 	}
 }

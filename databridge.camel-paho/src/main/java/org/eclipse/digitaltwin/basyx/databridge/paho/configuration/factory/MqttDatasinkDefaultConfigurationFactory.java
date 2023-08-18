@@ -32,7 +32,7 @@ import org.eclipse.digitaltwin.basyx.databridge.paho.configuration.MqttDatasinkC
  *
  */
 
-public class MqttDatasinkDefaultConfigurationFactory extends DataSinkConfigurationFactory{
+public class MqttDatasinkDefaultConfigurationFactory extends DataSinkConfigurationFactory {
 
 	private static final String DEFAULT_FILE_PATH = "mqttdatasink.json";
 

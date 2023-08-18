@@ -33,7 +33,7 @@ import org.eclipse.digitaltwin.basyx.databridge.core.configuration.entity.DataSo
  *
  */
 
-public class AASConsumerConfiguration extends DataSourceConfiguration {
+public class AASDataSourceConfiguration extends DataSourceConfiguration {
 	private static final String PROPERTY_TYPE = "PROPERTY";
 	
 	private String type;
@@ -42,7 +42,7 @@ public class AASConsumerConfiguration extends DataSourceConfiguration {
 	private String api;
 	
 	
-	public AASConsumerConfiguration(String uniqueId, String serverUrl, int serverPort, String idShortPath, String submodelEndpoint, String api) {
+	public AASDataSourceConfiguration(String uniqueId, String serverUrl, int serverPort, String idShortPath, String submodelEndpoint, String api) {
 		super(uniqueId, serverUrl, serverPort);
 		this.type = PROPERTY_TYPE;
 		this.submodelEndpoint = submodelEndpoint;
@@ -52,6 +52,10 @@ public class AASConsumerConfiguration extends DataSourceConfiguration {
 	
 	public String getType() {
 		return type;
+	}
+	
+	public String getSubmodelEndpoint() {
+		return submodelEndpoint;
 	}
 
 	public void setType(String type) {
@@ -66,10 +70,6 @@ public class AASConsumerConfiguration extends DataSourceConfiguration {
 		this.idShortPath = idShortPath;
 	}
 	
-	public String getSubmodelEndpoint() {
-		return submodelEndpoint;
-	}
-
 	public void setSubmodelEndpoint(String endpoint) {
 		this.submodelEndpoint = endpoint;
 	}
@@ -83,15 +83,12 @@ public class AASConsumerConfiguration extends DataSourceConfiguration {
 	}
 	
 	@Override
-	public String getConnectionURI() {
-		//return "aas:" + getSubmodelEndpoint() + "?propertyPath=" + getIdShortPath();
-		
+	public String getConnectionURI() {	
 		String endpointDefinition = "aas:";
 		endpointDefinition += this.submodelEndpoint;
 		endpointDefinition += "?propertyPath=" + this.idShortPath;
 		endpointDefinition += "&api=" + getApiIfConfigured();
 		return endpointDefinition;
-		
 	}
 
 	private String getApiIfConfigured() {

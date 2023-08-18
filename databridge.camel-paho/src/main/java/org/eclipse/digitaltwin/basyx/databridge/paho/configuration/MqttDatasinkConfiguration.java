@@ -23,8 +23,6 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.databridge.paho.configuration;
-import java.net.URISyntaxException;
-import org.apache.http.client.utils.URIBuilder;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.entity.DataSinkConfiguration;
 
 /**
@@ -33,10 +31,8 @@ import org.eclipse.digitaltwin.basyx.databridge.core.configuration.entity.DataSi
  *
  */
 
-public class MqttDatasinkConfiguration extends DataSinkConfiguration{
-	
-	private static final String MQTT_PROTOCOL_NAME = "paho";
-	
+public class MqttDatasinkConfiguration extends DataSinkConfiguration {
+		
 	private String serverUrl;
 	private int serverPort;
 	private String topic;

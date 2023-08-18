@@ -38,19 +38,14 @@ import org.eclipse.basyx.vab.coder.json.serialization.GSONTools;
 import org.eclipse.basyx.vab.modelprovider.VABElementProxy;
 import org.eclipse.basyx.vab.modelprovider.api.IModelProvider;
 import org.eclipse.basyx.vab.protocol.http.connector.HTTPConnectorFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
- * An implementation of AAS Consumer
+ * Consumer implementation of AAS
  * @author rana
  *
  */
 public class AASConsumer extends ScheduledPollConsumer implements PollingConsumer{
-	
-	
-	private static final Logger logger = LoggerFactory.getLogger(AASConsumer.class);
-	
+		
 	private VABElementProxy proxy;
 	
 	public AASConsumer(AASEndpoint endpoint, Processor processor) {
@@ -144,7 +139,7 @@ public class AASConsumer extends ScheduledPollConsumer implements PollingConsume
 	
 	/**
 	 * Without path will return getSubmodelEndpoint
-	 * With path will return createBaSyxApiProxyUrl
+	 * With path will return getFullProxyUrl
 	 * @return endpoint
 	 */
 	protected String getAASEndPoint() {
