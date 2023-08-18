@@ -203,7 +203,7 @@ public class AASEndpoint extends DefaultEndpoint {
 		return messageBody;
 	}
 
-	private String getSubmodelEndpoint() {
+	public String getSubmodelEndpoint() {
 		String submodelEndpoint = this.getEndpointBaseUri().substring(4);
 
 		logger.info("SubmodelEndpoint " + submodelEndpoint);
@@ -211,45 +211,16 @@ public class AASEndpoint extends DefaultEndpoint {
 		return submodelEndpoint;
 	}
 
-	private String getFullProxyUrl() {
+	public String getFullProxyUrl() {
 		if (api.equals(ApiType.BASYX))
 			return createBaSyxApiProxyUrl();
 
 		return createDotAasApiProxyUrl();
 	}
 	
-	/*
-	 * AAS Polling consumer section 
-	 * 
-	 */
-	
 	@Override
 	public PollingConsumer createPollingConsumer() throws Exception {
-		AASConsumer consumer = new AASConsumer(this, processor);
-		return consumer;
+		return new AASConsumer(this, processor);
 	}
 	
-	/**
-	 * Gets the submodel element id for data dump
-	 * @return 
-	 */
-	public String getSubmodelElementIdShortPath() {
-		String submodelElementIdShortPath = getPropertyPath();
-    	logger.info("Submodel Element ID: " + submodelElementIdShortPath);
-		return submodelElementIdShortPath;
-	}
-	
-	/**
-	 * Without path will return getSubmodelEndpoint
-	 * With path will return createBaSyxApiProxyUrl
-	 * @return 
-	 */
-	public String getFullProxyUrlAas() {
-		
-		if (!getSubmodelElementIdShortPath().isEmpty()) {
-			return this.createBaSyxApiProxyUrl();
-		} else {
-			return this.getSubmodelEndpoint();
-		}
-	}
 }

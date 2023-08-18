@@ -1,6 +1,6 @@
 [
 	{
-		"uniqueId": "exampleMQTT",
+		"uniqueId": "exampleMQTT1",
 		"serverUrl": "broker.mqttdashboard.com",
 		"serverPort": 1883,
 		"topic": "aas/pressure",
@@ -8,13 +8,21 @@
 		"userName": "test1",
 		"password": "123456"
 	},
-	
 	{
-		"uniqueId": "exampleMQTT1",
+		"uniqueId": "exampleMQTT2",
 		"serverUrl": "broker.mqttdashboard.com",
 		"serverPort": 1883,
 		"topic": "aas/rotation",
 		"clientId": "mqttx_71d9ee48",
+		"userName": "test1",
+		"password": "123456"
+	},
+	{
+		"uniqueId": "exampleMQTT3",
+		"serverUrl": "broker.mqttdashboard.com",
+		"serverPort": 1883,
+		"topic": "aas/pressure_rotation",
+		"clientId": "mqttx_35a1e8a0",
 		"userName": "test1",
 		"password": "123456"
 	}

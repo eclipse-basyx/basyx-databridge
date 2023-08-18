@@ -1,3 +1,27 @@
+/*******************************************************************************
+ * Copyright (C) 2021 the Eclipse BaSyx Authors
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining
+ * a copy of this software and associated documentation files (the
+ * "Software"), to deal in the Software without restriction, including
+ * without limitation the rights to use, copy, modify, merge, publish,
+ * distribute, sublicense, and/or sell copies of the Software, and to
+ * permit persons to whom the Software is furnished to do so, subject to
+ * the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+ * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+ * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+ * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * 
+ * SPDX-License-Identifier: MIT
+ ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.databridge.aas;
 
 import org.apache.camel.AsyncCallback;
@@ -14,45 +38,27 @@ import org.eclipse.basyx.vab.coder.json.serialization.GSONTools;
 import org.eclipse.basyx.vab.modelprovider.VABElementProxy;
 import org.eclipse.basyx.vab.modelprovider.api.IModelProvider;
 import org.eclipse.basyx.vab.protocol.http.connector.HTTPConnectorFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
+ * Consumer implementation of AAS
  * @author rana
  *
  */
 public class AASConsumer extends ScheduledPollConsumer implements PollingConsumer{
-	
-	
-	private static final Logger logger = LoggerFactory.getLogger(AASConsumer.class);
-	
+		
 	private VABElementProxy proxy;
 	
 	public AASConsumer(AASEndpoint endpoint, Processor processor) {
 		super(endpoint, processor);
-		// TODO Auto-generated constructor stub
 		
-		//Start connection according to aasserver_datasource.json  
-		pollingDataFromDataSource();
+		connectToAasElement();
 	}
 	
 	@Override
 	public AASEndpoint getEndpoint() {
-		
 		return (AASEndpoint) super.getEndpoint();
 	}
-
-	/**
-	 * Connect to AAS data source
-	 * Three types of scenario
-	 * With SubmodelElement, only SubModel or EndPoint
-	 */
-	public void pollingDataFromDataSource() {
-		logger.info("Connecting to SubmodelElement @ " + getEndpoint().getFullProxyUrlAas());
-		connectToSmElement();
-		return;
-	}
-
+	
 	@Override
 	protected int poll() throws Exception {		
 		return 0;
@@ -74,59 +80,74 @@ public class AASConsumer extends ScheduledPollConsumer implements PollingConsume
 	@Override
 	public Exchange receive(long timeout) {
 
-		// Polling data periodically
-		pollingDataFromDataSource();
+		connectToAasElement();
 		
-		// Exchange formated data 
-		Exchange exchange = createExchange(getConnectedPropertyToJSON());
-		AsyncCallback cb = defaultConsumerCallback(exchange, true);
-		getAsyncProcessor().process(exchange, cb);
+		Exchange exchange = createExchange(ConnectedPropertyToJSON());
+		
+		AsyncCallback callback = defaultConsumerCallback(exchange, true);
+		getAsyncProcessor().process(exchange, callback);
 		
 		return exchange;
 	}
 	
 	
 	/**
-	 * Polling data from AAS Source with SubmodelElement and endpoint
+	 * Connect to AAS Element for data dumping 
 	 */
-	private void connectToSmElement() {
+	private void connectToAasElement() {
 
 		HTTPConnectorFactory factory = new HTTPConnectorFactory();
-    	String proxyUrl = this.getEndpoint().getFullProxyUrlAas();
+    	String proxyUrl = this.getAASEndPoint();
+    	
     	IModelProvider provider = factory.getConnector(proxyUrl);
     	this.proxy = new VABElementProxy("", provider);
 	}
 	
-	public Exchange createExchange(String exchangeProperty) {
+	private Exchange createExchange(String exchangeProperty) {
 		
 		Exchange exchange = createExchange(true);
+		
 		DefaultMessage exMsg = new DefaultMessage(exchange.getContext());
 		exMsg.setBody(exchangeProperty);
 		exchange.setIn(exMsg);
+		
 		return exchange;
 	}
 	
 	/**
-	 * Serialize properties
-	 * With specific property name, properties will hold ConnectedProperty
-	 * Without specific property , whole submodelElements will hold ConnectedSubmodel
+	 * Construct Gson instances
+	 * @return GSONTools object
 	 */
-	private String getConnectedPropertyToJSON() {
+	private String ConnectedPropertyToJSON() {
 		
-		if (!getEndpoint().getSubmodelElementIdShortPath().isEmpty()) {
+		if (!getEndpoint().getPropertyPath().isEmpty()) {
 			ConnectedProperty prop = new ConnectedProperty(getProxy());
 			return new GSONTools(new DefaultTypeFactory()).serialize(prop.getLocalCopy());
-    	}else {
-    		ConnectedSubmodel sm = new ConnectedSubmodel(getProxy());
-    		return new GSONTools(new DefaultTypeFactory()).serialize(SubmodelElementMapCollectionConverter.smToMap(sm.getLocalCopy()));
-    	}
+		}
+    	
+		ConnectedSubmodel sm = new ConnectedSubmodel(getProxy());
+		return new GSONTools(new DefaultTypeFactory()).serialize(SubmodelElementMapCollectionConverter.smToMap(sm.getLocalCopy()));
 	}
 	
 	/**
-	 * getting proxy
+	 * This method returns current proxy is pointing to
+	 * @return proxy
 	 */
-	VABElementProxy getProxy() {
+	private VABElementProxy getProxy() {
 		return proxy;
 	}
 	
+	/**
+	 * Without path will return getSubmodelEndpoint
+	 * With path will return getFullProxyUrl
+	 * @return endpoint
+	 */
+	protected String getAASEndPoint() {
+		
+		if (!this.getEndpoint().getPropertyPath().isEmpty()) 
+			return this.getEndpoint().getFullProxyUrl();
+		
+		return this.getEndpoint().getSubmodelEndpoint();
+	}
+
 }
