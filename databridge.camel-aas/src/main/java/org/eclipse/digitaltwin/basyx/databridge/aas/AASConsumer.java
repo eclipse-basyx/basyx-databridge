@@ -40,7 +40,7 @@ import org.eclipse.basyx.vab.modelprovider.api.IModelProvider;
 import org.eclipse.basyx.vab.protocol.http.connector.HTTPConnectorFactory;
 
 /**
- * Consumer implementation of AAS
+ * An implementation of AAS Consumer
  * @author rana
  *
  */
