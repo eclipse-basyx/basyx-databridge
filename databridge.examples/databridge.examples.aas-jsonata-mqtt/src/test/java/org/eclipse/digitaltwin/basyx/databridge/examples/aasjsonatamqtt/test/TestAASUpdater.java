@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2021 the Eclipse BaSyx Authors
+ * Copyright (C) 2023 the Eclipse BaSyx Authors
  * 
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -25,9 +25,12 @@
 package org.eclipse.digitaltwin.basyx.databridge.examples.aasjsonatamqtt.test;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.UUID;
-
 import static org.junit.Assert.assertEquals;
 
 import org.eclipse.basyx.aas.metamodel.map.descriptor.CustomId;
@@ -37,7 +40,7 @@ import org.eclipse.basyx.components.aas.configuration.AASServerBackend;
 import org.eclipse.basyx.components.aas.configuration.BaSyxAASServerConfiguration;
 import org.eclipse.basyx.components.configuration.BaSyxContextConfiguration;
 import org.eclipse.basyx.submodel.metamodel.api.identifier.IIdentifier;
-import org.eclipse.digitaltwin.basyx.databridge.aas.configuration.factory.AASDataSourceDefaultConfigurationFactory;
+import org.eclipse.digitaltwin.basyx.databridge.aas.configuration.factory.AASConsumerDefaultConfigurationFactory;
 import org.eclipse.digitaltwin.basyx.databridge.core.component.DataBridgeComponent;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.factory.RoutesConfigurationFactory;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.core.RoutesConfiguration;
@@ -58,11 +61,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.moquette.broker.Server;
 import io.moquette.broker.config.ClasspathResourceLoader;
 import io.moquette.broker.config.IConfig;
@@ -74,25 +75,21 @@ import io.moquette.broker.config.ResourceLoaderConfig;
  * @author rana
  *
  */
-
 public class TestAASUpdater {
 
 	private static Logger logger = LoggerFactory.getLogger(TestAASUpdater.class);
-
 	private static AASServerComponent aasServer;
-	protected static IIdentifier deviceAASPlainId = new CustomId("TestUpdatedDeviceAAS");
-
 	private static BaSyxContextConfiguration aasContextConfig;
 	private static InMemoryRegistry registry = new InMemoryRegistry();
-	
-	protected static Server mqttBroker;
 	private static DataBridgeComponent updater;
 	private static String mqtt_broker_url = "tcp://broker.mqttdashboard.com:1883";
 	private static String user_name = "test1";
 	private static String password = "1234567";
 	private static String client_id = UUID.randomUUID().toString();
-	protected static String receivedMessage;
 	
+	protected static String receivedMessage;
+	protected static IIdentifier deviceAASPlainId = new CustomId("TestUpdatedDeviceAAS");
+	protected static Server mqttBroker;
 	
 	@BeforeClass
 	public static void setUp() throws Exception {
@@ -117,32 +114,31 @@ public class TestAASUpdater {
 	@Test
 	public void getUpdatedPropertyValueA() throws MqttException, MqttSecurityException, MqttPersistenceException, InterruptedException, JsonProcessingException {
 		
-		String topicA = "aas/pressure";
-		String expectedValueA = "103.5585973";
+		String topic = "aas/pressure";
+		String expectedValue = "103.5585973";
 		
-		assertPropertyValueAorB(expectedValueA, topicA);
+		assertPropertyValue(expectedValue, topic);
 	}
 	
 	@Test
 	public void getUpdatedPropertyValueB() throws MqttException, MqttSecurityException, MqttPersistenceException, InterruptedException, JsonProcessingException {
 
-		String topicB = "aas/rotation";
-		String expectedValueB = "379.5784558";
+		String topic = "aas/rotation";
+		String expectedValue = "379.5784558";
 		
-		assertPropertyValueAorB(expectedValueB, topicB);
+		assertPropertyValue(expectedValue, topic);
 	}
-	
 	
 	@Test
-	public void getUpdatedPropertyValueC() throws MqttException, MqttSecurityException, MqttPersistenceException, InterruptedException, JsonProcessingException {
+	public void getUpdatedPropertyValueC() throws MqttException, MqttSecurityException, MqttPersistenceException, InterruptedException, IOException, URISyntaxException {
 
-		String topicB = "aas/pressure_rotation";
-		String expectedValueB = "[{\"modelType\":{\"name\":\"Property\"},\"kind\":\"Instance\",\"value\":\"103.5585973\",\"valueType\":\"anyType\",\"idShort\":\"pressure\",\"qualifiers\":[],\"semanticId\":{\"keys\":[]},\"parent\":{\"keys\":[{\"type\":\"Submodel\",\"local\":true,\"value\":\"https://example.com/ids/sm/8583_3140_7032_9766\",\"idType\":\"IRI\"}]}},{\"modelType\":{\"name\":\"Property\"},\"kind\":\"Instance\",\"value\":\"379.5784558\",\"valueType\":\"anyType\",\"idShort\":\"rotation\",\"qualifiers\":[],\"semanticId\":{\"keys\":[]},\"parent\":{\"keys\":[{\"type\":\"Submodel\",\"local\":true,\"value\":\"https://example.com/ids/sm/8583_3140_7032_9766\",\"idType\":\"IRI\"}]}}]";
+		String topic = "aas/pressure_rotation";
+		String expectedValue = getExpectedValueFromFile();
 		
-		assertPropertyValueC(expectedValueB, topicB);
+		assertPropertyValueC(expectedValue, topic);
 	}
 	
-	private void assertPropertyValueAorB(String expectedValue, String topic) throws MqttSecurityException, MqttPersistenceException, MqttException, InterruptedException {
+	private void assertPropertyValue(String expectedValue, String topic) throws MqttSecurityException, MqttPersistenceException, MqttException, InterruptedException {
 		
 		fetchExpectedValue(topic);
 		
@@ -159,7 +155,6 @@ public class TestAASUpdater {
 		
 		assertEquals(mapper.readTree(receivedMessage), mapper.readTree(expectedValue));
 	}
-	
 	
 	private static void fetchExpectedValue(String currentTopic) throws MqttException, MqttSecurityException, MqttPersistenceException, InterruptedException {
 		
@@ -221,7 +216,7 @@ public class TestAASUpdater {
 		TimerDefaultConfigurationFactory timerConfigFactory = new TimerDefaultConfigurationFactory(loader);
 		configuration.addDatasources(timerConfigFactory.create());
 
-		AASDataSourceDefaultConfigurationFactory aasSourceConfigFactory = new AASDataSourceDefaultConfigurationFactory(
+		AASConsumerDefaultConfigurationFactory aasSourceConfigFactory = new AASConsumerDefaultConfigurationFactory(
 				loader);
 		configuration.addDatasources(aasSourceConfigFactory.create());
 
@@ -254,6 +249,14 @@ public class TestAASUpdater {
 		IResourceLoader classpathLoader = new ClasspathResourceLoader();
 		final IConfig classPathConfig = new ResourceLoaderConfig(classpathLoader);
 		mqttBroker.startServer(classPathConfig);
+	}
+	
+	private static String getExpectedValueFromFile() throws IOException, URISyntaxException {
+		
+		String filename = "aassmproperties.json";
+		URL resource = TestAASUpdater.class.getClassLoader().getResource(filename);  
+	    byte[] content = Files.readAllBytes(Paths.get(resource.toURI()));  
+		return new String(content);
 	}
 
 	public static MqttConnectOptions setUpMqttConnection(String username, String password) {

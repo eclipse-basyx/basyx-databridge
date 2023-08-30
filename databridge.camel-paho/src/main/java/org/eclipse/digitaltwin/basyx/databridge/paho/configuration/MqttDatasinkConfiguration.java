@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2021 the Eclipse BaSyx Authors
+ * Copyright (C) 2023 the Eclipse BaSyx Authors
  * 
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -23,6 +23,7 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.databridge.paho.configuration;
+
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.entity.DataSinkConfiguration;
 
 /**
@@ -30,7 +31,6 @@ import org.eclipse.digitaltwin.basyx.databridge.core.configuration.entity.DataSi
  * @author rana
  *
  */
-
 public class MqttDatasinkConfiguration extends DataSinkConfiguration {
 		
 	private String serverUrl;
@@ -103,22 +103,33 @@ public class MqttDatasinkConfiguration extends DataSinkConfiguration {
 	}
 	
 	private String buildOptions() {
-		String options = "";
-		options = options.concat("?brokerUrl=tcp://").concat(getServerUrl()).concat(":")
-				.concat(Integer.toString(getServerPort())).concat("&clientId=").concat(getClientId());
+		
+		StringBuilder options = new StringBuilder();
+		options.append("?brokerUrl=tcp://");
+		options.append(getServerUrl());
+		options.append(":");
+		options.append(Integer.toString(getServerPort()));
+		options.append("&clientId=");
+		options.append(getClientId());
+		
 		if (!getUserName().isBlank()) {
-			options = options.concat("&userName=").concat(getUserName()).concat("&password=").concat(getPassword());
+			options.append("&userName=");
+			options.append(getUserName());
+			options.append("&password=");
+			options.append(getPassword());
 		}
-		return options;
+		return options.toString();
 	}
 
 	@Override
 	public String getConnectionURI() {
 		
-		String connUri = "paho:";
-		connUri += getTopic();
-		connUri += buildOptions()+ ":" ;
-		connUri += getServerPort();
-		return connUri;
+		StringBuilder connUri = new StringBuilder();
+		connUri.append("paho:");
+		connUri.append(getTopic());
+		connUri.append(buildOptions());
+		connUri.append(getServerPort());
+		
+		return connUri.toString();
 	}
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2021 the Eclipse BaSyx Authors
+ * Copyright (C) 2023 the Eclipse BaSyx Authors
  * 
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -24,7 +24,7 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.databridge.aas.configuration.factory;
 
-import org.eclipse.digitaltwin.basyx.databridge.aas.configuration.AASDataSourceConfiguration;
+import org.eclipse.digitaltwin.basyx.databridge.aas.configuration.AASConsumerConfiguration;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.factory.DataSourceConfigurationFactory;
 
 /**
@@ -32,16 +32,15 @@ import org.eclipse.digitaltwin.basyx.databridge.core.configuration.factory.DataS
  * @author rana
  *
  */
-
-public class AASDataSourceDefaultConfigurationFactory extends DataSourceConfigurationFactory {
+public class AASConsumerDefaultConfigurationFactory extends DataSourceConfigurationFactory {
 	
 	private static final String DEFAULT_FILE_PATH = "aasconsumer.json";
 	
-	public AASDataSourceDefaultConfigurationFactory(ClassLoader loader) {
-		super(DEFAULT_FILE_PATH, loader, AASDataSourceConfiguration.class);
+	public AASConsumerDefaultConfigurationFactory(ClassLoader loader) {
+		super(DEFAULT_FILE_PATH, loader, AASConsumerConfiguration.class);
 	}
 	
-	public AASDataSourceDefaultConfigurationFactory(String filePath, ClassLoader loader) {
-		super(filePath, loader, AASDataSourceConfiguration.class);
+	public AASConsumerDefaultConfigurationFactory(String filePath, ClassLoader loader) {
+		super(filePath, loader, AASConsumerConfiguration.class);
 	}
 }

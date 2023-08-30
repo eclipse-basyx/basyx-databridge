@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2021 the Eclipse BaSyx Authors
+ * Copyright (C) 2023 the Eclipse BaSyx Authors
  * 
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -79,14 +79,11 @@ public class AASConsumer extends ScheduledPollConsumer implements PollingConsume
 	 */
 	@Override
 	public Exchange receive(long timeout) {
-
-		connectToAasElement();
 		
-		Exchange exchange = createExchange(ConnectedPropertyToJSON());
+		Exchange exchange = createExchange(getSerializedMetamodel());
 		
 		AsyncCallback callback = defaultConsumerCallback(exchange, true);
 		getAsyncProcessor().process(exchange, callback);
-		
 		return exchange;
 	}
 	
@@ -97,7 +94,7 @@ public class AASConsumer extends ScheduledPollConsumer implements PollingConsume
 	private void connectToAasElement() {
 
 		HTTPConnectorFactory factory = new HTTPConnectorFactory();
-    	String proxyUrl = this.getAASEndPoint();
+    	String proxyUrl = this.getAASUrl();
     	
     	IModelProvider provider = factory.getConnector(proxyUrl);
     	this.proxy = new VABElementProxy("", provider);
@@ -115,10 +112,10 @@ public class AASConsumer extends ScheduledPollConsumer implements PollingConsume
 	}
 	
 	/**
-	 * Construct Gson instances
-	 * @return GSONTools object
+	 * Construct meta model
+	 * @return serialized meta model
 	 */
-	private String ConnectedPropertyToJSON() {
+	private String getSerializedMetamodel() {
 		
 		if (!getEndpoint().getPropertyPath().isEmpty()) {
 			ConnectedProperty prop = new ConnectedProperty(getProxy());
@@ -138,13 +135,13 @@ public class AASConsumer extends ScheduledPollConsumer implements PollingConsume
 	}
 	
 	/**
-	 * Without path will return getSubmodelEndpoint
-	 * With path will return getFullProxyUrl
-	 * @return endpoint
+	 * Without property, it will return getSubmodelEndpoint
+	 * With property, it will return getFullProxyUrl
+	 * @return url
 	 */
-	protected String getAASEndPoint() {
+	protected String getAASUrl() {
 		
-		if (!this.getEndpoint().getPropertyPath().isEmpty()) 
+		if (!this.getEndpoint().getPropertyPath().isEmpty())
 			return this.getEndpoint().getFullProxyUrl();
 		
 		return this.getEndpoint().getSubmodelEndpoint();

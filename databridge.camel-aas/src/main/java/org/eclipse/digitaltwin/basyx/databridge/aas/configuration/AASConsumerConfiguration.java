@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2021 the Eclipse BaSyx Authors
+ * Copyright (C) 2023 the Eclipse BaSyx Authors
  * 
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -32,34 +32,21 @@ import org.eclipse.digitaltwin.basyx.databridge.core.configuration.entity.DataSo
  * @author rana
  *
  */
-
-public class AASDataSourceConfiguration extends DataSourceConfiguration {
-	private static final String PROPERTY_TYPE = "PROPERTY";
+public class AASConsumerConfiguration extends DataSourceConfiguration {
 	
-	private String type;
 	private String idShortPath;
 	private String submodelEndpoint;
 	private String api;
 	
-	
-	public AASDataSourceConfiguration(String uniqueId, String serverUrl, int serverPort, String idShortPath, String submodelEndpoint, String api) {
+	public AASConsumerConfiguration(String uniqueId, String serverUrl, int serverPort, String idShortPath, String submodelEndpoint, String api) {
 		super(uniqueId, serverUrl, serverPort);
-		this.type = PROPERTY_TYPE;
 		this.submodelEndpoint = submodelEndpoint;
 		this.idShortPath = idShortPath;
 		this.api = api;
 	}
 	
-	public String getType() {
-		return type;
-	}
-	
 	public String getSubmodelEndpoint() {
 		return submodelEndpoint;
-	}
-
-	public void setType(String type) {
-		this.type = type;
 	}
 
 	public String getIdShortPath() {

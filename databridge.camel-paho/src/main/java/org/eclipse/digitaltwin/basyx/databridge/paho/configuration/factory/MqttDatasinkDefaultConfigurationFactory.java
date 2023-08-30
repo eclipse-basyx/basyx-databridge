@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2021 the Eclipse BaSyx Authors
+ * Copyright (C) 2023 the Eclipse BaSyx Authors
  * 
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -23,6 +23,7 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.databridge.paho.configuration.factory;
+
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.factory.DataSinkConfigurationFactory;
 import org.eclipse.digitaltwin.basyx.databridge.paho.configuration.MqttDatasinkConfiguration;
 
@@ -31,7 +32,6 @@ import org.eclipse.digitaltwin.basyx.databridge.paho.configuration.MqttDatasinkC
  * @author rana
  *
  */
-
 public class MqttDatasinkDefaultConfigurationFactory extends DataSinkConfigurationFactory {
 
 	private static final String DEFAULT_FILE_PATH = "mqttdatasink.json";
@@ -43,5 +43,4 @@ public class MqttDatasinkDefaultConfigurationFactory extends DataSinkConfigurati
 	public MqttDatasinkDefaultConfigurationFactory(String filePath, ClassLoader loader) {
 		super(filePath, loader, MqttDatasinkConfiguration.class);
 	}
-
 }
