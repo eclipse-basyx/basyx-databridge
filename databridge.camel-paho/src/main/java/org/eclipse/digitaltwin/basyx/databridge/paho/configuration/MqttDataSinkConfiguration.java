@@ -22,6 +22,7 @@
  * 
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
+
 package org.eclipse.digitaltwin.basyx.databridge.paho.configuration;
 
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.entity.DataSinkConfiguration;
@@ -31,7 +32,7 @@ import org.eclipse.digitaltwin.basyx.databridge.core.configuration.entity.DataSi
  * @author rana
  *
  */
-public class MqttDatasinkConfiguration extends DataSinkConfiguration {
+public class MqttDataSinkConfiguration extends DataSinkConfiguration {
 		
 	private String serverUrl;
 	private int serverPort;
@@ -40,10 +41,10 @@ public class MqttDatasinkConfiguration extends DataSinkConfiguration {
 	private String password;
 	private String clientId;
 
-	public MqttDatasinkConfiguration() {
+	public MqttDataSinkConfiguration() {
 	}
 
-	public MqttDatasinkConfiguration(String uniqueId, String serverUrl, int serverPort, String topic, String clientId,
+	public MqttDataSinkConfiguration(String uniqueId, String serverUrl, int serverPort, String topic, String clientId,
 			String userName, String password) {
 		super(uniqueId);
 		setServerUrl(serverUrl);

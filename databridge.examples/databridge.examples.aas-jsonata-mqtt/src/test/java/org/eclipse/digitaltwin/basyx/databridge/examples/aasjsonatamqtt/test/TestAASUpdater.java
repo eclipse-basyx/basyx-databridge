@@ -22,6 +22,7 @@
  * 
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
+
 package org.eclipse.digitaltwin.basyx.databridge.examples.aasjsonatamqtt.test;
 
 import java.io.IOException;
@@ -40,12 +41,12 @@ import org.eclipse.basyx.components.aas.configuration.AASServerBackend;
 import org.eclipse.basyx.components.aas.configuration.BaSyxAASServerConfiguration;
 import org.eclipse.basyx.components.configuration.BaSyxContextConfiguration;
 import org.eclipse.basyx.submodel.metamodel.api.identifier.IIdentifier;
-import org.eclipse.digitaltwin.basyx.databridge.aas.configuration.factory.AASConsumerDefaultConfigurationFactory;
+import org.eclipse.digitaltwin.basyx.databridge.aas.configuration.factory.AASPollingConsumerDefaultConfigurationFactory;
 import org.eclipse.digitaltwin.basyx.databridge.core.component.DataBridgeComponent;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.factory.RoutesConfigurationFactory;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.core.RoutesConfiguration;
 import org.eclipse.digitaltwin.basyx.databridge.jsonata.configuration.factory.JsonataDefaultConfigurationFactory;
-import org.eclipse.digitaltwin.basyx.databridge.paho.configuration.factory.MqttDatasinkDefaultConfigurationFactory;
+import org.eclipse.digitaltwin.basyx.databridge.paho.configuration.factory.MqttDataSinkDefaultConfigurationFactory;
 import org.eclipse.digitaltwin.basyx.databridge.timer.configuration.factory.TimerDefaultConfigurationFactory;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
@@ -86,7 +87,6 @@ public class TestAASUpdater {
 	private static String user_name = "test1";
 	private static String password = "1234567";
 	private static String client_id = UUID.randomUUID().toString();
-	
 	protected static String receivedMessage;
 	protected static IIdentifier deviceAASPlainId = new CustomId("TestUpdatedDeviceAAS");
 	protected static Server mqttBroker;
@@ -216,11 +216,11 @@ public class TestAASUpdater {
 		TimerDefaultConfigurationFactory timerConfigFactory = new TimerDefaultConfigurationFactory(loader);
 		configuration.addDatasources(timerConfigFactory.create());
 
-		AASConsumerDefaultConfigurationFactory aasSourceConfigFactory = new AASConsumerDefaultConfigurationFactory(
+		AASPollingConsumerDefaultConfigurationFactory aasSourceConfigFactory = new AASPollingConsumerDefaultConfigurationFactory(
 				loader);
 		configuration.addDatasources(aasSourceConfigFactory.create());
 
-		MqttDatasinkDefaultConfigurationFactory mqttConfigFactory = new MqttDatasinkDefaultConfigurationFactory(loader);
+		MqttDataSinkDefaultConfigurationFactory mqttConfigFactory = new MqttDataSinkDefaultConfigurationFactory(loader);
 		configuration.addDatasinks(mqttConfigFactory.create());
 
 		JsonataDefaultConfigurationFactory jsonataConfigFactory = new JsonataDefaultConfigurationFactory(loader);
@@ -253,9 +253,9 @@ public class TestAASUpdater {
 	
 	private static String getExpectedValueFromFile() throws IOException, URISyntaxException {
 		
-		String filename = "aassmproperties.json";
-		URL resource = TestAASUpdater.class.getClassLoader().getResource(filename);  
-	    byte[] content = Files.readAllBytes(Paths.get(resource.toURI()));  
+		String filename = "submodelproperties.json";
+		URL resource = TestAASUpdater.class.getClassLoader().getResource(filename);
+	    byte[] content = Files.readAllBytes(Paths.get(resource.toURI()));
 		return new String(content);
 	}
 

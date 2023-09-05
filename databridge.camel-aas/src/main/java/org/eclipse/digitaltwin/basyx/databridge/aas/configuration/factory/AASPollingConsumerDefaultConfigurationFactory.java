@@ -22,9 +22,10 @@
  * 
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
+
 package org.eclipse.digitaltwin.basyx.databridge.aas.configuration.factory;
 
-import org.eclipse.digitaltwin.basyx.databridge.aas.configuration.AASConsumerConfiguration;
+import org.eclipse.digitaltwin.basyx.databridge.aas.configuration.AASPollingConsumerConfiguration;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.factory.DataSourceConfigurationFactory;
 
 /**
@@ -32,15 +33,15 @@ import org.eclipse.digitaltwin.basyx.databridge.core.configuration.factory.DataS
  * @author rana
  *
  */
-public class AASConsumerDefaultConfigurationFactory extends DataSourceConfigurationFactory {
+public class AASPollingConsumerDefaultConfigurationFactory extends DataSourceConfigurationFactory {
 	
-	private static final String DEFAULT_FILE_PATH = "aasconsumer.json";
+	private static final String DEFAULT_FILE_PATH = "aaspollingconsumer.json";
 	
-	public AASConsumerDefaultConfigurationFactory(ClassLoader loader) {
-		super(DEFAULT_FILE_PATH, loader, AASConsumerConfiguration.class);
+	public AASPollingConsumerDefaultConfigurationFactory(ClassLoader loader) {
+		super(DEFAULT_FILE_PATH, loader, AASPollingConsumerConfiguration.class);
 	}
 	
-	public AASConsumerDefaultConfigurationFactory(String filePath, ClassLoader loader) {
-		super(filePath, loader, AASConsumerConfiguration.class);
+	public AASPollingConsumerDefaultConfigurationFactory(String filePath, ClassLoader loader) {
+		super(filePath, loader, AASPollingConsumerConfiguration.class);
 	}
 }

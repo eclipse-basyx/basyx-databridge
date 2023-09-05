@@ -22,6 +22,7 @@
  * 
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
+
 package org.eclipse.digitaltwin.basyx.databridge.aas.configuration;
 
 import org.eclipse.digitaltwin.basyx.databridge.aas.api.ApiType;
@@ -32,13 +33,13 @@ import org.eclipse.digitaltwin.basyx.databridge.core.configuration.entity.DataSo
  * @author rana
  *
  */
-public class AASConsumerConfiguration extends DataSourceConfiguration {
+public class AASPollingConsumerConfiguration extends DataSourceConfiguration {
 	
 	private String idShortPath;
 	private String submodelEndpoint;
 	private String api;
 	
-	public AASConsumerConfiguration(String uniqueId, String serverUrl, int serverPort, String idShortPath, String submodelEndpoint, String api) {
+	public AASPollingConsumerConfiguration(String uniqueId, String serverUrl, int serverPort, String idShortPath, String submodelEndpoint, String api) {
 		super(uniqueId, serverUrl, serverPort);
 		this.submodelEndpoint = submodelEndpoint;
 		this.idShortPath = idShortPath;

@@ -22,25 +22,26 @@
  * 
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
+
 package org.eclipse.digitaltwin.basyx.databridge.paho.configuration.factory;
 
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.factory.DataSinkConfigurationFactory;
-import org.eclipse.digitaltwin.basyx.databridge.paho.configuration.MqttDatasinkConfiguration;
+import org.eclipse.digitaltwin.basyx.databridge.paho.configuration.MqttDataSinkConfiguration;
 
 /**
  * A default configuration factory for MQTT producer from a default file path
  * @author rana
  *
  */
-public class MqttDatasinkDefaultConfigurationFactory extends DataSinkConfigurationFactory {
+public class MqttDataSinkDefaultConfigurationFactory extends DataSinkConfigurationFactory {
 
 	private static final String DEFAULT_FILE_PATH = "mqttdatasink.json";
 
-	public MqttDatasinkDefaultConfigurationFactory(ClassLoader loader) {
-		super(DEFAULT_FILE_PATH, loader, MqttDatasinkConfiguration.class);
+	public MqttDataSinkDefaultConfigurationFactory(ClassLoader loader) {
+		super(DEFAULT_FILE_PATH, loader, MqttDataSinkConfiguration.class);
 	}
 
-	public MqttDatasinkDefaultConfigurationFactory(String filePath, ClassLoader loader) {
-		super(filePath, loader, MqttDatasinkConfiguration.class);
+	public MqttDataSinkDefaultConfigurationFactory(String filePath, ClassLoader loader) {
+		super(filePath, loader, MqttDataSinkConfiguration.class);
 	}
 }

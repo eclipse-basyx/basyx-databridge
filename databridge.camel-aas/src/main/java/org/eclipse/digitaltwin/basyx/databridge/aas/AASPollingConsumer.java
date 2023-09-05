@@ -22,14 +22,12 @@
  * 
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
+
 package org.eclipse.digitaltwin.basyx.databridge.aas;
 
-import org.apache.camel.AsyncCallback;
 import org.apache.camel.Exchange;
-import org.apache.camel.PollingConsumer;
-import org.apache.camel.Processor;
 import org.apache.camel.support.DefaultMessage;
-import org.apache.camel.support.ScheduledPollConsumer;
+import org.apache.camel.support.PollingConsumerSupport;
 import org.eclipse.basyx.submodel.metamodel.connected.ConnectedSubmodel;
 import org.eclipse.basyx.submodel.metamodel.connected.submodelelement.dataelement.ConnectedProperty;
 import org.eclipse.basyx.submodel.metamodel.facade.SubmodelElementMapCollectionConverter;
@@ -44,12 +42,16 @@ import org.eclipse.basyx.vab.protocol.http.connector.HTTPConnectorFactory;
  * @author rana
  *
  */
-public class AASConsumer extends ScheduledPollConsumer implements PollingConsumer{
+public class AASPollingConsumer extends PollingConsumerSupport {
 		
+	private static final int WAIT_INDEFINITELY = -1;
+	private static final int NO_WAIT = 0;
 	private VABElementProxy proxy;
+	private AASEndpoint endpoint;
 	
-	public AASConsumer(AASEndpoint endpoint, Processor processor) {
-		super(endpoint, processor);
+	public AASPollingConsumer(AASEndpoint endpoint) {
+		super(endpoint);
+		this.endpoint = endpoint;
 		
 		connectToAasElement();
 	}
@@ -59,34 +61,25 @@ public class AASConsumer extends ScheduledPollConsumer implements PollingConsume
 		return (AASEndpoint) super.getEndpoint();
 	}
 	
-	@Override
-	protected int poll() throws Exception {		
-		return 0;
-	}
 
 	@Override
 	public Exchange receive() {
-		return null;
+		return receive(WAIT_INDEFINITELY);
 	}
 
 	@Override
 	public Exchange receiveNoWait() {
-		return null;
+		return receive(NO_WAIT);
 	}
 
-	/**
-	 * Polling data and sending to data sink
-	 */
 	@Override
 	public Exchange receive(long timeout) {
 		
 		Exchange exchange = createExchange(getSerializedMetamodel());
 		
-		AsyncCallback callback = defaultConsumerCallback(exchange, true);
-		getAsyncProcessor().process(exchange, callback);
+		defaultConsumerCallback(exchange, true);
 		return exchange;
 	}
-	
 	
 	/**
 	 * Connect to AAS Element for data dumping 
@@ -102,7 +95,7 @@ public class AASConsumer extends ScheduledPollConsumer implements PollingConsume
 	
 	private Exchange createExchange(String exchangeProperty) {
 		
-		Exchange exchange = createExchange(true);
+		Exchange exchange = endpoint.createExchange();
 		
 		DefaultMessage exMsg = new DefaultMessage(exchange.getContext());
 		exMsg.setBody(exchangeProperty);
@@ -135,8 +128,8 @@ public class AASConsumer extends ScheduledPollConsumer implements PollingConsume
 	}
 	
 	/**
-	 * Without property, it will return getSubmodelEndpoint
-	 * With property, it will return getFullProxyUrl
+	 * Without specified property, it will return getSubmodelEndpoint
+	 * With specified property, it will return getFullProxyUrl
 	 * @return url
 	 */
 	protected String getAASUrl() {
@@ -146,5 +139,4 @@ public class AASConsumer extends ScheduledPollConsumer implements PollingConsume
 		
 		return this.getEndpoint().getSubmodelEndpoint();
 	}
-
 }

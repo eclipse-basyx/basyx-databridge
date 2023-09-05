@@ -81,7 +81,7 @@ public class AASEndpoint extends DefaultEndpoint {
 	public Producer createProducer() throws Exception {
 		return new AASProducer(this);
 	}
-
+	
 	@Override
 	public Consumer createConsumer(Processor processor) throws Exception {
 		return null;
@@ -218,9 +218,9 @@ public class AASEndpoint extends DefaultEndpoint {
 		return createDotAasApiProxyUrl();
 	}
 	
-	@Override
-	public PollingConsumer createPollingConsumer() throws Exception {
-		return new AASConsumer(this, processor);
-	}
-	
+    @Override 
+    public PollingConsumer createPollingConsumer() throws Exception {
+    	AASPollingConsumer consumer = new AASPollingConsumer(this);
+  		return consumer;
+    }	
 }
