@@ -155,15 +155,15 @@ public class AASEndpoint extends DefaultEndpoint {
 	}
 
 	private void setPropertyValueUsingBaSyxAPI(Object messageBody) throws IOException {
-		if (connectedDataElement.getModelType().equals(KeyElements.PROPERTY.getStandardizedLiteral())) {
-			ValueType valueType = Property.createAsFacade(connectedDataElement.getLocalCopy()).getValueType();
-
-			connectedDataElement.setValue(getContent(messageBody, valueType));
+		if (!connectedDataElement.getModelType().equals(KeyElements.PROPERTY.getStandardizedLiteral())) {
+			HTTPRequest.putRequest(getFullProxyUrl() + BASYX_API_SUFFIX, messageBody.toString());
 
 			return;
 		}
 
-		HTTPRequest.putRequest(getFullProxyUrl() + BASYX_API_SUFFIX, messageBody.toString());
+		ValueType valueType = Property.createAsFacade(connectedDataElement.getLocalCopy()).getValueType();
+
+		connectedDataElement.setValue(getContent(messageBody, valueType));
 	}
 
 	private void setPropertyValueUsingDotAasV3Api(String content) throws IOException {
@@ -194,9 +194,8 @@ public class AASEndpoint extends DefaultEndpoint {
 	}
 
 	private Object getContent(Object messageBody, ValueType propertyValueType) {
-		if (propertyValueType.equals(ValueType.String)) {
+		if (propertyValueType.equals(ValueType.String))
 			return removeQuotesFromString(messageBody.toString());
-		}
 
 		return ValueTypeHelper.getJavaObject(messageBody, propertyValueType);
 	}
