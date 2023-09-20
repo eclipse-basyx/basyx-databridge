@@ -168,18 +168,18 @@ public class TestAASUpdater {
 	private LangStrings fetchMLPValue() {
 		ConnectedAssetAdministrationShell aas = getAAS(deviceAASId);
 
-		ConnectedMultiLanguageProperty updatedProp = (ConnectedMultiLanguageProperty) getSubmodelElement(aas,
+		ConnectedMultiLanguageProperty updatedMLP = (ConnectedMultiLanguageProperty) getSubmodelElement(aas,
 				"ConnectedSubmodel", "ConnectedMLP");
 
-		return updatedProp.getValue();
+		return updatedMLP.getValue();
 	}
 
 	private RangeValue fetchRangeValue() {
 		ConnectedAssetAdministrationShell aas = getAAS(deviceAASId);
 
-		ConnectedRange updatedProp = (ConnectedRange) getSubmodelElement(aas, "ConnectedSubmodel", "ConnectedRange");
+		ConnectedRange updatedRange = (ConnectedRange) getSubmodelElement(aas, "ConnectedSubmodel", "ConnectedRange");
 
-		return updatedProp.getValue();
+		return updatedRange.getValue();
 	}
 
 	private void publishNewDatapoint(String topic, String data)
