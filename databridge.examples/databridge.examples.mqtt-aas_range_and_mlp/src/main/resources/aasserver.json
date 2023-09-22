@@ -1,0 +1,14 @@
+[
+	{
+		"uniqueId": "ConnectedSubmodel/ConnectedMLP",
+		"submodelEndpoint": "http://localhost:4001/shells/TestUpdatedDeviceAAS/aas/submodels/ConnectedSubmodel/submodel",
+		"idShortPath": "ConnectedMLP",
+		"api": "BaSyx"
+	},
+	{
+		"uniqueId": "ConnectedSubmodel/ConnectedRange",
+		"submodelEndpoint": "http://localhost:4001/shells/TestUpdatedDeviceAAS/aas/submodels/ConnectedSubmodel/submodel",
+		"idShortPath": "ConnectedRange",
+		"api": "BaSyx"
+	}
+]
