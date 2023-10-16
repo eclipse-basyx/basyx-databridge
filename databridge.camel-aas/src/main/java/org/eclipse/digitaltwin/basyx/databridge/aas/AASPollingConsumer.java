@@ -99,7 +99,7 @@ public class AASPollingConsumer extends PollingConsumerSupport {
         Future<String> responseFuture = execService.submit(runWithTimeout);
         
         try {
-        	result = responseFuture.get(1, TimeUnit.SECONDS); 
+        	result = responseFuture.get(timeout, TimeUnit.SECONDS); 
         	
         } catch (TimeoutException | InterruptedException | ExecutionException e) {
         	
