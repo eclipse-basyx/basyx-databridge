@@ -91,7 +91,7 @@ public class AASPollingConsumer extends PollingConsumerSupport {
 	
 	protected Exchange doReceive(long timeout) {
 		
-		String result = getSerializedMetamodel();
+		String result;
 		
 		ExecutorService execService = Executors.newSingleThreadExecutor();
         Callable<String> runWithTimeout = this::getSerializedMetamodel;
@@ -99,16 +99,15 @@ public class AASPollingConsumer extends PollingConsumerSupport {
         Future<String> responseFuture = execService.submit(runWithTimeout);
         
         try {
-        	result = responseFuture.get(timeout, TimeUnit.SECONDS); 
+        	result = responseFuture.get(1, TimeUnit.SECONDS); 
+        	
         } catch (TimeoutException | InterruptedException | ExecutionException e) {
         	
         	logger.info("Time out after waiting");
         	
-        	if (!getEndpoint().getPropertyPath().isEmpty()) {
-            	result = "{\"value\":null,\"idShort\":\""+getEndpoint().getPropertyPath()+"\"}";
-            }else {
-            	result = "{\"submodelElements\":[]}";
-            }
+        	getExceptionHandler().handleException(e);
+        	
+        	result = "";
         }
         
 		Exchange exchange = createExchange(result);
