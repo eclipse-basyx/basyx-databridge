@@ -34,13 +34,11 @@ import java.nio.file.Paths;
 import java.util.UUID;
 import static org.junit.Assert.assertEquals;
 
-import org.eclipse.basyx.aas.metamodel.map.descriptor.CustomId;
 import org.eclipse.basyx.aas.registration.memory.InMemoryRegistry;
 import org.eclipse.basyx.components.aas.AASServerComponent;
 import org.eclipse.basyx.components.aas.configuration.AASServerBackend;
 import org.eclipse.basyx.components.aas.configuration.BaSyxAASServerConfiguration;
 import org.eclipse.basyx.components.configuration.BaSyxContextConfiguration;
-import org.eclipse.basyx.submodel.metamodel.api.identifier.IIdentifier;
 import org.eclipse.digitaltwin.basyx.databridge.aas.configuration.factory.AASPollingConsumerDefaultConfigurationFactory;
 import org.eclipse.digitaltwin.basyx.databridge.core.component.DataBridgeComponent;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.factory.RoutesConfigurationFactory;
@@ -87,9 +85,8 @@ public class TestAASUpdater {
 	private static String user_name = "test1";
 	private static String password = "1234567";
 	private static String client_id = UUID.randomUUID().toString();
-	protected static String receivedMessage;
-	protected static IIdentifier deviceAASPlainId = new CustomId("TestUpdatedDeviceAAS");
-	protected static Server mqttBroker;
+	private static String receivedMessage;
+	private static Server mqttBroker;
 	
 	@BeforeClass
 	public static void setUp() throws Exception {
@@ -101,7 +98,6 @@ public class TestAASUpdater {
 		startAasServer();
 
 		configureAndStartUpdaterComponent();
-		
 	}
 	
 	@AfterClass
@@ -115,7 +111,7 @@ public class TestAASUpdater {
 	public void getUpdatedPropertyValueA() throws MqttException, MqttSecurityException, MqttPersistenceException, InterruptedException, JsonProcessingException {
 		
 		String topic = "aas/pressure";
-		String expectedValue = "103.5585973";
+		String expectedValue = wrapStringValue("103.5585973");
 		
 		assertPropertyValue(expectedValue, topic);
 	}
@@ -124,7 +120,7 @@ public class TestAASUpdater {
 	public void getUpdatedPropertyValueB() throws MqttException, MqttSecurityException, MqttPersistenceException, InterruptedException, JsonProcessingException {
 
 		String topic = "aas/rotation";
-		String expectedValue = "379.5784558";
+		String expectedValue = wrapStringValue("379.5784558");
 		
 		assertPropertyValue(expectedValue, topic);
 	}
@@ -141,8 +137,6 @@ public class TestAASUpdater {
 	private void assertPropertyValue(String expectedValue, String topic) throws MqttSecurityException, MqttPersistenceException, MqttException, InterruptedException {
 		
 		fetchExpectedValue(topic);
-		
-		receivedMessage = receivedMessage.substring(1, receivedMessage.length() - 1);
 		
 		assertEquals(receivedMessage, expectedValue);
 	}
@@ -231,7 +225,7 @@ public class TestAASUpdater {
 	}
 
 	private static void waitForPropagation() throws InterruptedException {
-		Thread.sleep(5000);
+		Thread.sleep(6000);
 	}
 	
 	private static MqttClient mqttConnectionInitiate() throws MqttException {
@@ -259,10 +253,14 @@ public class TestAASUpdater {
 		return new String(content);
 	}
 
-	public static MqttConnectOptions setUpMqttConnection(String username, String password) {
+	private static MqttConnectOptions setUpMqttConnection(String username, String password) {
 		MqttConnectOptions connOpts = new MqttConnectOptions();
 		connOpts.setUserName(username);
 		connOpts.setPassword(password.toCharArray());
 		return connOpts;
+	}
+	
+	private String wrapStringValue(String value) {
+		return "\"" + value + "\"";
 	}
 }

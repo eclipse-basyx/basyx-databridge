@@ -25,6 +25,14 @@
 
 package org.eclipse.digitaltwin.basyx.databridge.aas;
 
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.camel.Exchange;
 import org.apache.camel.support.DefaultMessage;
 import org.apache.camel.support.PollingConsumerSupport;
@@ -36,14 +44,18 @@ import org.eclipse.basyx.vab.coder.json.serialization.GSONTools;
 import org.eclipse.basyx.vab.modelprovider.VABElementProxy;
 import org.eclipse.basyx.vab.modelprovider.api.IModelProvider;
 import org.eclipse.basyx.vab.protocol.http.connector.HTTPConnectorFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * An implementation of AAS Consumer
+ * An implementation of AASPolling Consumer
  * @author rana
  *
  */
 public class AASPollingConsumer extends PollingConsumerSupport {
-		
+	
+	private static final Logger logger = LoggerFactory.getLogger(AASPollingConsumer.class);
+	
 	private static final int WAIT_INDEFINITELY = -1;
 	private static final int NO_WAIT = 0;
 	private VABElementProxy proxy;
@@ -64,20 +76,44 @@ public class AASPollingConsumer extends PollingConsumerSupport {
 
 	@Override
 	public Exchange receive() {
-		return receive(WAIT_INDEFINITELY);
+		return doReceive(WAIT_INDEFINITELY);
 	}
 
 	@Override
 	public Exchange receiveNoWait() {
-		return receive(NO_WAIT);
+		return doReceive(NO_WAIT);
 	}
 
 	@Override
 	public Exchange receive(long timeout) {
+		return doReceive(timeout);
+	}
+	
+	protected Exchange doReceive(long timeout) {
 		
-		Exchange exchange = createExchange(getSerializedMetamodel());
+		String result = getSerializedMetamodel();
 		
+		ExecutorService execService = Executors.newSingleThreadExecutor();
+        Callable<String> runWithTimeout = this::getSerializedMetamodel;
+        
+        Future<String> responseFuture = execService.submit(runWithTimeout);
+        
+        try {
+        	result = responseFuture.get(timeout, TimeUnit.SECONDS); 
+        } catch (TimeoutException | InterruptedException | ExecutionException e) {
+        	
+        	logger.info("Time out after waiting");
+        	
+        	if (!getEndpoint().getPropertyPath().isEmpty()) {
+            	result = "{\"value\":null,\"idShort\":\""+getEndpoint().getPropertyPath()+"\"}";
+            }else {
+            	result = "{\"submodelElements\":[]}";
+            }
+        }
+        
+		Exchange exchange = createExchange(result);
 		defaultConsumerCallback(exchange, true);
+	
 		return exchange;
 	}
 	
@@ -87,7 +123,7 @@ public class AASPollingConsumer extends PollingConsumerSupport {
 	private void connectToAasElement() {
 
 		HTTPConnectorFactory factory = new HTTPConnectorFactory();
-    	String proxyUrl = this.getAASUrl();
+    	String proxyUrl = this.getMetamodelUrl();
     	
     	IModelProvider provider = factory.getConnector(proxyUrl);
     	this.proxy = new VABElementProxy("", provider);
@@ -105,34 +141,25 @@ public class AASPollingConsumer extends PollingConsumerSupport {
 	}
 	
 	/**
-	 * Construct meta model
+	 * Get serialized metamodel
 	 * @return serialized meta model
 	 */
 	private String getSerializedMetamodel() {
 		
 		if (!getEndpoint().getPropertyPath().isEmpty()) {
-			ConnectedProperty prop = new ConnectedProperty(getProxy());
+			ConnectedProperty prop = new ConnectedProperty(this.proxy);
 			return new GSONTools(new DefaultTypeFactory()).serialize(prop.getLocalCopy());
 		}
     	
-		ConnectedSubmodel sm = new ConnectedSubmodel(getProxy());
+		ConnectedSubmodel sm = new ConnectedSubmodel(this.proxy);
 		return new GSONTools(new DefaultTypeFactory()).serialize(SubmodelElementMapCollectionConverter.smToMap(sm.getLocalCopy()));
 	}
 	
 	/**
-	 * This method returns current proxy is pointing to
-	 * @return proxy
-	 */
-	private VABElementProxy getProxy() {
-		return proxy;
-	}
-	
-	/**
-	 * Without specified property, it will return getSubmodelEndpoint
-	 * With specified property, it will return getFullProxyUrl
+	 * Get metamodel url
 	 * @return url
 	 */
-	protected String getAASUrl() {
+	protected String getMetamodelUrl() {
 		
 		if (!this.getEndpoint().getPropertyPath().isEmpty())
 			return this.getEndpoint().getFullProxyUrl();

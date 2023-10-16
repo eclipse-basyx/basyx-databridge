@@ -29,7 +29,7 @@ import org.eclipse.digitaltwin.basyx.databridge.aas.api.ApiType;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.entity.DataSourceConfiguration;
 
 /**
- * An implementation of AAS data source configuration
+ * An implementation of AAS polling consumer configuration
  * @author rana
  *
  */
@@ -71,12 +71,17 @@ public class AASPollingConsumerConfiguration extends DataSourceConfiguration {
 	}
 	
 	@Override
-	public String getConnectionURI() {	
-		String endpointDefinition = "aas:";
-		endpointDefinition += this.submodelEndpoint;
-		endpointDefinition += "?propertyPath=" + this.idShortPath;
-		endpointDefinition += "&api=" + getApiIfConfigured();
-		return endpointDefinition;
+	public String getConnectionURI() {
+		
+		StringBuilder endpointDefinition = new StringBuilder();
+		endpointDefinition.append("aas:");
+		endpointDefinition.append(this.submodelEndpoint);
+		endpointDefinition.append("?propertyPath=");
+		endpointDefinition.append(this.idShortPath);
+		endpointDefinition.append("&api=");
+		endpointDefinition.append(getApiIfConfigured());
+		
+		return endpointDefinition.toString();
 	}
 
 	private String getApiIfConfigured() {

@@ -1,0 +1,20 @@
+[
+	{
+		"datasource": "exampleAAS1",
+		"transformers": ["jsonataA"],
+		"datasinks":["exampleMQTT1"],
+		"trigger": "timer",
+		"triggerData": {
+			"timerName": "timer1"
+		}
+	},
+	{
+		"datasource": "exampleAAS2",
+		"transformers": ["jsonataA"],
+		"datasinks":["exampleMQTT2"],
+		"trigger": "timer",
+		"triggerData": {
+			"timerName": "timer1"
+		}
+	}
+]

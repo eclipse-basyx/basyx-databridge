@@ -58,7 +58,6 @@ public class AASEndpoint extends DefaultEndpoint {
 
 	private ConnectedProperty connectedProperty;
 	private static final String API_V3_SUFFIX = "/$value";
-	private Processor processor;
 
 	@UriPath
 	@Metadata(required = true)

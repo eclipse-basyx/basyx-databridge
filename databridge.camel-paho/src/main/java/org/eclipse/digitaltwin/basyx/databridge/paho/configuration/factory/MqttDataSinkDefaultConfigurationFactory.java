@@ -29,13 +29,13 @@ import org.eclipse.digitaltwin.basyx.databridge.core.configuration.factory.DataS
 import org.eclipse.digitaltwin.basyx.databridge.paho.configuration.MqttDataSinkConfiguration;
 
 /**
- * A default configuration factory for MQTT producer from a default file path
+ * A default configuration factory for MQTT producer from a file path
  * @author rana
  *
  */
 public class MqttDataSinkDefaultConfigurationFactory extends DataSinkConfigurationFactory {
 
-	private static final String DEFAULT_FILE_PATH = "mqttdatasink.json";
+	public static final String DEFAULT_FILE_PATH = "mqttdatasink.json";
 
 	public MqttDataSinkDefaultConfigurationFactory(ClassLoader loader) {
 		super(DEFAULT_FILE_PATH, loader, MqttDataSinkConfiguration.class);

@@ -22,26 +22,37 @@
  * 
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
+package org.eclipse.digitaltwin.basyx.databridge.executable.integration;
 
-package org.eclipse.digitaltwin.basyx.databridge.aas.configuration.factory;
+import java.util.UUID;
 
-import org.eclipse.digitaltwin.basyx.databridge.aas.configuration.AASPollingConsumerConfiguration;
-import org.eclipse.digitaltwin.basyx.databridge.core.configuration.factory.DataSourceConfigurationFactory;
+import org.eclipse.basyx.aas.aggregator.api.IAASAggregator;
+import org.eclipse.basyx.aas.aggregator.proxy.AASAggregatorProxy;
+import org.eclipse.digitaltwin.basyx.databridge.executable.regression.DataBridgeSuiteAASPollingConsumer;
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 /**
- * A default configuration factory for AAS polling consumer
- * @author rana
+ * Integration test with AAS Polling Consumer 
  *
+ * @author rana
  */
-public class AASPollingConsumerDefaultConfigurationFactory extends DataSourceConfigurationFactory {
+public class ITTestDataBridgeAASPollingConsumer extends DataBridgeSuiteAASPollingConsumer {
+
+	private static String BROKER_HOST = "broker.mqttdashboard.com";
+	private static String HOST = "localhost";
 	
-	public static final String DEFAULT_FILE_PATH = "aaspollingconsumer.json";
+	@Override
+	protected MqttClient getMqttClient() throws MqttException {
 	
-	public AASPollingConsumerDefaultConfigurationFactory(ClassLoader loader) {
-		super(DEFAULT_FILE_PATH, loader, AASPollingConsumerConfiguration.class);
+		String publisherId = UUID.randomUUID().toString();
+		
+		return new MqttClient("tcp://" + BROKER_HOST+ ":1883", publisherId);
 	}
 	
-	public AASPollingConsumerDefaultConfigurationFactory(String filePath, ClassLoader loader) {
-		super(filePath, loader, AASPollingConsumerConfiguration.class);
+	@Override
+	protected IAASAggregator getAASAggregatorProxy() {
+		return new AASAggregatorProxy("http://" + HOST + ":4001");
 	}
 }
