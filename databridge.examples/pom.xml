@@ -32,6 +32,5 @@
 		<module>databridge.examples.plc4x-jsonata-aas</module>
 		<module>databridge.examples.dot-aas-v3-api</module>
   </modules>
-
 	<packaging>pom</packaging>
 </project>
