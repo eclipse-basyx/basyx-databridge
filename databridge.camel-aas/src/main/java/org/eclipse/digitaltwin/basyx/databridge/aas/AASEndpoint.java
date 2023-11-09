@@ -28,6 +28,7 @@ import java.io.IOException;
 
 import org.apache.camel.Category;
 import org.apache.camel.Consumer;
+import org.apache.camel.PollingConsumer;
 import org.apache.camel.Processor;
 import org.apache.camel.Producer;
 import org.apache.camel.spi.Metadata;
@@ -82,7 +83,7 @@ public class AASEndpoint extends DefaultEndpoint {
 	public Producer createProducer() throws Exception {
 		return new AASProducer(this);
 	}
-
+	
 	@Override
 	public Consumer createConsumer(Processor processor) throws Exception {
 		return null;
@@ -211,7 +212,7 @@ public class AASEndpoint extends DefaultEndpoint {
 		return messageBody;
 	}
 
-	private String getSubmodelEndpoint() {
+	public String getSubmodelEndpoint() {
 		String submodelEndpoint = this.getEndpointBaseUri().substring(4);
 
 		logger.info("SubmodelEndpoint " + submodelEndpoint);
@@ -219,11 +220,16 @@ public class AASEndpoint extends DefaultEndpoint {
 		return submodelEndpoint;
 	}
 
-	private String getFullProxyUrl() {
+	public String getFullProxyUrl() {
 		if (api.equals(ApiType.BASYX))
 			return createBaSyxApiProxyUrl();
 
 		return createDotAasApiProxyUrl();
 	}
-
+	
+    @Override 
+    public PollingConsumer createPollingConsumer() throws Exception {
+    	AASPollingConsumer consumer = new AASPollingConsumer(this);
+  		return consumer;
+    }	
 }
