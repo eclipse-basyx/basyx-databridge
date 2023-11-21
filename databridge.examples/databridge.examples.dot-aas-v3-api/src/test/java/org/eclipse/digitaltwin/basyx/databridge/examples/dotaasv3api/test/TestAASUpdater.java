@@ -22,7 +22,7 @@
  * 
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
-package org.eclipse.digitaltwin.basyx.databridge.examples.mqttjsonataaas.test;
+package org.eclipse.digitaltwin.basyx.databridge.examples.dotaasv3api.test;
 
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
@@ -61,7 +61,7 @@ import io.moquette.broker.config.ResourceLoaderConfig;
 public class TestAASUpdater {
 	
 	private static final String PROPERTY_VALUE = "\"0.75\"";
-	private static final String PROPERTY_VALUE_PATH = "/submodels/submodelId/submodel/submodel-elements/DotAASV3ConformantApiProperty/$value";
+	private static final String PROPERTY_VALUE_PATH = "/submodels/c3VibW9kZWxJZA==/submodel-elements/DotAASV3ConformantApiSMC.DotAASV3ConformantApiProperty/$value";
 
 	private static Logger logger = LoggerFactory.getLogger(TestAASUpdater.class);
 	
