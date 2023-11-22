@@ -36,7 +36,9 @@ import org.apache.camel.spi.UriEndpoint;
 import org.apache.camel.spi.UriParam;
 import org.apache.camel.spi.UriPath;
 import org.apache.camel.support.DefaultEndpoint;
-import org.eclipse.basyx.submodel.metamodel.connected.submodelelement.dataelement.ConnectedProperty;
+import org.eclipse.basyx.submodel.metamodel.api.reference.enums.KeyElements;
+import org.eclipse.basyx.submodel.metamodel.connected.submodelelement.dataelement.ConnectedDataElement;
+import org.eclipse.basyx.submodel.metamodel.map.submodelelement.dataelement.property.Property;
 import org.eclipse.basyx.submodel.metamodel.map.submodelelement.dataelement.property.valuetype.ValueType;
 import org.eclipse.basyx.submodel.metamodel.map.submodelelement.dataelement.property.valuetype.ValueTypeHelper;
 import org.eclipse.basyx.vab.modelprovider.VABElementProxy;
@@ -56,8 +58,9 @@ import org.slf4j.LoggerFactory;
 public class AASEndpoint extends DefaultEndpoint {
 	private static final Logger logger = LoggerFactory.getLogger(AASEndpoint.class);
 
-	private ConnectedProperty connectedProperty;
+	private ConnectedDataElement connectedDataElement;
 	private static final String API_V3_SUFFIX = "/$value";
+	private static final String BASYX_API_SUFFIX = "/value";
 
 	@UriPath
 	@Metadata(required = true)
@@ -149,11 +152,19 @@ public class AASEndpoint extends DefaultEndpoint {
 		String proxyUrl = getFullProxyUrl();
 		IModelProvider provider = factory.getConnector(proxyUrl);
 		VABElementProxy proxy = new VABElementProxy("", provider);
-		this.connectedProperty = new ConnectedProperty(proxy);
+		this.connectedDataElement = new ConnectedDataElement(proxy);
 	}
 
-	private void setPropertyValueUsingBaSyxAPI(Object messageBody) {
-		connectedProperty.setValue(getContent(messageBody));
+	private void setPropertyValueUsingBaSyxAPI(Object messageBody) throws IOException {
+		if (!connectedDataElement.getModelType().equals(KeyElements.PROPERTY.getStandardizedLiteral())) {
+			HTTPRequest.putRequest(getFullProxyUrl() + BASYX_API_SUFFIX, messageBody.toString());
+
+			return;
+		}
+
+		ValueType valueType = Property.createAsFacade(connectedDataElement.getLocalCopy()).getValueType();
+
+		connectedDataElement.setValue(getContent(messageBody, valueType));
 	}
 
 	private void setPropertyValueUsingDotAasV3Api(String content) throws IOException {
@@ -183,12 +194,11 @@ public class AASEndpoint extends DefaultEndpoint {
 		return "\"" + content + "\"";
 	}
 
-	private Object getContent(Object messageBody) {
-		if (connectedProperty.getValueType().equals(ValueType.String)) {
+	private Object getContent(Object messageBody, ValueType propertyValueType) {
+		if (propertyValueType.equals(ValueType.String))
 			return removeQuotesFromString(messageBody.toString());
-		}
 
-		return ValueTypeHelper.getJavaObject(messageBody, connectedProperty.getValueType());
+		return ValueTypeHelper.getJavaObject(messageBody, propertyValueType);
 	}
 
 	private static String removeQuotesFromString(String messageBody) {

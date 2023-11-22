@@ -30,6 +30,7 @@ import java.io.UnsupportedEncodingException;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPatch;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -61,6 +62,26 @@ public class HTTPRequest {
 		patchRequest.setEntity(new StringEntity(content));
 
 		return patchRequest;
+	}
+	
+	public static void putRequest(String url, String content) throws IOException {
+		CloseableHttpClient client = HttpClientBuilder.create().build();
+		HttpPut httpPutRequest = createPutRequest(url, content);
+		
+        HttpResponse response = client.execute(httpPutRequest);
+
+        HttpEntity responseEntity = response.getEntity();
+
+        EntityUtils.consume(responseEntity);
+	}
+
+	private static HttpPut createPutRequest(String url, String content) throws UnsupportedEncodingException {
+		HttpPut putRequest = new HttpPut(url);
+
+		putRequest.setHeader("Content-type", "application/json");
+		putRequest.setEntity(new StringEntity(content));
+
+		return putRequest;
 	}
 
 }

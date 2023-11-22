@@ -126,12 +126,12 @@ public class TestAASUpdater {
 	}
 	
 	@Test
-	public void getUpdatedPropertyValueC() throws MqttException, MqttSecurityException, MqttPersistenceException, InterruptedException, IOException, URISyntaxException {
+	public void getAllProperties() throws MqttException, MqttSecurityException, MqttPersistenceException, InterruptedException, IOException, URISyntaxException {
 
 		String topic = "aas/pressure_rotation";
 		String expectedValue = getExpectedValueFromFile();
 		
-		assertPropertyValueC(expectedValue, topic);
+		assertAllProperties(expectedValue, topic);
 	}
 	
 	private void assertPropertyValue(String expectedValue, String topic) throws MqttSecurityException, MqttPersistenceException, MqttException, InterruptedException {
@@ -141,7 +141,7 @@ public class TestAASUpdater {
 		assertEquals(receivedMessage, expectedValue);
 	}
 	
-	private void assertPropertyValueC(String expectedValue, String topic) throws MqttSecurityException, MqttPersistenceException, MqttException, InterruptedException, JsonMappingException, JsonProcessingException {
+	private void assertAllProperties(String expectedValue, String topic) throws MqttSecurityException, MqttPersistenceException, MqttException, InterruptedException, JsonMappingException, JsonProcessingException {
 		
 		fetchExpectedValue(topic);
 		
