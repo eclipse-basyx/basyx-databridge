@@ -1,0 +1,8 @@
+[
+  {
+    "uniqueId": "timer1",
+    "fixedRate": true,
+    "delay": 1000,
+    "period": 3000
+  }
+]

@@ -12,6 +12,7 @@
 	<modules>
 		<module>databridge.core</module>
 		<module>databridge.camel-aas</module>
+		<module>databridge.camel-rest</module>
 		<module>databridge.camel-activemq</module>
 		<module>databridge.camel-hono</module>
 		<module>databridge.camel-httppolling</module>
