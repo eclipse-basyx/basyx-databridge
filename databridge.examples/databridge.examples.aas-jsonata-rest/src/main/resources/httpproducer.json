@@ -1,14 +1,14 @@
 [
 	{
 		"uniqueId": "Server1",
-		"host": "localhost:8080",
-		"path": "pressure",
+		"host": "http://localhost:8080",
+		"path": "data/machine:pressure",
 		"requestMethod": "post"
 	},
 	{
 		"uniqueId": "Server2",
-		"host": "localhost:8080",
-		"path": "pressure_rotation",
+		"host": "http://localhost:8080",
+		"path": "data/machine:pressure_rotation",
 		"requestMethod": "post"
 	}
 ]

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2021 the Eclipse BaSyx Authors
+ * Copyright (C) 2023 the Eclipse BaSyx Authors
  * 
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -89,7 +89,7 @@ public class RestConfiguration extends DataSinkConfiguration {
 	public String getConnectionURI() {
 		
 		StringBuilder endpointDefinition = new StringBuilder();
-		endpointDefinition.append("rest:"+this.requestMethod+":api:");
+		endpointDefinition.append("rest:"+this.requestMethod+":");
 		endpointDefinition.append(this.path);
 		endpointDefinition.append("/?host=");
 		endpointDefinition.append(this.host);

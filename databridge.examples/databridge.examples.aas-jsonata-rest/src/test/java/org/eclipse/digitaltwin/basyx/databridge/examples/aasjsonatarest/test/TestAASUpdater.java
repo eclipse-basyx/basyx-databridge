@@ -101,7 +101,7 @@ public class TestAASUpdater {
 		
 		startHTTPServer(getResponseBody(expected_value));
 		
-		String http_url = "http://localhost:8080/api/pressure";
+		String http_url = "http://localhost:8080/data/machine/pressure";
 		String actualValue = getContentFromDelegatedEndpoint(http_url);
 		
 		assertEquals(actualValue, expected_value);
@@ -114,7 +114,7 @@ public class TestAASUpdater {
 		
 		startHTTPServer(getResponseBody(expected_value));
 		
-		String http_url = "http://localhost:8080/api/pressure_rotation";
+		String http_url = "http://localhost:8080/data/machine/pressure_rotation";
 		String actualValue = getContentFromDelegatedEndpoint(http_url);
 		
 		assertEquals(actualValue, expected_value);
