@@ -39,7 +39,6 @@ public class HttpProducerDefaultConfigurationFactory extends DataSinkConfigurati
 	
 	public HttpProducerDefaultConfigurationFactory(ClassLoader loader) {
 		super(DEFAULT_FILE_PATH, loader, HttpProducerConfiguration.class);
-		
 	}
 
 	public HttpProducerDefaultConfigurationFactory(String filePath, ClassLoader loader) {

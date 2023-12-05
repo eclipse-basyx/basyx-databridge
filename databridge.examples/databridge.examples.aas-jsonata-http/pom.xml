@@ -41,7 +41,6 @@
 			<scope>test</scope>	
 		</dependency>
 
-
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
 			<artifactId>databridge.core</artifactId>
@@ -61,7 +60,6 @@
 			<version>0.0.1-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
-
 
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
@@ -84,8 +82,6 @@
 			<scope>test</scope>
         </dependency>
 
-
-		
 		<!-- BaSyx SDK -->
 		<dependency>
 			<groupId>org.eclipse.basyx</groupId>
@@ -140,20 +136,6 @@
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
 			<artifactId>databridge.camel-jsonata</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-
-		<!-- Moquette MQTT broker for testing MQTT events -->
-		<dependency>
-			<groupId>io.moquette</groupId>
-			<artifactId>moquette-broker</artifactId>
-			<version>0.16</version>
-			<scope>test</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-log4j12</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 
 		<dependency>
