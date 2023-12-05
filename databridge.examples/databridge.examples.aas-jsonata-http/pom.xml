@@ -6,9 +6,9 @@
 		<version>${revision}</version>
 	</parent>
 
-	<artifactId>databridge.examples.aas-jsonata-rest</artifactId>
-	<name>AAS to Rest Data Sink</name>
-	<description>An Integration example using timer as a trigger, aas as a data source and rest sink</description>
+	<artifactId>databridge.examples.aas-jsonata-http</artifactId>
+	<name>AAS to Http Data Sink</name>
+	<description>An Integration example using timer as a trigger, aas as a data source and http as a data sink</description>
 
 	<packaging>jar</packaging>
 
@@ -57,7 +57,7 @@
 
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
-			<artifactId>databridge.camel-rest</artifactId>
+			<artifactId>databridge.camel-httppolling</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>

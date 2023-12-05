@@ -1,0 +1,10 @@
+[
+	{
+		"uniqueId": "Server1",
+		"httpUri": "http://localhost:8080/pressure"
+	},
+	{
+		"uniqueId": "Server2",
+		"httpUri": "http://localhost:8080/pressure_rotation"
+	}
+]

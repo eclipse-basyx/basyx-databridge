@@ -22,24 +22,27 @@
  * 
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
-package org.eclipse.digitaltwin.basyx.databridge.rest.configuration.factory;
+
+package org.eclipse.digitaltwin.basyx.databridge.httppolling.configuration.factory;
 
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.factory.DataSinkConfigurationFactory;
-import org.eclipse.digitaltwin.basyx.databridge.rest.configuration.RestConfiguration;
+import org.eclipse.digitaltwin.basyx.databridge.httppolling.configuration.HttpProducerConfiguration;
 
 /**
- * A default configuration factory for REST
+ * A default configuration factory for HTTP Producer
  * @author rana
  *
  */
-public class RestDefaultConfigurationFactory extends DataSinkConfigurationFactory {
+public class HttpProducerDefaultConfigurationFactory extends DataSinkConfigurationFactory{
+	
 	public static final String DEFAULT_FILE_PATH = "httpproducer.json";
 	
-	public RestDefaultConfigurationFactory(ClassLoader loader) {
-		super(DEFAULT_FILE_PATH, loader, RestConfiguration.class);
+	public HttpProducerDefaultConfigurationFactory(ClassLoader loader) {
+		super(DEFAULT_FILE_PATH, loader, HttpProducerConfiguration.class);
+		
 	}
-	
-	public RestDefaultConfigurationFactory(String filePath, ClassLoader loader) {
-		super(filePath, loader, RestConfiguration.class);
+
+	public HttpProducerDefaultConfigurationFactory(String filePath, ClassLoader loader) {
+		super(filePath, loader, HttpProducerConfiguration.class);
 	}
 }

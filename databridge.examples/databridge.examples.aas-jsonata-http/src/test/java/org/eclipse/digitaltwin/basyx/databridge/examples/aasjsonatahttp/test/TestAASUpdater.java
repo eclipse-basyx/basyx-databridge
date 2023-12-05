@@ -23,7 +23,7 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
-package org.eclipse.digitaltwin.basyx.databridge.examples.aasjsonatarest.test;
+package org.eclipse.digitaltwin.basyx.databridge.examples.aasjsonatahttp.test;
 
 import static org.junit.Assert.assertEquals;
 
@@ -49,8 +49,8 @@ import org.eclipse.digitaltwin.basyx.databridge.aas.configuration.factory.AASPol
 import org.eclipse.digitaltwin.basyx.databridge.core.component.DataBridgeComponent;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.factory.RoutesConfigurationFactory;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.core.RoutesConfiguration;
+import org.eclipse.digitaltwin.basyx.databridge.httppolling.configuration.factory.HttpProducerDefaultConfigurationFactory;
 import org.eclipse.digitaltwin.basyx.databridge.jsonata.configuration.factory.JsonataDefaultConfigurationFactory;
-import org.eclipse.digitaltwin.basyx.databridge.rest.configuration.factory.RestDefaultConfigurationFactory;
 import org.eclipse.digitaltwin.basyx.databridge.timer.configuration.factory.TimerDefaultConfigurationFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -63,7 +63,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A test of aas-jsonata-rest
+ * A test of aas-jsonata-http
  * @author rana
  *
  */
@@ -176,7 +176,7 @@ public class TestAASUpdater {
 				loader);
 		configuration.addDatasources(aasSourceConfigFactory.create());
 
-		RestDefaultConfigurationFactory httpConfigFactory = new RestDefaultConfigurationFactory(loader);
+		HttpProducerDefaultConfigurationFactory httpConfigFactory = new HttpProducerDefaultConfigurationFactory(loader);
 		configuration.addDatasinks(httpConfigFactory.create());
 		
 		JsonataDefaultConfigurationFactory jsonataConfigFactory = new JsonataDefaultConfigurationFactory(loader);

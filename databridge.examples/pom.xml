@@ -16,7 +16,7 @@
 
 	<modules>
 		<module>databridge.examples.aas-jsonata-mqtt</module>
-		<module>databridge.examples.aas-jsonata-rest</module>
+		<module>databridge.examples.aas-jsonata-http</module>
 		<module>databridge.examples.aasserver</module>
 		<module>databridge.examples.kafkaproducer</module>
 		<module>databridge.examples.activemqproducer</module>

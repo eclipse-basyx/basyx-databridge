@@ -22,59 +22,40 @@
  * 
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
-package org.eclipse.digitaltwin.basyx.databridge.rest.configuration;
+package org.eclipse.digitaltwin.basyx.databridge.httppolling.configuration;
 
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.entity.DataSinkConfiguration;
-import org.eclipse.digitaltwin.basyx.databridge.rest.api.ApiType;
+import org.eclipse.digitaltwin.basyx.databridge.httppolling.configuration.api.ApiType;
 
 /**
- * An implementation of REST producer configuration
+ * An implementation of HTTP producer configuration
  * 
  * @author rana
  *
  */
-public class RestConfiguration extends DataSinkConfiguration {
-
-	private String host;
-	private String path;
-	private String api;
-	private String requestMethod;
-
-	public RestConfiguration() {}
+public class HttpProducerConfiguration extends DataSinkConfiguration{
 	
-	public RestConfiguration(String uniqueId, String host, String path, String requestMethod, String api) {
+	private String httpUri;
+	private String api;
+	
+	public HttpProducerConfiguration() {}
+	
+	public HttpProducerConfiguration(String uniqueId, String httpUri, String api) {
 		super(uniqueId);
-		this.host = host;
-		this.path = path;
+		this.httpUri = httpUri;
 		this.api = api;
 	}
 	
-	public RestConfiguration(String host, String path, String requestMethod) {
-		this(host, path, null, ApiType.BASYX.getName(), requestMethod);
+	public HttpProducerConfiguration(String httpUri) {
+		this(httpUri, null, ApiType.BASYX.getName());
+	}
+	
+	public String gethttpUri() {
+		return httpUri;
 	}
 
-	public String getHost() {
-		return host;
-	}
-
-	public void setHost(String host) {
-		this.host = host;
-	}
-
-	public String getIdShortPath() {
-		return path;
-	}
-
-	public void setIdShortPath(String path) {
-		this.path = path;
-	}
-
-	public String getRequestMethod() {
-		return requestMethod;
-	}
-
-	public void setRequestMethod(String requestMethod) {
-		this.requestMethod = requestMethod;
+	public void sethttpUri(String httpUri) {
+		this.httpUri = httpUri;
 	}
 
 	public String getApi() {
@@ -84,16 +65,14 @@ public class RestConfiguration extends DataSinkConfiguration {
 	public void setApi(String api) {
 		this.api = api;
 	}
-	
+
 	@Override
 	public String getConnectionURI() {
 		
 		StringBuilder endpointDefinition = new StringBuilder();
-		endpointDefinition.append("rest:"+this.requestMethod+":");
-		endpointDefinition.append(this.path);
-		endpointDefinition.append("/?host=");
-		endpointDefinition.append(this.host);
-		endpointDefinition.append("&producerComponentName=http");
+		
+		endpointDefinition.append(this.httpUri);
+		endpointDefinition.append("/?httpMethod=POST");
 		endpointDefinition.append("&api=");
 		endpointDefinition.append(getApiIfConfigured());
 		
