@@ -30,12 +30,32 @@ package org.eclipse.digitaltwin.basyx.databridge.core.configuration.entity;
  *
  */
 public abstract class DataSinkConfiguration extends RouteEntity {
+	private String serverUrl;
+	private int serverPort;
 
 	public DataSinkConfiguration() {
 		super();
 	}
 	
-	public DataSinkConfiguration(String uniqueId) {
+	public DataSinkConfiguration(String uniqueId, String serverUrl, int serverPort) {
 		super(uniqueId);
+		this.serverUrl = serverUrl;
+		this.serverPort = serverPort;
+	}
+
+	public String getServerUrl() {
+		return serverUrl;
+	}
+
+	public void setServerUrl(String serverUrl) {
+		this.serverUrl = serverUrl;
+	}
+
+	public int getServerPort() {
+		return serverPort;
+	}
+
+	public void setServerPort(int serverPort) {
+		this.serverPort = serverPort;
 	}
 }

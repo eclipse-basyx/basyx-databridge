@@ -46,7 +46,7 @@ public class MqttDataSinkConfiguration extends DataSinkConfiguration {
 
 	public MqttDataSinkConfiguration(String uniqueId, String serverUrl, int serverPort, String topic, String clientId,
 			String userName, String password) {
-		super(uniqueId);
+		super(uniqueId, serverUrl, serverPort);
 		setServerUrl(serverUrl);
 		setServerPort(serverPort);
 		setTopic(topic);
