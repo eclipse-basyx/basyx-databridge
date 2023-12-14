@@ -123,7 +123,7 @@ public class TestOPCUAUpdater {
 	
 	private void checkOPCUAServer() throws InterruptedException, ExecutionException, UaException {
 		// Discover endpoints. Replace "opc.tcp://localhost:4840" with your server's endpoint URL.
-	    List<EndpointDescription> endpoints = DiscoveryClient.getEndpoints("opc.tcp://localhost:4840").get();
+	    List<EndpointDescription> endpoints = DiscoveryClient.getEndpoints("opc.tcp://127.0.0.1:12686").get();
 
 	    // Use the first discovered endpoint. In a production scenario, you might want to select
 	    // a specific endpoint based on security policies or other criteria.
