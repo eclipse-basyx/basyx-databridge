@@ -1,0 +1,29 @@
+[
+	{
+		"uniqueId": "doublescalar",
+		"nodeInformation": "ns=2;s=HelloWorld/ScalarTypes/Double",
+		"serverUrl": "127.0.0.1",
+		"serverPort": 12686,
+		"pathToService": "milo",
+		"parameters": {
+			"allowedSecurityPolicies": "None",
+			"keyAlias": null,
+			"keyPassword": null,
+			"keyStoreType": null,
+			"keyStorePassword": null,
+			"keyStoreUrl": null,
+			"requestedPublishingInterval": 50
+		}
+	},
+	{
+		"uniqueId": "integerscalar",
+		"nodeInformation": "ns=2;s=HelloWorld/ScalarTypes/Integer",
+		"serverUrl": "127.0.0.1",
+		"serverPort": 12686,
+		"pathToService": "milo",
+		"parameters": {
+			"allowedSecurityPolicies": "Basic256Sha256",
+			"requestedPublishingInterval": 50
+		}
+	}
+]

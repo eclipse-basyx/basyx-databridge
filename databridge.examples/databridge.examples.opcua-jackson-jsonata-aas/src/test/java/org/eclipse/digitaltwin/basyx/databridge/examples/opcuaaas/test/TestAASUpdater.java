@@ -46,7 +46,6 @@ import org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.core.Ro
 import org.eclipse.digitaltwin.basyx.databridge.jsonata.configuration.factory.JsonataDefaultConfigurationFactory;
 import org.eclipse.digitaltwin.basyx.databridge.jsonjackson.configuration.factory.JsonJacksonDefaultConfigurationFactory;
 import org.eclipse.digitaltwin.basyx.databridge.opcua.configuration.factory.OpcuaDefaultConfigurationFactory;
-// import org.eclipse.digitaltwin.basyx.databridge.opcua.configuration.factory.OpcuaDefaultSinkConfigurationFactory;
 import org.eclipse.milo.examples.server.ExampleServer;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -97,10 +96,6 @@ public class TestAASUpdater {
 		// Extend configutation for Opcua Source
 		OpcuaDefaultConfigurationFactory opcuaConfigFactory = new OpcuaDefaultConfigurationFactory(loader);
 		configuration.addDatasources(opcuaConfigFactory.create());
-
-		// // Extend configuration for Opcua Sink
-		// OpcuaDefaultSinkConfigurationFactory opcuaSinkConfigFactory = new OpcuaDefaultSinkConfigurationFactory(loader);
-		// configuration.addDatasinks(opcuaSinkConfigFactory.create());
 
 		// Extend configuration for AAS
 		AASProducerDefaultConfigurationFactory aasConfigFactory = new AASProducerDefaultConfigurationFactory(loader);
