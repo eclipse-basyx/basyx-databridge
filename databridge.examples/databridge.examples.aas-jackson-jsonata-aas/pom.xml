@@ -137,6 +137,18 @@
 		</dependency>
 		
 		<dependency>
+	      <groupId>org.eclipse.milo</groupId>
+	      <artifactId>sdk-client</artifactId>
+	      <version>0.6.11</version>
+	    </dependency>
+	    
+	    <dependency>
+		    <groupId>org.eclipse.milo</groupId>
+		    <artifactId>stack-client</artifactId>
+		    <version>0.6.11</version>
+		</dependency>
+		
+		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
 			<artifactId>databridge.camel-jsonata</artifactId>
 			<version>0.0.1-SNAPSHOT</version>

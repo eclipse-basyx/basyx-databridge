@@ -26,19 +26,16 @@ package org.eclipse.digitaltwin.basyx.databridge.examples.aasopcua.test;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import org.eclipse.basyx.aas.manager.ConnectedAssetAdministrationShellManager;
-import org.eclipse.basyx.aas.metamodel.connected.ConnectedAssetAdministrationShell;
 import org.eclipse.basyx.aas.metamodel.map.descriptor.CustomId;
 import org.eclipse.basyx.aas.registration.memory.InMemoryRegistry;
 import org.eclipse.basyx.components.aas.AASServerComponent;
 import org.eclipse.basyx.components.aas.configuration.AASServerBackend;
 import org.eclipse.basyx.components.aas.configuration.BaSyxAASServerConfiguration;
 import org.eclipse.basyx.components.configuration.BaSyxContextConfiguration;
-import org.eclipse.basyx.submodel.metamodel.api.ISubmodel;
 import org.eclipse.basyx.submodel.metamodel.api.identifier.IIdentifier;
-import org.eclipse.basyx.submodel.metamodel.api.submodelelement.ISubmodelElement;
 import org.eclipse.digitaltwin.basyx.databridge.core.component.DataBridgeComponent;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.factory.RoutesConfigurationFactory;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.core.RoutesConfiguration;
@@ -47,6 +44,14 @@ import org.eclipse.digitaltwin.basyx.databridge.jsonjackson.configuration.factor
 import org.eclipse.digitaltwin.basyx.databridge.opcua.configuration.factory.OpcuaDefaultSinkConfigurationFactory;
 import org.eclipse.digitaltwin.basyx.databridge.aas.configuration.factory.AASPollingConsumerDefaultConfigurationFactory;
 import org.eclipse.milo.examples.server.ExampleServer;
+import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
+import org.eclipse.milo.opcua.sdk.client.api.config.OpcUaClientConfigBuilder;
+import org.eclipse.milo.opcua.stack.core.types.structured.EndpointDescription;
+import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId;
+import org.eclipse.milo.opcua.stack.core.UaException;
+import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue;
+import org.eclipse.milo.opcua.stack.client.DiscoveryClient;
+import org.eclipse.milo.opcua.stack.core.types.enumerated.TimestampsToReturn;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -57,7 +62,7 @@ public class TestOPCUAUpdater {
 	private static InMemoryRegistry registry;
 	protected static ExampleServer opcUaServer;
 
-	protected static IIdentifier deviceAAS = new CustomId("TestUpdatedDeviceAAS");
+	protected static IIdentifier deviceAAS = new CustomId("TestUpdatedDevice");
 	private static BaSyxContextConfiguration aasContextConfig;
 
 	@BeforeClass
@@ -113,19 +118,42 @@ public class TestOPCUAUpdater {
 		System.out.println("UPDATER STARTED");
 		Thread.sleep(3000);
 		System.out.println("CHECK PROPERTY");
-		checkProperty();
+		checkOPCUAServer();
 	}
+	
+	private void checkOPCUAServer() throws InterruptedException, ExecutionException, UaException {
+		// Discover endpoints. Replace "opc.tcp://localhost:4840" with your server's endpoint URL.
+	    List<EndpointDescription> endpoints = DiscoveryClient.getEndpoints("opc.tcp://localhost:4840").get();
 
-	private void checkProperty() {
-		ConnectedAssetAdministrationShellManager manager = new ConnectedAssetAdministrationShellManager(registry);
-		ConnectedAssetAdministrationShell aas = manager.retrieveAAS(deviceAAS);
-		ISubmodel sm = aas.getSubmodels().get("ConnectedSubmodel");
-		ISubmodelElement propertyA = sm.getSubmodelElement("ConnectedPropertyA");
-		Object propAValue = propertyA.getValue();
-		ISubmodelElement propertyB = sm.getSubmodelElement("ConnectedPropertyB");
-		Object propBValue = propertyB.getValue();
-		assertEquals("3.14", propAValue);
-		assertEquals("32", propBValue);
+	    // Use the first discovered endpoint. In a production scenario, you might want to select
+	    // a specific endpoint based on security policies or other criteria.
+	    EndpointDescription endpoint = endpoints.get(0);
+
+	    // Create and configure the client with the selected endpoint.
+	    OpcUaClientConfigBuilder configBuilder = new OpcUaClientConfigBuilder();
+	    configBuilder.setEndpoint(endpoint);
+
+	    OpcUaClient client = OpcUaClient.create(configBuilder.build());
+	    client.connect().get();
+
+	    // Assuming you want to read the values of two nodes
+	    NodeId nodeIdA = new NodeId(2, "ConnectedPropertyA");
+	    NodeId nodeIdB = new NodeId(2, "ConnectedPropertyB");
+
+	    // Read the node values
+	    DataValue valueA = client.readValue(0, TimestampsToReturn.Both, nodeIdA).get();
+	    DataValue valueB = client.readValue(0, TimestampsToReturn.Both, nodeIdB).get();
+	    
+	    // Verify the values
+	    // Replace "expectedValueA" and "expectedValueB" with the actual expected values
+	    Object expectedValueA = "3.14"; // Example expected value
+	    Object expectedValueB = "32";   // Example expected value
+	    
+	    assertEquals(expectedValueA, valueA.getValue().getValue());
+	    assertEquals(expectedValueB, valueB.getValue().getValue());
+
+	    // Disconnect the client
+	    client.disconnect().get();
 	}
 
 	private static void startOpcUaServer() throws Exception {
