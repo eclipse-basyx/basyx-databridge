@@ -30,16 +30,16 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import org.apache.http.HttpEntity;
+import javax.servlet.http.HttpServlet;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 import org.eclipse.basyx.aas.registration.memory.InMemoryRegistry;
 import org.eclipse.basyx.components.aas.AASServerComponent;
 import org.eclipse.basyx.components.aas.configuration.AASServerBackend;
@@ -49,18 +49,18 @@ import org.eclipse.digitaltwin.basyx.databridge.aas.configuration.factory.AASPol
 import org.eclipse.digitaltwin.basyx.databridge.core.component.DataBridgeComponent;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.factory.RoutesConfigurationFactory;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.core.RoutesConfiguration;
+import org.eclipse.digitaltwin.basyx.databridge.examples.httpserver.HttpDataSource;
 import org.eclipse.digitaltwin.basyx.databridge.httppolling.configuration.factory.HttpProducerDefaultConfigurationFactory;
 import org.eclipse.digitaltwin.basyx.databridge.jsonata.configuration.factory.JsonataDefaultConfigurationFactory;
 import org.eclipse.digitaltwin.basyx.databridge.timer.configuration.factory.TimerDefaultConfigurationFactory;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mockserver.integration.ClientAndServer;
-import org.mockserver.model.HttpRequest;
-import org.mockserver.model.HttpResponse;
-import org.mockserver.model.HttpStatusCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * A test of aas-jsonata-http
@@ -74,80 +74,64 @@ public class TestAASUpdater {
 	private static BaSyxContextConfiguration aasContextConfig;
 	private static InMemoryRegistry registry = new InMemoryRegistry();
 	private static DataBridgeComponent updater;
-	private static int PORT = 8080;
-	private static ClientAndServer clientServer;
-	
+	private static HttpDataSource httpData;
+	private static HttpServlet httpServlet = new HttpDummyServlet();
+
 	@BeforeClass
 	public static void setUp() throws Exception {
 
 		configureAndStartAasServer();
 		
-		mockServerConfig();
+		server_start();
 	
 		configureAndStartUpdaterComponent();
 	}
 	
 	@AfterClass
 	public static void tearDown() throws Exception {
+		
 		updater.stopComponent();
 		
 		aasServer.stopComponent();
+		
+		server_stop();
 	}
 	
 	@Test
-	public void CheckPropertyValueA() throws  InterruptedException, ClientProtocolException, IOException {
+	public void CheckPropertyValueA() throws  InterruptedException, IOException {
 		
-		String expected_value = "103.5585973";
+		String expected_value = wrapStringValue("103.5585973");
 		
-		startHTTPServer(getResponseBody(expected_value));
+		Thread.sleep(10000);
 		
-		String http_url = "http://localhost:8080/data/machine/pressure";
-		String actualValue = getContentFromDelegatedEndpoint(http_url);
+		String actualValue = getContentFromEndPoint();
 		
-		assertEquals(actualValue, expected_value);
+		assertEquals(expected_value, actualValue);
 	}
 	
 	@Test
-	public void CheckPropertyValueB() throws  InterruptedException, ClientProtocolException, IOException, URISyntaxException {
+	public void CheckPropertyValueB() throws  InterruptedException, IOException, URISyntaxException {
 		
 		String expected_value = getExpectedValueFromFile();
 		
-		startHTTPServer(getResponseBody(expected_value));
+		Thread.sleep(4000);
 		
-		String http_url = "http://localhost:8080/data/machine/pressure_rotation";
-		String actualValue = getContentFromDelegatedEndpoint(http_url);
+		String actualValue = getContentFromEndPoint();
 		
-		assertEquals(actualValue, expected_value);
+		ObjectMapper mapper = new ObjectMapper();
+		
+		assertEquals(mapper.readTree(actualValue), mapper.readTree(expected_value));
 	}
 	
-	private static void mockServerConfig() {
-		 clientServer = ClientAndServer.startClientAndServer(PORT);
-		 
-		 logger.info("Mock Sever Started ..... ");
-	}
-	
-	
-	private static void startHTTPServer(String body) {
-		
-		clientServer.reset().when(HttpRequest.request().withMethod("PUT"))
-				.respond(HttpResponse.response().withStatusCode(HttpStatusCode.OK_200.code())
-						.withBody(body));
-	}
-	
-	private String getContentFromDelegatedEndpoint(String url) throws IOException, ClientProtocolException {
+	private static String getContentFromEndPoint() throws ClientProtocolException, IOException, InterruptedException {
 		
 		CloseableHttpClient client = HttpClients.createDefault();
-		HttpPut request = new HttpPut(url);
+		HttpGet request = new HttpGet("http://localhost:8091");
 		CloseableHttpResponse resp = client.execute(request);
-		HttpEntity entity = resp.getEntity();
-		String content = EntityUtils.toString(entity, "UTF-8");
-
+		String content = new String(resp.getEntity().getContent().readAllBytes(), StandardCharsets.UTF_8);
+		
 		client.close();
 		return content;
-	}
-	
-	private static String getResponseBody(String expected_Value) {
-		return ""+ expected_Value +"";
 	}
 	
 	private static void configureAndStartAasServer() throws InterruptedException {
@@ -193,5 +177,20 @@ public class TestAASUpdater {
 	    byte[] content = Files.readAllBytes(Paths.get(resource.toURI()));
 		return new String(content);
 	}
-
+	
+	
+	private static void server_start() throws InterruptedException {
+		
+		httpData = new HttpDataSource();
+		httpData.runHttpServer(httpServlet);	
+	}
+	
+	private static void server_stop() {
+		
+		httpData.stopHttpServer();
+	}
+	
+	private String wrapStringValue(String value) {
+		return "\"" + value + "\"";
+	}
 }

@@ -22,22 +22,43 @@
  * 
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
-package org.eclipse.digitaltwin.basyx.databridge.examples.httpserver;
+package org.eclipse.digitaltwin.basyx.databridge.examples.aasjsonatahttp.test;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class DummyServlet extends HttpServlet {
+import org.eclipse.digitaltwin.basyx.databridge.examples.httpserver.DummyServlet;
+
+public class HttpDummyServlet extends DummyServlet {
 	private static final long serialVersionUID = 4918478763760299634L;
+	
+	private String requestBodyValue = null;
+	private String reuestUri = null;
 	
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		setAPIResponseProperty(resp);
+		
+        // Get the request body using BufferedReader
+        BufferedReader reader = req.getReader();
+        StringBuilder requestBody = new StringBuilder();
+        String line;
+        
+        reuestUri = req.getRequestURI();
 
+        while ((line = reader.readLine()) != null) {
+            requestBody.append(line);
+        }
+
+        System.out.println("Request Body: " + requestBody.toString());
+        
+        requestBodyValue = requestBody.toString();
+        
     }
 
 	@Override
@@ -46,13 +67,15 @@ public class DummyServlet extends HttpServlet {
       HttpServletResponse resp) throws IOException {
 		setAPIResponseProperty(resp);
 		setMessageToResponse(resp);
+		
     }
 	
 	/**
 	 * Sets {@link HttpServletResponse} properties
 	 * @param resp
+	 * @throws IOException 
 	 */
-	private void setAPIResponseProperty(HttpServletResponse resp) {
+	private void setAPIResponseProperty(HttpServletResponse resp) throws IOException {
         resp.setStatus(HttpServletResponse.SC_OK);
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
@@ -65,7 +88,8 @@ public class DummyServlet extends HttpServlet {
 	 * @throws IOException
 	 */
 	private void setMessageToResponse(HttpServletResponse resp) throws IOException {
-		String jsonString = "{\"Account\":{\"Account Name\":\"Firefly\",\"Order\":[{\"OrderID\":\"order103\",\"Product\":[{\"Product Name\":\"Bowler Hat\",\"ProductID\":858383,\"SKU\":\"0406654608\",\"Description\":{\"Colour\":\"Purple\",\"Width\":300,\"Height\":200,\"Depth\":210,\"Weight\":0.75},\"Price\":34.45,\"Quantity\":2},{\"Product Name\":\"Trilby hat\",\"ProductID\":858236,\"SKU\":\"0406634348\",\"Description\":{\"Colour\":\"Orange\",\"Width\":300,\"Height\":200,\"Depth\":210,\"Weight\":0.6},\"Price\":21.67,\"Quantity\":1}]},{\"OrderID\":\"order104\",\"Product\":[{\"Product Name\":\"Bowler Hat\",\"ProductID\":858383,\"SKU\":\"040657863\",\"Description\":{\"Colour\":\"Purple\",\"Width\":300,\"Height\":200,\"Depth\":210,\"Weight\":0.75},\"Price\":34.45,\"Quantity\":4},{\"ProductID\":345664,\"SKU\":\"0406654603\",\"Product Name\":\"Cloak\",\"Description\":{\"Colour\":\"Black\",\"Width\":30,\"Height\":20,\"Depth\":210,\"Weight\":2},\"Price\":107.99,\"Quantity\":1}]}]}}";
+
+		String jsonString = requestBodyValue;
         PrintWriter out = resp.getWriter();
         out.print(jsonString);
         out.flush();

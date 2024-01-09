@@ -25,7 +25,6 @@
 package org.eclipse.digitaltwin.basyx.databridge.httppolling.configuration;
 
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.entity.DataSinkConfiguration;
-import org.eclipse.digitaltwin.basyx.databridge.httppolling.configuration.api.ApiType;
 
 /**
  * An implementation of HTTP producer configuration
@@ -36,18 +35,17 @@ import org.eclipse.digitaltwin.basyx.databridge.httppolling.configuration.api.Ap
 public class HttpProducerConfiguration extends DataSinkConfiguration{
 	
 	private String httpUri;
-	private String api;
 	
 	public HttpProducerConfiguration() {}
 	
-	public HttpProducerConfiguration(String uniqueId, String httpUri, String api) {
+	public HttpProducerConfiguration(String uniqueId, String httpUri) {
 		super(uniqueId);
 		this.httpUri = httpUri;
-		this.api = api;
+
 	}
 	
 	public HttpProducerConfiguration(String httpUri) {
-		this(httpUri, null, ApiType.BASYX.getName());
+		this(httpUri, null);
 	}
 	
 	public String gethttpUri() {
@@ -58,28 +56,15 @@ public class HttpProducerConfiguration extends DataSinkConfiguration{
 		this.httpUri = httpUri;
 	}
 
-	public String getApi() {
-		return api;
-	}
-
-	public void setApi(String api) {
-		this.api = api;
-	}
-
 	@Override
 	public String getConnectionURI() {
-		
+			
 		StringBuilder endpointDefinition = new StringBuilder();
 		
 		endpointDefinition.append(this.httpUri);
 		endpointDefinition.append("/?httpMethod=POST");
-		endpointDefinition.append("&api=");
-		endpointDefinition.append(getApiIfConfigured());
-		
+	
 		return endpointDefinition.toString();
 	}
 
-	private String getApiIfConfigured() {
-		return api != null ? api : ApiType.BASYX.getName();
-	}
 }

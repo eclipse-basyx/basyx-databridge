@@ -1,0 +1,6 @@
+[
+	{
+		"uniqueId": "Server1",
+		"httpUri": "http://localhost:8091/data/machine/pressure"
+	}
+]
