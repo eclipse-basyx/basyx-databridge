@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2023 the Eclipse BaSyx Authors
+ * Copyright (C) 2024 the Eclipse BaSyx Authors
  * 
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -53,13 +53,10 @@ import org.eclipse.digitaltwin.basyx.databridge.examples.httpserver.HttpDataSour
 import org.eclipse.digitaltwin.basyx.databridge.httppolling.configuration.factory.HttpProducerDefaultConfigurationFactory;
 import org.eclipse.digitaltwin.basyx.databridge.jsonata.configuration.factory.JsonataDefaultConfigurationFactory;
 import org.eclipse.digitaltwin.basyx.databridge.timer.configuration.factory.TimerDefaultConfigurationFactory;
-
+import org.eclipse.digitaltwin.basyx.databridge.examples.aasjsonatahttp.*;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -69,21 +66,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class TestAASUpdater {
 
-	private static Logger logger = LoggerFactory.getLogger(TestAASUpdater.class);
 	private static AASServerComponent aasServer;
 	private static BaSyxContextConfiguration aasContextConfig;
 	private static InMemoryRegistry registry = new InMemoryRegistry();
 	private static DataBridgeComponent updater;
 	private static HttpDataSource httpData;
-	private static HttpServlet httpServlet = new HttpDummyServlet();
+	private static HttpServlet httpServlet = new Server();
+	private static int PORT = 8091;
 
 	@BeforeClass
 	public static void setUp() throws Exception {
 
 		configureAndStartAasServer();
 		
-		server_start();
-	
+		serverStart();
+		
 		configureAndStartUpdaterComponent();
 	}
 	
@@ -94,7 +91,7 @@ public class TestAASUpdater {
 		
 		aasServer.stopComponent();
 		
-		server_stop();
+		serverStop();
 	}
 	
 	@Test
@@ -123,7 +120,7 @@ public class TestAASUpdater {
 		assertEquals(mapper.readTree(actualValue), mapper.readTree(expected_value));
 	}
 	
-	private static String getContentFromEndPoint() throws ClientProtocolException, IOException, InterruptedException {
+	private String getContentFromEndPoint() throws ClientProtocolException, IOException, InterruptedException {
 		
 		CloseableHttpClient client = HttpClients.createDefault();
 		HttpGet request = new HttpGet("http://localhost:8091");
@@ -170,7 +167,7 @@ public class TestAASUpdater {
 		updater.startComponent();
 	}
 	
-	private static String getExpectedValueFromFile() throws IOException, URISyntaxException {
+	private String getExpectedValueFromFile() throws IOException, URISyntaxException {
 		
 		String filename = "submodelproperties.json";
 		URL resource = TestAASUpdater.class.getClassLoader().getResource(filename);
@@ -179,13 +176,13 @@ public class TestAASUpdater {
 	}
 	
 	
-	private static void server_start() throws InterruptedException {
+	private static void serverStart() throws InterruptedException {
 		
 		httpData = new HttpDataSource();
-		httpData.runHttpServer(httpServlet);	
+		httpData.runHttpServer("localhost", PORT, httpServlet);	
 	}
 	
-	private static void server_stop() {
+	private static void serverStop() {
 		
 		httpData.stopHttpServer();
 	}

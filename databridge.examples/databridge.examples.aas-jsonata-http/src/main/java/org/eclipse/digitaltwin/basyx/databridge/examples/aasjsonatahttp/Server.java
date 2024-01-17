@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2021 the Eclipse BaSyx Authors
+ * Copyright (C) 2024 the Eclipse BaSyx Authors
  * 
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -22,7 +22,7 @@
  * 
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
-package org.eclipse.digitaltwin.basyx.databridge.examples.aasjsonatahttp.test;
+package org.eclipse.digitaltwin.basyx.databridge.examples.aasjsonatahttp;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -34,31 +34,30 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.digitaltwin.basyx.databridge.examples.httpserver.DummyServlet;
 
-public class HttpDummyServlet extends DummyServlet {
-	private static final long serialVersionUID = 4918478763760299634L;
+/**
+ * A customized DummyServlet
+ * @author rana
+ *
+ */
+public class Server extends DummyServlet {
 	
+	private static final long serialVersionUID = 4918478763760299634L;
 	private String requestBodyValue = null;
-	private String reuestUri = null;
 	
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		
 		setAPIResponseProperty(resp);
 		
-        // Get the request body using BufferedReader
         BufferedReader reader = req.getReader();
         StringBuilder requestBody = new StringBuilder();
         String line;
         
-        reuestUri = req.getRequestURI();
-
         while ((line = reader.readLine()) != null) {
             requestBody.append(line);
         }
 
-        System.out.println("Request Body: " + requestBody.toString());
-        
         requestBodyValue = requestBody.toString();
-        
     }
 
 	@Override
@@ -67,7 +66,6 @@ public class HttpDummyServlet extends DummyServlet {
       HttpServletResponse resp) throws IOException {
 		setAPIResponseProperty(resp);
 		setMessageToResponse(resp);
-		
     }
 	
 	/**
@@ -96,3 +94,4 @@ public class HttpDummyServlet extends DummyServlet {
         out.close();
 	}
 }
+

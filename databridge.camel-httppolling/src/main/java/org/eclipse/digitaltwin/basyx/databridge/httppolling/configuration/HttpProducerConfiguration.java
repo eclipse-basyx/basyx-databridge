@@ -24,6 +24,9 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.databridge.httppolling.configuration;
 
+import java.net.URISyntaxException;
+
+import org.apache.http.client.utils.URIBuilder;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.entity.DataSinkConfiguration;
 
 /**
@@ -34,37 +37,73 @@ import org.eclipse.digitaltwin.basyx.databridge.core.configuration.entity.DataSi
  */
 public class HttpProducerConfiguration extends DataSinkConfiguration{
 	
-	private String httpUri;
+	private String scheme;
+	private String ServerUrl;
+	private String path;
+	private int port;
 	
 	public HttpProducerConfiguration() {}
 	
-	public HttpProducerConfiguration(String uniqueId, String httpUri) {
+	public HttpProducerConfiguration(String uniqueId, String scheme,  String ServerUrl, String path, int port) {
 		super(uniqueId);
-		this.httpUri = httpUri;
-
+		this.scheme = scheme;
+		this.ServerUrl = ServerUrl;
+		this.path = path;
+		this.port = port;
 	}
 	
-	public HttpProducerConfiguration(String httpUri) {
-		this(httpUri, null);
-	}
-	
-	public String gethttpUri() {
-		return httpUri;
+	public String getScheme() {
+		return scheme;
 	}
 
-	public void sethttpUri(String httpUri) {
-		this.httpUri = httpUri;
+	public void setScheme(String scheme) {
+		this.scheme = scheme;
+	}
+
+	public String getServerUrl() {
+		return ServerUrl;
+	}
+
+	public void setServerUrl(String hostUrl) {
+		this.ServerUrl = hostUrl;
+	}
+
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
+	}
+
+	public int getPort() {
+		return port;
+	}
+
+	public void setPort(int port) {
+		this.port = port;
 	}
 
 	@Override
 	public String getConnectionURI() {
-			
-		StringBuilder endpointDefinition = new StringBuilder();
-		
-		endpointDefinition.append(this.httpUri);
-		endpointDefinition.append("/?httpMethod=POST");
 	
-		return endpointDefinition.toString();
+		URIBuilder uriBuilder = new URIBuilder();
+		uriBuilder.setScheme(getScheme());
+		uriBuilder.setHost(getServerUrl());
+		uriBuilder.setPort(getPort());
+		uriBuilder.setPath(getPath());
+		
+		return buildConnectionUri(uriBuilder);
+	}
+	
+	private String buildConnectionUri(URIBuilder uriBuilder) {
+		
+		try {
+			return uriBuilder.build().toString();
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+			throw new RuntimeException("Exception occurred while creating HttpProducerEndPoint ");
+		}
 	}
 
 }

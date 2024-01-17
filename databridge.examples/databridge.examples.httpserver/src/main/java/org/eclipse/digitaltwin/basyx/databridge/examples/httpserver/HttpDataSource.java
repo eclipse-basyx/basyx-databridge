@@ -35,8 +35,8 @@ public class HttpDataSource {
 		server.start();
 	}
 	
-	public void runHttpServer(HttpServlet httpServlet) throws InterruptedException {
-		server = new HttpServer(8091, "localhost", "", httpServlet);
+	public void runHttpServer(String host, int port, HttpServlet httpServlet) throws InterruptedException {
+		server = new HttpServer(port, host, "", httpServlet);
 		
 		server.start();
 	}

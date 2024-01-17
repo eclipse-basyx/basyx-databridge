@@ -72,7 +72,6 @@
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
 			<artifactId>databridge.examples.httpserver</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
-			<scope>test</scope>
 		</dependency>
 
 		<!-- BaSyx SDK -->
