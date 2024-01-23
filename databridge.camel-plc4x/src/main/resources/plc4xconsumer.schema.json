@@ -1,0 +1,60 @@
+{
+    "$id": "https://example.com/person.schema.json",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "plc4xconsumer.json",
+    "type": "object",
+    "required": [
+        "uniqueId",
+        "driver",
+        "tags"
+    ],
+    "properties": {
+        "uniqueId": {
+            "type": "string",
+            "description": "Unique ID to match options",
+            "pattern": "^[a-z0-9-]+$"
+        },
+        "serverUrl": {
+            "type": "string",
+            "description": "IP or Hostname of the MQTT Broker",
+            "default": "127.0.0.1",
+            "pattern": "^([a-z0-9-_\\.]+\\.[a-z]{1,3}|[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3})$"
+        },
+        "serverPort": {
+            "description": "Port of the MQTT Broker",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 65535,
+            "default": "50201"
+        },
+        "driver": {
+            "enum": ["ADS", "bacnet", "canopen", "eip", "firmata", "knxnet-ip", "logix", "modbus-tcp", "modbus-adu", "modbus-ascii", "opcua", "plc4x", "profinet", "s7", "simulated"],
+            "description": "Name of the driver"
+        },
+        "servicePath": {
+            "type": "string",
+            "description": "Service Path"
+        },
+        "options": {
+            "type": "string",
+            "description": "Options; depends on driver"
+        },
+        "tags": {
+            "title": "Tags",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "Name of the Tag"
+                    },
+                    "value": {
+                        "type": "string",
+                        "description": "Value of the Tag"
+                    }
+                }
+            }
+        }
+    }
+}
