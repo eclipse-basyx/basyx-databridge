@@ -83,7 +83,7 @@ public class AASEndpoint extends DefaultEndpoint {
 	public Producer createProducer() throws Exception {
 		return new AASProducer(this);
 	}
-	
+
 	@Override
 	public Consumer createConsumer(Processor processor) throws Exception {
 		return null;
@@ -135,7 +135,7 @@ public class AASEndpoint extends DefaultEndpoint {
 		if (api.equals(ApiType.BASYX)) {
 			setPropertyValueUsingBaSyxAPI(content);
 		} else {
-			setPropertyValueUsingDotAasV3Api(wrapStringValue(content.toString()));
+			setPropertyValueUsingDotAasV3Api(wrapContent(content.toString()));
 		}
 
 		logger.info("Transferred message={}", content.toString());
@@ -153,6 +153,37 @@ public class AASEndpoint extends DefaultEndpoint {
 		IModelProvider provider = factory.getConnector(proxyUrl);
 		VABElementProxy proxy = new VABElementProxy("", provider);
 		this.connectedDataElement = new ConnectedDataElement(proxy);
+	}
+
+	private String wrapContent(String content) {
+
+		if (content == null || content.isEmpty())
+			return "";
+
+		if (isAlreadyWrapped(content))
+			return content;
+
+		throwExceptionIfMalformedWrapping(content);
+
+		return wrapStringValue(content);
+	}
+
+	private void throwExceptionIfMalformedWrapping(String content) {
+
+		if (isRightMalformed(content) || isLeftMalformed(content))
+			throw new RuntimeException("The content's: " + content + " formatting is malformed.");
+	}
+
+	private boolean isLeftMalformed(String content) {
+		return !content.startsWith("\"") && content.endsWith("\"");
+	}
+
+	private boolean isRightMalformed(String content) {
+		return content.startsWith("\"") && !content.endsWith("\"");
+	}
+
+	private boolean isAlreadyWrapped(String content) {
+		return content.startsWith("\"") && content.endsWith("\"");
 	}
 
 	private void setPropertyValueUsingBaSyxAPI(Object messageBody) throws IOException {
@@ -201,11 +232,11 @@ public class AASEndpoint extends DefaultEndpoint {
 		return ValueTypeHelper.getJavaObject(messageBody, propertyValueType);
 	}
 
-	private static String removeQuotesFromString(String messageBody) {
+	private String removeQuotesFromString(String messageBody) {
 		if (messageBody == null)
 			return null;
 
-		if (messageBody.startsWith("\"") && messageBody.endsWith("\"")) {
+		if (isAlreadyWrapped(messageBody)) {
 			return messageBody.substring(1, messageBody.length() - 1);
 		}
 
@@ -226,10 +257,10 @@ public class AASEndpoint extends DefaultEndpoint {
 
 		return createDotAasApiProxyUrl();
 	}
-	
-    @Override 
-    public PollingConsumer createPollingConsumer() throws Exception {
-    	AASPollingConsumer consumer = new AASPollingConsumer(this);
-  		return consumer;
-    }	
+
+	@Override
+	public PollingConsumer createPollingConsumer() throws Exception {
+		AASPollingConsumer consumer = new AASPollingConsumer(this);
+		return consumer;
+	}
 }

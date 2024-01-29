@@ -1,8 +1,14 @@
 [
 	{
-		"datasource": "mqttSource",
+		"datasource": "mqttSource1",
 		"transformers": ["weight"],
 		"datasinks": ["ConnectedTestSubmodel/DotAASV3ConformantApiProperty"],
+		"trigger": "event"
+	},
+	{
+		"datasource": "mqttSource2",
+		"transformers": ["productName"],
+		"datasinks": ["ConnectedTestSubmodel/DotAASV3ConformantApiStringProperty"],
 		"trigger": "event"
 	}
 ]

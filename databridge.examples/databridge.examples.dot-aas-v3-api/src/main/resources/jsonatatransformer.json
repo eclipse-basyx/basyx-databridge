@@ -4,5 +4,11 @@
 		"queryPath": "weight.jsonata",
 		"inputType": "JsonString",
 		"outputType": "JsonString"
+	},
+	{
+		"uniqueId": "productName",
+		"queryPath": "productName.jsonata",
+		"inputType": "JsonString",
+		"outputType": "JsonString"
 	}
 ]
