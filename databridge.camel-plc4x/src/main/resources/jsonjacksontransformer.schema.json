@@ -1,0 +1,45 @@
+{
+    "$id": "https://example.com/person.schema.json",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "jsonjacksontransformer.json",
+    "type": "object",
+    "required": [
+        "uniqueId",
+        "operation",
+        "jacksonModules"
+    ],
+    "properties": {
+        "uniqueId": {
+            "title": "Unique ID",
+            "type": "string",
+            "description": "Unique ID to match options",
+            "pattern": "^[a-z0-9-]+$"
+        },
+        "operation": {
+            "title": "Operation",
+            "enum": ["marshal", "unmarshal"],
+            "description": "Type of operation which should be apply"
+        },
+        "jacksonModules": {
+            "title": "Jackson Module",
+            "enum": [
+                "com.fasterxml.jackson.datatype.jsr310.JavaTimeModule",
+                "com.fasterxml.jackson.datatype.eclipsecollections.EclipseCollectionsModule",
+                "com.fasterxml.jackson.dataformat.xml.JacksonXmlModule",
+                "com.fasterxml.jackson.dataformat.ion.EnumAsIonSymbolModule",
+                "com.fasterxml.jackson.dataformat.avro.jsr310.AvroJavaTimeModule",
+                "com.fasterxml.jackson.dataformat.avro.jsr310.AvroModule",
+                "com.fasterxml.jackson.module.afterburner.AfterburnerModule",
+                "com.fasterxml.jackson.module.blackbird.BlackbirdModule",
+                "com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule",
+                "com.fasterxml.jackson.module.mrbean.MrBeanModule",
+                "com.fasterxml.jackson.module.osgi.OsgiJacksonModule",
+                "com.fasterxml.jackson.module.paramnames.ParameterNamesModule",
+                "com.fasterxml.jackson.module.paramnames.ParanamerModule",
+                "com.fasterxml.jackson.module.scala.DefaultScalaModule"
+            ],
+            "minItems": 1,
+            "description": "Name of the Jackson Module which should be use"
+        }
+    }
+}

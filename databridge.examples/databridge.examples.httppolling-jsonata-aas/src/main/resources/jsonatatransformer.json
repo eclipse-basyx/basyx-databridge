@@ -1,8 +1,8 @@
 [
-  {
-    uniqueId: "jsonataA",
-    queryPath: "jsonataA.json",
-    inputType: "JsonString",
-    outputType: "JsonString"
-  }
+	  {
+	    "uniqueId": "jsonataA",
+	    "queryPath": "jsonataA.json",
+	    "inputType": "JsonString",
+	    "outputType": "JsonString"
+	  }
 ]
