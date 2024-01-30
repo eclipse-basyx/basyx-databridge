@@ -1,0 +1,22 @@
+{
+    "$id": "https://example.com/person.schema.json",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "httpconsumer.json",
+    "type": "object",
+    "required": [
+        "uniqueId",
+        "serverUrl"
+    ],
+    "properties": {
+        "uniqueId": {
+            "type": "string",
+            "description": "Unique ID to match options",
+            "pattern": "^[a-z0-9-]+$"
+        },
+        "serverUrl": {
+            "type": "string",
+            "description": "IP or Hostname of the MQTT Broker",
+            "pattern": "[a-zA-Z0-9:/-\\._\\?=&%\\$]+"
+        }
+    }
+}
