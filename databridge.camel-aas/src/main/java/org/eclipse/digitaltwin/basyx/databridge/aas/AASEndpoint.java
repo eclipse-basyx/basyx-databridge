@@ -46,6 +46,7 @@ import org.eclipse.basyx.vab.modelprovider.api.IModelProvider;
 import org.eclipse.basyx.vab.protocol.http.connector.HTTPConnectorFactory;
 import org.eclipse.digitaltwin.basyx.databridge.aas.api.ApiType;
 import org.eclipse.digitaltwin.basyx.databridge.aas.http.HTTPRequest;
+import org.eclipse.digitaltwin.basyx.databridge.aas.util.AASComponentUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -135,7 +136,7 @@ public class AASEndpoint extends DefaultEndpoint {
 		if (api.equals(ApiType.BASYX)) {
 			setPropertyValueUsingBaSyxAPI(content);
 		} else {
-			setPropertyValueUsingDotAasV3Api(wrapContent(content.toString()));
+			setPropertyValueUsingDotAasV3Api(AASComponentUtil.wrapContent(content.toString()));
 		}
 
 		logger.info("Transferred message={}", content.toString());
@@ -153,37 +154,6 @@ public class AASEndpoint extends DefaultEndpoint {
 		IModelProvider provider = factory.getConnector(proxyUrl);
 		VABElementProxy proxy = new VABElementProxy("", provider);
 		this.connectedDataElement = new ConnectedDataElement(proxy);
-	}
-
-	private String wrapContent(String content) {
-
-		if (content == null || content.isEmpty())
-			return "";
-
-		if (isAlreadyWrapped(content))
-			return content;
-
-		throwExceptionIfMalformedWrapping(content);
-
-		return wrapStringValue(content);
-	}
-
-	private void throwExceptionIfMalformedWrapping(String content) {
-
-		if (isRightMalformed(content) || isLeftMalformed(content))
-			throw new RuntimeException("The content's: " + content + " formatting is malformed.");
-	}
-
-	private boolean isLeftMalformed(String content) {
-		return !content.startsWith("\"") && content.endsWith("\"");
-	}
-
-	private boolean isRightMalformed(String content) {
-		return content.startsWith("\"") && !content.endsWith("\"");
-	}
-
-	private boolean isAlreadyWrapped(String content) {
-		return content.startsWith("\"") && content.endsWith("\"");
 	}
 
 	private void setPropertyValueUsingBaSyxAPI(Object messageBody) throws IOException {
@@ -218,13 +188,6 @@ public class AASEndpoint extends DefaultEndpoint {
 		return proxyUrl;
 	}
 
-	private String wrapStringValue(String content) {
-		if (content.isEmpty())
-			return content;
-
-		return "\"" + content + "\"";
-	}
-
 	private Object getContent(Object messageBody, ValueType propertyValueType) {
 		if (propertyValueType.equals(ValueType.String))
 			return removeQuotesFromString(messageBody.toString());
@@ -236,7 +199,7 @@ public class AASEndpoint extends DefaultEndpoint {
 		if (messageBody == null)
 			return null;
 
-		if (isAlreadyWrapped(messageBody)) {
+		if (AASComponentUtil.isAlreadyWrapped(messageBody)) {
 			return messageBody.substring(1, messageBody.length() - 1);
 		}
 
@@ -260,7 +223,6 @@ public class AASEndpoint extends DefaultEndpoint {
 
 	@Override
 	public PollingConsumer createPollingConsumer() throws Exception {
-		AASPollingConsumer consumer = new AASPollingConsumer(this);
-		return consumer;
+		return new AASPollingConsumer(this);
 	}
 }
