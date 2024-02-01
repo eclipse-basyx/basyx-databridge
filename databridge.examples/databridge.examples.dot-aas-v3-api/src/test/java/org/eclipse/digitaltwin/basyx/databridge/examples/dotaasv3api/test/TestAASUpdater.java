@@ -60,8 +60,10 @@ import io.moquette.broker.config.ResourceLoaderConfig;
 
 public class TestAASUpdater {
 	
-	private static final String PROPERTY_VALUE = "\"0.75\"";
-	private static final String PROPERTY_VALUE_PATH = "/submodels/c3VibW9kZWxJZA==/submodel-elements/DotAASV3ConformantApiSMC.DotAASV3ConformantApiProperty/$value";
+	private static final String PROPERTY_INTEGER_VALUE = "\"0.75\"";
+	private static final String PROPERTY_INTEGER_VALUE_PATH = "/submodels/c3VibW9kZWxJZA==/submodel-elements/DotAASV3ConformantApiSMC.DotAASV3ConformantApiProperty/$value";
+	private static final String PROPERTY_STRING_VALUE = "\"Bowler Hat\"";
+	private static final String PROPERTY_STRING_VALUE_PATH = "/submodels/c3VibW9kZWxJZA==/submodel-elements/DotAASV3ConformantApiSMC.DotAASV3ConformantApiStringProperty/$value";
 
 	private static Logger logger = LoggerFactory.getLogger(TestAASUpdater.class);
 	
@@ -86,18 +88,29 @@ public class TestAASUpdater {
 	}
 	
 	@Test
-	public void getDotAASV3ConformantPropertyValue() throws MqttSecurityException, MqttPersistenceException, MqttException, InterruptedException {
+	public void getDotAASV3ConformantPropertyIntegerValue() throws MqttSecurityException, MqttPersistenceException, MqttException, InterruptedException {
 		publishNewDatapoint("DotAASV3ConformantProperty");
 		
 		waitForPropagation();
 		
-		verifyPropertyValueUpdateRequest();
+		verifyPropertyValueUpdateRequestIntegerValue();
+	}
+	
+	@Test
+	public void getDotAASV3ConformantPropertyStringValue() throws MqttSecurityException, MqttPersistenceException, MqttException, InterruptedException {
+		publishNewDatapoint("DotAASV3ConformantPropertyStringValue");
+		
+		waitForPropagation();
+		
+		verifyPropertyValueUpdateRequestStringValue();
 	}
 
 	private static void configureAndStartMockserver() {
 		mockServer = ClientAndServer.startClientAndServer(4001);
+		
+		createExpectationForPatchRequestForIntegerValue();
 
-		createExpectationForPatchRequest();
+		createExpectationForPatchRequestForStringValue();
 	}
 
 	private static void configureAndStartUpdaterComponent() {
@@ -143,18 +156,34 @@ public class TestAASUpdater {
 	}
 	
 	@SuppressWarnings("resource")
-	private static void createExpectationForPatchRequest() {
+	private static void createExpectationForPatchRequestForIntegerValue() {
 		new MockServerClient("localhost", 4001)
-				.when(request().withMethod("PATCH").withPath(PROPERTY_VALUE_PATH)
-						.withBody(PROPERTY_VALUE).withHeader("Content-Type", "application/json"))
+				.when(request().withMethod("PATCH").withPath(PROPERTY_INTEGER_VALUE_PATH)
+						.withBody(PROPERTY_INTEGER_VALUE).withHeader("Content-Type", "application/json"))
 				.respond(response().withStatusCode(HttpStatus.SC_CREATED)
 						.withHeaders(new Header("Content-Type", "application/json; charset=utf-8")));
 	}
+	
+	@SuppressWarnings("resource")
+	private static void createExpectationForPatchRequestForStringValue() {
+		new MockServerClient("localhost", 4001)
+		.when(request().withMethod("PATCH").withPath(PROPERTY_STRING_VALUE_PATH)
+				.withBody(PROPERTY_STRING_VALUE).withHeader("Content-Type", "application/json"))
+		.respond(response().withStatusCode(HttpStatus.SC_CREATED)
+				.withHeaders(new Header("Content-Type", "application/json; charset=utf-8")));
+	}
 
 	@SuppressWarnings("resource")
-	private void verifyPropertyValueUpdateRequest() {
+	private void verifyPropertyValueUpdateRequestIntegerValue() {
 		new MockServerClient("localhost", 4001).verify(request().withMethod("PATCH")
-				.withPath(PROPERTY_VALUE_PATH).withHeader("Content-Type", "application/json")
-				.withBody(PROPERTY_VALUE), VerificationTimes.exactly(1));
+				.withPath(PROPERTY_INTEGER_VALUE_PATH).withHeader("Content-Type", "application/json")
+				.withBody(PROPERTY_INTEGER_VALUE), VerificationTimes.exactly(1));
+	}
+	
+	@SuppressWarnings("resource")
+	private void verifyPropertyValueUpdateRequestStringValue() {
+		new MockServerClient("localhost", 4001).verify(request().withMethod("PATCH")
+				.withPath(PROPERTY_STRING_VALUE_PATH).withHeader("Content-Type", "application/json")
+				.withBody(PROPERTY_STRING_VALUE), VerificationTimes.exactly(1));
 	}
 }

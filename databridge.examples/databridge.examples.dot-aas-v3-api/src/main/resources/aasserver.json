@@ -4,5 +4,11 @@
 		"submodelEndpoint": "http://localhost:4001/submodels/c3VibW9kZWxJZA==",
 		"idShortPath": "DotAASV3ConformantApiSMC.DotAASV3ConformantApiProperty",
 		"api": "DotAAS-V3"
+	},
+	{
+		"uniqueId": "ConnectedTestSubmodel/DotAASV3ConformantApiStringProperty",
+		"submodelEndpoint": "http://localhost:4001/submodels/c3VibW9kZWxJZA==",
+		"idShortPath": "DotAASV3ConformantApiSMC.DotAASV3ConformantApiStringProperty",
+		"api": "DotAAS-V3"
 	}
 ]

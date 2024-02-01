@@ -1,8 +1,14 @@
 [
 	{
-		"uniqueId": "mqttSource",
+		"uniqueId": "mqttSource1",
 		"serverUrl": "localhost",
 		"serverPort": 1884,
 		"topic": "DotAASV3ConformantProperty"
+	},
+	{
+		"uniqueId": "mqttSource2",
+		"serverUrl": "localhost",
+		"serverPort": 1884,
+		"topic": "DotAASV3ConformantPropertyStringValue"
 	}
 ]
