@@ -1,0 +1,34 @@
+{
+    "$id": "https://example.com/person.schema.json",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "mqttconsumer.json",
+    "type": "object",
+    "required": [
+        "uniqueId",
+        "topic"
+    ],
+    "properties": {
+        "uniqueId": {
+            "type": "string",
+            "description": "Unique ID to match options",
+            "pattern": "^[a-z0-9-]+$"
+        },
+        "serverUrl": {
+            "type": "string",
+            "description": "IP or Hostname of the MQTT Broker",
+            "default": "127.0.0.1",
+            "pattern": "^([a-z0-9-_\\.]+\\.[a-z]{1,3}|[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3})$"
+        },
+        "serverPort": {
+            "description": "Port of the MQTT Broker",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 65535,
+            "default": "1884"
+        },
+        "topic": {
+            "type": "string",
+            "description": "Topic of the variable in the MQTT Broker"
+        }
+    }
+}
