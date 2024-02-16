@@ -26,7 +26,6 @@ package org.eclipse.digitaltwin.basyx.databridge.examples.mqttjsonataaas.test;
 
 import static org.junit.Assert.assertEquals;
 import java.io.IOException;
-
 import org.eclipse.basyx.aas.manager.ConnectedAssetAdministrationShellManager;
 import org.eclipse.basyx.aas.metamodel.connected.ConnectedAssetAdministrationShell;
 import org.eclipse.basyx.aas.metamodel.map.descriptor.CustomId;
@@ -45,6 +44,7 @@ import org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.core.Ro
 import org.eclipse.digitaltwin.basyx.databridge.jsonata.configuration.factory.JsonataDefaultConfigurationFactory;
 import org.eclipse.digitaltwin.basyx.databridge.paho.configuration.factory.MqttDefaultConfigurationFactory;
 import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.MqttPersistenceException;
@@ -73,6 +73,9 @@ public class TestAASUpdater {
 
 	protected static IIdentifier deviceAASPlainId = new CustomId("TestUpdatedDeviceAAS");
 	protected static IIdentifier deviceAASIriId = new CustomId("https://example.com/ids/aas/7053_6021_1032_9066");
+	private static final String USERNAME = "test";
+	private static final String PASSWORD = "test123";
+	
 	private static BaSyxContextConfiguration aasContextConfig;
 
 	@BeforeClass
@@ -166,7 +169,10 @@ public class TestAASUpdater {
 		
 		String json = "{\"Account\":{\"Account Name\":\"Firefly\",\"Order\":[{\"OrderID\":\"order103\",\"Product\":[{\"Product Name\":\"Bowler Hat\",\"ProductID\":858383,\"SKU\":\"0406654608\",\"Description\":{\"Colour\":\"Purple\",\"Width\":300,\"Height\":200,\"Depth\":210,\"Weight\":0.75},\"Price\":34.45,\"Quantity\":2},{\"Product Name\":\"Trilby hat\",\"ProductID\":858236,\"SKU\":\"0406634348\",\"Description\":{\"Colour\":\"Orange\",\"Width\":300,\"Height\":200,\"Depth\":210,\"Weight\":0.6},\"Price\":21.67,\"Quantity\":1}]},{\"OrderID\":\"order104\",\"Product\":[{\"Product Name\":\"Bowler Hat\",\"ProductID\":858383,\"SKU\":\"040657863\",\"Description\":{\"Colour\":\"Purple\",\"Width\":300,\"Height\":200,\"Depth\":210,\"Weight\":0.75},\"Price\":34.45,\"Quantity\":4},{\"ProductID\":345664,\"SKU\":\"0406654603\",\"Product Name\":\"Cloak\",\"Description\":{\"Colour\":\"Black\",\"Width\":30,\"Height\":20,\"Depth\":210,\"Weight\":2},\"Price\":107.99,\"Quantity\":1}]}]}}";
 		MqttClient mqttClient = new MqttClient("tcp://localhost:1884", "testClient", new MemoryPersistence());
-		mqttClient.connect();
+		
+		MqttConnectOptions connOpts = setUpMqttConnectionOptions(USERNAME, PASSWORD);
+		mqttClient.connect(connOpts);
+		
 		mqttClient.publish(topic, new MqttMessage(json.getBytes()));
 		mqttClient.disconnect();
 		mqttClient.close();
@@ -176,6 +182,8 @@ public class TestAASUpdater {
 		mqttBroker = new Server();
 		IResourceLoader classpathLoader = new ClasspathResourceLoader();
 		final IConfig classPathConfig = new ResourceLoaderConfig(classpathLoader);
+		classPathConfig.setProperty("password_file", "config/password.conf");
+		
 		mqttBroker.startServer(classPathConfig);
 	}
 	
@@ -190,6 +198,14 @@ public class TestAASUpdater {
 		ConnectedAssetAdministrationShellManager manager = new ConnectedAssetAdministrationShellManager(registry);
 		ConnectedAssetAdministrationShell aas = manager.retrieveAAS(identifier);
 		return aas;
+	}
+	
+	private static MqttConnectOptions setUpMqttConnectionOptions(String username, String password) {
+		MqttConnectOptions connectOptions = new MqttConnectOptions();
+		connectOptions.setUserName(username);
+		connectOptions.setPassword(password.toCharArray());
+		
+		return connectOptions;
 	}
 	
 }
