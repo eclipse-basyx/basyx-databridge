@@ -2,7 +2,7 @@
   {
     "uniqueId": "timer1",
     "fixedRate": true,
-    "delay": 0,
+    "delay": 2000,
     "period": 5000
   }
 ]

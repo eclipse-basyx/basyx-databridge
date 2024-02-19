@@ -99,7 +99,7 @@ public class TestAASUpdater {
 		
 		String expected_value = wrapStringValue("103.5585973");
 		
-		Thread.sleep(10000);
+		Thread.sleep(8000);
 		
 		String actualValue = getContentFromEndPoint();
 		
@@ -111,7 +111,7 @@ public class TestAASUpdater {
 		
 		String expected_value = getExpectedValueFromFile();
 		
-		Thread.sleep(4000);
+		Thread.sleep(6000);
 		
 		String actualValue = getContentFromEndPoint();
 		

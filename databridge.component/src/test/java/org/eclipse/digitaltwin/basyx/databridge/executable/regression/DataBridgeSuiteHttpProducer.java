@@ -43,7 +43,7 @@ import org.eclipse.digitaltwin.basyx.databridge.examples.httpserver.HttpDataSour
 import org.junit.Test;
 
 /**
- * Suite for testing that the DataBridge is setup correctly with HTTPP Producer
+ * Suite for testing that the DataBridge is setup correctly with HTTP Producer
  * 
  * @author rana
  *
@@ -55,7 +55,7 @@ public abstract class DataBridgeSuiteHttpProducer {
 	protected abstract String getHost();
 	private static HttpDataSource httpData;
 	private static HttpServlet httpServlet = new Server();
-	private static int PORT = 8091;
+	private static int port = 8091;
 	
 	@Test
 	public void CheckPropertyValueA() throws  InterruptedException, IOException {
@@ -87,7 +87,7 @@ public abstract class DataBridgeSuiteHttpProducer {
 	private void serverStart() throws InterruptedException {
 		
 		httpData = new HttpDataSource();
-		httpData.runHttpServer(getHost(), PORT, httpServlet);	
+		httpData.runHttpServer(getHost(), port, httpServlet);	
 	}
 	
 	private void serverStop() {
@@ -101,6 +101,6 @@ public abstract class DataBridgeSuiteHttpProducer {
 	}
 	
 	private void waitForPropagation() throws InterruptedException {
-		Thread.sleep(10000);
+		Thread.sleep(5000);
 	}
 }

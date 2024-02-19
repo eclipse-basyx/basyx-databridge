@@ -65,6 +65,21 @@ public class TestDataBridgeHttpProducer extends DataBridgeSuiteHttpProducer{
 		
 		stopDataBridgeComponent();
 	}
+
+	@Override
+	protected IAASAggregator getAASAggregatorProxy() {
+		return new AASAggregatorProxy(AAS_AGGREGATOR_URL);
+	}
+
+	@Override
+	protected String getEndpoint() {
+		return END_POINT_URL;
+	}
+
+	@Override
+	protected String getHost() {
+		return HOST;
+	}
 	
 	private static void configureAndStartAasServer() throws InterruptedException {
 		
@@ -82,23 +97,7 @@ public class TestDataBridgeHttpProducer extends DataBridgeSuiteHttpProducer{
 	}
 	
 	private static void stopDataBridgeComponent() {
-		if(DataBridgeExecutable.getDataBridgeComponent() != null) {
+		if(DataBridgeExecutable.getDataBridgeComponent() != null) 
 			DataBridgeExecutable.getDataBridgeComponent().stopComponent();
-		}
-	}
-
-	@Override
-	protected IAASAggregator getAASAggregatorProxy() {
-		return new AASAggregatorProxy(AAS_AGGREGATOR_URL);
-	}
-
-	@Override
-	protected String getEndpoint() {
-		return END_POINT_URL;
-	}
-
-	@Override
-	protected String getHost() {
-		return HOST;
 	}
 }

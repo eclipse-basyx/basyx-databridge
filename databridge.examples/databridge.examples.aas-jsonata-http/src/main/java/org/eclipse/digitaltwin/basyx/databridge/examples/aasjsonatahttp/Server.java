@@ -36,62 +36,61 @@ import org.eclipse.digitaltwin.basyx.databridge.examples.httpserver.DummyServlet
 
 /**
  * A customized DummyServlet
+ * 
  * @author rana
  *
  */
 public class Server extends DummyServlet {
-	
+
 	private static final long serialVersionUID = 4918478763760299634L;
 	private String requestBodyValue = null;
-	
+
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		
-		setAPIResponseProperty(resp);
-		
-        BufferedReader reader = req.getReader();
-        StringBuilder requestBody = new StringBuilder();
-        String line;
-        
-        while ((line = reader.readLine()) != null) {
-            requestBody.append(line);
-        }
 
-        requestBodyValue = requestBody.toString();
-    }
+		setAPIResponseProperty(resp);
+
+		BufferedReader reader = req.getReader();
+		StringBuilder requestBody = new StringBuilder();
+		String line;
+
+		while ((line = reader.readLine()) != null) {
+			requestBody.append(line);
+		}
+
+		requestBodyValue = requestBody.toString();
+	}
 
 	@Override
-    protected void doGet(
-      HttpServletRequest req, 
-      HttpServletResponse resp) throws IOException {
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		setAPIResponseProperty(resp);
 		setMessageToResponse(resp);
-    }
-	
+	}
+
 	/**
 	 * Sets {@link HttpServletResponse} properties
+	 * 
 	 * @param resp
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	private void setAPIResponseProperty(HttpServletResponse resp) throws IOException {
-        resp.setStatus(HttpServletResponse.SC_OK);
-        resp.setContentType("application/json");
-        resp.setCharacterEncoding("UTF-8");
+		resp.setStatus(HttpServletResponse.SC_OK);
+		resp.setContentType("application/json");
+		resp.setCharacterEncoding("UTF-8");
 	}
-	
+
 	/**
 	 * Sets retrieved message as a response
+	 * 
 	 * @param response
 	 * @param resp
 	 * @throws IOException
 	 */
 	private void setMessageToResponse(HttpServletResponse resp) throws IOException {
 
-		String jsonString = requestBodyValue;
-        PrintWriter out = resp.getWriter();
-        out.print(jsonString);
-        out.flush();
-        out.close();
+		PrintWriter out = resp.getWriter();
+		out.print(requestBodyValue);
+		out.flush();
+		out.close();
 	}
 }
-
