@@ -2,7 +2,7 @@
 	{
 		"uniqueId": "Server1",
 		"scheme": "http",
-		"ServerUrl": "localhost",
+		"serverUrl": "localhost",
 		"path": "data/machine/pressure",
 		"port": 8091
 	}

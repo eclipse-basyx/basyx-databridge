@@ -54,9 +54,8 @@ public class Server extends DummyServlet {
 		StringBuilder requestBody = new StringBuilder();
 		String line;
 
-		while ((line = reader.readLine()) != null) {
+		while ((line = reader.readLine()) != null)
 			requestBody.append(line);
-		}
 
 		requestBodyValue = requestBody.toString();
 	}

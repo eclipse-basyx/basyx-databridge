@@ -29,6 +29,7 @@ import org.eclipse.digitaltwin.basyx.databridge.httppolling.configuration.HttpPr
 
 /**
  * A default configuration factory for HTTP Producer
+ * 
  * @author rana
  *
  */

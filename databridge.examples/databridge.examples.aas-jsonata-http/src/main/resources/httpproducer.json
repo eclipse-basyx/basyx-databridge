@@ -2,14 +2,14 @@
 	{
 		"uniqueId": "Server1",
 		"scheme": "http",
-		"ServerUrl": "localhost",
+		"serverUrl": "localhost",
 		"path": "data/machine/pressure",
 		"port": 8091
 	},
 	{
 		"uniqueId": "Server2",
 		"scheme": "http",
-		"ServerUrl": "localhost",
+		"serverUrl": "localhost",
 		"path": "data/machine/pressure_rotation",
 		"port": 8091
 	}
