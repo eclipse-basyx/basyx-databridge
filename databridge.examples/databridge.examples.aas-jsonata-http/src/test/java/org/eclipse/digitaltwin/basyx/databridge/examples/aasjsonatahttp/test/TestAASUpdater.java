@@ -61,6 +61,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * A test of aas-jsonata-http
+ * 
  * @author rana
  *
  */
@@ -72,14 +73,14 @@ public class TestAASUpdater {
 	private static DataBridgeComponent updater;
 	private static HttpDataSource httpData;
 	private static HttpServlet httpServlet = new Server();
-	private static int PORT = 8091;
+	private final static int PORT = 8091;
 
 	@BeforeClass
 	public static void setUp() throws Exception {
 
 		configureAndStartAasServer();
 		
-		serverStart();
+		configureAndStartHttpServer();
 		
 		configureAndStartUpdaterComponent();
 	}
@@ -91,15 +92,15 @@ public class TestAASUpdater {
 		
 		aasServer.stopComponent();
 		
-		serverStop();
+		stopHttpServer();
 	}
 	
 	@Test
-	public void CheckPropertyValueA() throws  InterruptedException, IOException {
+	public void checkPropertyValueA() throws  InterruptedException, IOException {
 		
 		String expected_value = wrapStringValue("103.5585973");
 		
-		Thread.sleep(8000);
+		waitForPropagation();
 		
 		String actualValue = getContentFromEndPoint();
 		
@@ -107,11 +108,11 @@ public class TestAASUpdater {
 	}
 	
 	@Test
-	public void CheckPropertyValueB() throws  InterruptedException, IOException, URISyntaxException {
+	public void checkPropertyValueB() throws  InterruptedException, IOException, URISyntaxException {
 		
 		String expected_value = getExpectedValueFromFile();
 		
-		Thread.sleep(6000);
+		waitForPropagation();
 		
 		String actualValue = getContentFromEndPoint();
 		
@@ -176,18 +177,22 @@ public class TestAASUpdater {
 	}
 	
 	
-	private static void serverStart() throws InterruptedException {
+	private static void configureAndStartHttpServer() throws InterruptedException {
 		
 		httpData = new HttpDataSource();
 		httpData.runHttpServer("localhost", PORT, httpServlet);	
 	}
 	
-	private static void serverStop() {
+	private static void stopHttpServer() {
 		
 		httpData.stopHttpServer();
 	}
 	
 	private String wrapStringValue(String value) {
 		return "\"" + value + "\"";
+	}
+	
+	private void waitForPropagation() throws InterruptedException {
+		Thread.sleep(10000);
 	}
 }
