@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2021 the Eclipse BaSyx Authors
+ * Copyright (C) 2024 the Eclipse BaSyx Authors
  * 
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -22,27 +22,26 @@
  * 
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
-package org.eclipse.digitaltwin.basyx.databridge.examples.httpserver;
+package org.eclipse.digitaltwin.basyx.databridge.httppolling.configuration.factory;
 
-import javax.servlet.http.HttpServlet;
+import org.eclipse.digitaltwin.basyx.databridge.core.configuration.factory.DataSinkConfigurationFactory;
+import org.eclipse.digitaltwin.basyx.databridge.httppolling.configuration.HttpProducerConfiguration;
 
-public class HttpDataSource {
+/**
+ * A default configuration factory for HTTP Producer
+ * 
+ * @author rana
+ *
+ */
+public class HttpProducerDefaultConfigurationFactory extends DataSinkConfigurationFactory{
 	
-	private HttpServer server;
+	public static final String DEFAULT_FILE_PATH = "httpproducer.json";
 	
-	public void runHttpServer() throws InterruptedException {
-		DummyServlet servlet = new DummyServlet();
-		server = new HttpServer(8091, "localhost", "", servlet);
-		server.start();
+	public HttpProducerDefaultConfigurationFactory(ClassLoader loader) {
+		super(DEFAULT_FILE_PATH, loader, HttpProducerConfiguration.class);
 	}
-	
-	public void runHttpServer(String host, int port, HttpServlet httpServlet) {
-		server = new HttpServer(port, host, "", httpServlet);
-		
-		server.start();
-	}
-	
-	public void stopHttpServer() {
-		server.stop();
+
+	public HttpProducerDefaultConfigurationFactory(String filePath, ClassLoader loader) {
+		super(filePath, loader, HttpProducerConfiguration.class);
 	}
 }

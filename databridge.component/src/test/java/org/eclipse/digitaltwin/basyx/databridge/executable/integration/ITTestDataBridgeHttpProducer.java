@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2021 the Eclipse BaSyx Authors
+ * Copyright (C) 2024 the Eclipse BaSyx Authors
  * 
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -22,27 +22,35 @@
  * 
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
-package org.eclipse.digitaltwin.basyx.databridge.examples.httpserver;
+package org.eclipse.digitaltwin.basyx.databridge.executable.integration;
 
-import javax.servlet.http.HttpServlet;
+import org.eclipse.basyx.aas.aggregator.api.IAASAggregator;
+import org.eclipse.basyx.aas.aggregator.proxy.AASAggregatorProxy;
+import org.eclipse.digitaltwin.basyx.databridge.executable.regression.DataBridgeSuiteHttpProducer;
 
-public class HttpDataSource {
+/**
+ * Integration test with HTTP Producer 
+ *
+ * @author rana
+ */
+public class ITTestDataBridgeHttpProducer extends DataBridgeSuiteHttpProducer{
+
+	private static final String HOST = "host.docker.internal";
+	private static final String AAS_AGGREGATOR_HOST = "localhost";
+	private static final String END_POINT = "http://host.docker.internal:8091/";
 	
-	private HttpServer server;
-	
-	public void runHttpServer() throws InterruptedException {
-		DummyServlet servlet = new DummyServlet();
-		server = new HttpServer(8091, "localhost", "", servlet);
-		server.start();
+	@Override
+	protected String getHost() {
+		return HOST;
 	}
 	
-	public void runHttpServer(String host, int port, HttpServlet httpServlet) {
-		server = new HttpServer(port, host, "", httpServlet);
-		
-		server.start();
+	@Override
+	protected IAASAggregator getAASAggregatorProxy() {
+		return new AASAggregatorProxy("http://" + AAS_AGGREGATOR_HOST + ":4001");
 	}
-	
-	public void stopHttpServer() {
-		server.stop();
+
+	@Override
+	protected String getEndpoint() {
+		return END_POINT;
 	}
 }

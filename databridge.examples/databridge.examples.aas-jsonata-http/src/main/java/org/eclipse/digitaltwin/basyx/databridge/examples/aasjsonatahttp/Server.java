@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2021 the Eclipse BaSyx Authors
+ * Copyright (C) 2024 the Eclipse BaSyx Authors
  * 
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -22,47 +22,74 @@
  * 
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
-package org.eclipse.digitaltwin.basyx.databridge.examples.httpserver;
+package org.eclipse.digitaltwin.basyx.databridge.examples.aasjsonatahttp;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import javax.servlet.http.HttpServlet;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class DummyServlet extends HttpServlet {
+import org.eclipse.digitaltwin.basyx.databridge.examples.httpserver.DummyServlet;
+
+/**
+ * A customized DummyServlet
+ * 
+ * @author rana
+ *
+ */
+public class Server extends DummyServlet {
+
 	private static final long serialVersionUID = 4918478763760299634L;
-	
+	private String requestBodyValue = null;
+
 	@Override
-    protected void doGet(
-      HttpServletRequest req, 
-      HttpServletResponse resp) throws IOException {
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+		setAPIResponseProperty(resp);
+
+		BufferedReader reader = req.getReader();
+		StringBuilder requestBody = new StringBuilder();
+		String line;
+
+		while ((line = reader.readLine()) != null)
+			requestBody.append(line);
+
+		requestBodyValue = requestBody.toString();
+	}
+
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		setAPIResponseProperty(resp);
 		setMessageToResponse(resp);
-    }
-	
+	}
+
 	/**
 	 * Sets {@link HttpServletResponse} properties
+	 * 
 	 * @param resp
+	 * @throws IOException
 	 */
-	private void setAPIResponseProperty(HttpServletResponse resp) {
-        resp.setStatus(HttpServletResponse.SC_OK);
-        resp.setContentType("application/json");
-        resp.setCharacterEncoding("UTF-8");
+	private void setAPIResponseProperty(HttpServletResponse resp) throws IOException {
+		resp.setStatus(HttpServletResponse.SC_OK);
+		resp.setContentType("application/json");
+		resp.setCharacterEncoding("UTF-8");
 	}
-	
+
 	/**
 	 * Sets retrieved message as a response
+	 * 
 	 * @param response
 	 * @param resp
 	 * @throws IOException
 	 */
 	private void setMessageToResponse(HttpServletResponse resp) throws IOException {
-		String jsonString = "{\"Account\":{\"Account Name\":\"Firefly\",\"Order\":[{\"OrderID\":\"order103\",\"Product\":[{\"Product Name\":\"Bowler Hat\",\"ProductID\":858383,\"SKU\":\"0406654608\",\"Description\":{\"Colour\":\"Purple\",\"Width\":300,\"Height\":200,\"Depth\":210,\"Weight\":0.75},\"Price\":34.45,\"Quantity\":2},{\"Product Name\":\"Trilby hat\",\"ProductID\":858236,\"SKU\":\"0406634348\",\"Description\":{\"Colour\":\"Orange\",\"Width\":300,\"Height\":200,\"Depth\":210,\"Weight\":0.6},\"Price\":21.67,\"Quantity\":1}]},{\"OrderID\":\"order104\",\"Product\":[{\"Product Name\":\"Bowler Hat\",\"ProductID\":858383,\"SKU\":\"040657863\",\"Description\":{\"Colour\":\"Purple\",\"Width\":300,\"Height\":200,\"Depth\":210,\"Weight\":0.75},\"Price\":34.45,\"Quantity\":4},{\"ProductID\":345664,\"SKU\":\"0406654603\",\"Product Name\":\"Cloak\",\"Description\":{\"Colour\":\"Black\",\"Width\":30,\"Height\":20,\"Depth\":210,\"Weight\":2},\"Price\":107.99,\"Quantity\":1}]}]}}";
-        PrintWriter out = resp.getWriter();
-        out.print(jsonString);
-        out.flush();
-        out.close();
+
+		PrintWriter out = resp.getWriter();
+		out.print(requestBodyValue);
+		out.flush();
+		out.close();
 	}
 }
