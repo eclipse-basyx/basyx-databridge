@@ -98,19 +98,19 @@ public class TestAASUpdater {
 	@Test
 	public void checkPropertyValueA() throws  InterruptedException, IOException {
 		
-		String expected_value = wrapStringValue("103.5585973");
+		String expectedValue = wrapStringValue("103.5585973");
 		
 		waitForPropagation();
 		
 		String actualValue = getContentFromEndPoint();
 		
-		assertEquals(expected_value, actualValue);
+		assertEquals(expectedValue, actualValue);
 	}
 	
 	@Test
 	public void checkPropertyValueB() throws  InterruptedException, IOException, URISyntaxException {
 		
-		String expected_value = getExpectedValueFromFile();
+		String expectedValue = getExpectedValueFromFile();
 		
 		waitForPropagation();
 		
@@ -118,7 +118,7 @@ public class TestAASUpdater {
 		
 		ObjectMapper mapper = new ObjectMapper();
 		
-		assertEquals(mapper.readTree(actualValue), mapper.readTree(expected_value));
+		assertEquals(mapper.readTree(actualValue), mapper.readTree(expectedValue));
 	}
 	
 	private String getContentFromEndPoint() throws ClientProtocolException, IOException, InterruptedException {
