@@ -3,18 +3,31 @@
 		"uniqueId": "property1",
 		"serverUrl": "localhost",
 		"serverPort": 1884,
-		"topic": "Properties"
+		"topic": "Properties",
+		"clientId": "mqttx_c18f5405",
+		"credentials": {
+			"userName": "test",
+			"password": "test123"
+		}
 	},
 	{
 		"uniqueId": "property2",
 		"serverUrl": "localhost",
 		"serverPort": 1884,
-		"topic": "PropertyB"
+		"topic": "PropertyB",
+		"credentials": {
+			"userName": "test",
+			"password": "test123"
+		}
 	},
 	{
 		"uniqueId": "property3",
 		"serverUrl": "localhost",
 		"serverPort": 1884,
-		"topic": "PropertyC"
+		"topic": "PropertyC",
+		"credentials": {
+			"userName": "test",
+			"password": "test123"
+		}
 	}
 ]
