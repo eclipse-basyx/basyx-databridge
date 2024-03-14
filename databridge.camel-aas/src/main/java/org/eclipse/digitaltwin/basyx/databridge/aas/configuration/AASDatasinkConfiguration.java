@@ -43,16 +43,16 @@ public class AASDatasinkConfiguration extends DataSinkConfiguration {
 
 	public AASDatasinkConfiguration() {}
 	
-	public AASDatasinkConfiguration(String submodelEndpoint, String idShortPath, String uniqueId, String api) {
-		super(uniqueId);
+	public AASDatasinkConfiguration(String submodelEndpoint, String idShortPath, String uniqueId, String api, String serverUrl, int serverPort) {
+		super(uniqueId, serverUrl, serverPort);
 		this.type = PROPERTY_TYPE;
 		this.submodelEndpoint = submodelEndpoint;
 		this.idShortPath = idShortPath;
 		this.api = api;
 	}
 	
-	public AASDatasinkConfiguration(String submodelEndpoint, String idShortPath) {
-		this(submodelEndpoint, idShortPath, null, ApiType.BASYX.getName());
+	public AASDatasinkConfiguration(String submodelEndpoint, String idShortPath, String serverUrl, int serverPort) {
+		this(submodelEndpoint, idShortPath, null, ApiType.BASYX.getName(), serverUrl, serverPort);
 	}
 
 	public String getType() {
