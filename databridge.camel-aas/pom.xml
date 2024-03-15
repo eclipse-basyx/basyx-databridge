@@ -86,7 +86,7 @@
 			<plugin>
 				<groupId>org.apache.camel</groupId>
 				<artifactId>camel-component-maven-plugin</artifactId>
-				<version>3.21.0</version>
+				<version>4.4.1</version>
 				<executions>
 					<execution>
                         <?m2e ignore?>
