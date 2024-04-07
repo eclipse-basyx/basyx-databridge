@@ -49,7 +49,7 @@ public class RequestRouteConfiguration extends RouteConfiguration {
 	private String port;
 	private String servicePath;
 
-	public RequestRouteConfiguration(String datasource, List<String> transformers, List<String> datasinks) {
+	public RequestRouteConfiguration(String datasource, List<List<String>> transformers, List<String> datasinks) {
 		super(ROUTE_TRIGGER, datasource, transformers, datasinks);
 	}
 

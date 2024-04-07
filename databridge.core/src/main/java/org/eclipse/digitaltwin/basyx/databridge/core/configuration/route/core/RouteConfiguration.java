@@ -33,7 +33,7 @@ public class RouteConfiguration {
 	private String trigger;
 	private String routeId;
 	private String datasource;
-	private List<String> transformers = new ArrayList<>();
+	private List<List<String>> transformers = new ArrayList<>();
 	private List<String> datasinks = new ArrayList<>();
 
 	private Map<String, Object> triggerData = new HashMap<>();
@@ -48,7 +48,7 @@ public class RouteConfiguration {
 	 * @param transformers
 	 * @param datasinks
 	 */
-	public RouteConfiguration(String trigger, String datasource, List<String> transformers, List<String> datasinks) {
+	public RouteConfiguration(String trigger, String datasource, List<List<String>> transformers, List<String> datasinks) {
 		this.trigger = trigger;
 		this.datasource = datasource;
 		this.transformers = transformers;
@@ -81,11 +81,11 @@ public class RouteConfiguration {
 		return trigger;
 	}
 
-	public List<String> getTransformers() {
+	public List<List<String>> getTransformers() {
 		return transformers;
 	}
 
-	public void setTransformers(List<String> transformers) {
+	public void setTransformers(List<List<String>> transformers) {
 		this.transformers = transformers;
 	}
 

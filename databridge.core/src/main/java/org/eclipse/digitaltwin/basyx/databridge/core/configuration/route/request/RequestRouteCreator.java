@@ -25,11 +25,14 @@
 package org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.request;
 
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.model.RouteDefinition;
+import org.apache.camel.model.MulticastDefinition;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.delegator.handler.ResponseOkCodeHandler;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.core.AbstractRouteCreator;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.core.RouteConfiguration;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.core.RoutesConfiguration;
+import org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.event.EventRouteCreator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Configures and creates the request route
@@ -38,6 +41,8 @@ import org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.core.Ro
  *
  */
 public class RequestRouteCreator extends AbstractRouteCreator {
+	private static Logger logger = LoggerFactory.getLogger(EventRouteCreator.class);
+
 	private static final Long TIMEOUT = 5000L;
 
 	public RequestRouteCreator(RouteBuilder routeBuilder, RoutesConfiguration routesConfiguration) {
@@ -46,20 +51,30 @@ public class RequestRouteCreator extends AbstractRouteCreator {
 
 	@Override
 	protected void configureRoute(RouteConfiguration routeConfig, String dataSourceEndpoint, String[] dataSinkEndpoints,
-			String[] dataTransformerEndpoints, String routeId) {
+			String[][] dataTransformerEndpoints, String routeId) {
 		String delegatorEndpoint = ((RequestRouteConfiguration) routeConfig).getRequestEndpointURI();
 
-		RouteDefinition routeDefinition = createRoute(dataSourceEndpoint, routeId, delegatorEndpoint);
+		MulticastDefinition routeDefinition = createRoute(dataSourceEndpoint, routeId, delegatorEndpoint);
 
-		if (!(dataTransformerEndpoints == null || dataTransformerEndpoints.length == 0)) {
-			routeDefinition.to(dataTransformerEndpoints).log("Transformer : " + routeId);
+		if (!(dataTransformerEndpoints == null || dataTransformerEndpoints.length == 0) && dataSinkEndpoints.length == dataTransformerEndpoints.length) {
+
+			for (int i = 0; i <dataTransformerEndpoints.length; i++){
+				routeDefinition
+						.pipeline()
+						.to(dataTransformerEndpoints[i])
+						.to(dataSinkEndpoints[i])
+						.end();
+			}
+
+		} else {
+			logger.error("the number of transformers and sinks does not match!");
+			for (String endpoint : dataSinkEndpoints) routeDefinition.to(endpoint);
 		}
 
 		routeDefinition.bean(new ResponseOkCodeHandler());
 	}
 
-	private RouteDefinition createRoute(String dataSourceEndpoint, String routeId, String delegatorEndpoint) {
-		return getRouteBuilder().from(delegatorEndpoint).routeId(routeId).pollEnrich(dataSourceEndpoint, TIMEOUT)
-				.log("Source : " + routeId);
+	private MulticastDefinition createRoute(String dataSourceEndpoint, String routeId, String delegatorEndpoint) {
+		return getRouteBuilder().from(delegatorEndpoint).routeId(routeId).pollEnrich(dataSourceEndpoint, TIMEOUT).multicast();
 	}
 }
