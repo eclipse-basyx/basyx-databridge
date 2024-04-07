@@ -25,26 +25,44 @@
 package org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.event;
 
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.model.RouteDefinition;
+import org.apache.camel.model.MulticastDefinition;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.core.AbstractRouteCreator;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.core.RouteConfiguration;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.core.RoutesConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class EventRouteCreator extends AbstractRouteCreator {
+
+	private static Logger logger = LoggerFactory.getLogger(EventRouteCreator.class);
 
 	public EventRouteCreator(RouteBuilder routeBuilder, RoutesConfiguration routesConfiguration) {
 		super(routeBuilder, routesConfiguration);
 	}
 
 	@Override
-	protected void configureRoute(RouteConfiguration routeConfiguration, String dataSourceEndpoint, String[] dataSinkEndpoints, String[] dataTransformerEndpoints, String routeId) {
-		RouteDefinition routeDefinition = getRouteBuilder().from(dataSourceEndpoint).routeId(routeId).to("log:" + routeId);
+	protected void configureRoute(RouteConfiguration routeConfiguration, String dataSourceEndpoint, String[] dataSinkEndpoints, String[][] dataTransformerEndpoints, String routeId) {
+		MulticastDefinition routeDefinition = getRouteBuilder()
+				.from(dataSourceEndpoint)
+				.routeId(routeId)
+				.multicast();
 
-		if (!(dataTransformerEndpoints == null || dataTransformerEndpoints.length == 0)) {
-			routeDefinition.to(dataTransformerEndpoints).to("log:" + routeId);
+		if (!(dataTransformerEndpoints == null || dataTransformerEndpoints.length == 0) && dataSinkEndpoints.length == dataTransformerEndpoints.length) {
+
+			for (int i = 0; i <dataTransformerEndpoints.length; i++){
+				routeDefinition
+						.pipeline()
+						.to(dataTransformerEndpoints[i])
+						.to(dataSinkEndpoints[i])
+						.end();
+			}
+
+		} else {
+			logger.error("the number of transformers and sinks does not match!");
+			for (String endpoint : dataSinkEndpoints) routeDefinition.to(endpoint);
 		}
 
-		routeDefinition.to(dataSinkEndpoints[0]).to("log:" + routeId);
+		routeDefinition.end().to("log:" + routeId);
 	}
 
 }
