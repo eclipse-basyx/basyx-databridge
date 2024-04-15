@@ -1,7 +1,7 @@
 [
   {
     "datasource": "httpsource",
-    "transformers": ["jsonataA"],
+    "transformers": [["jsonataA"]],
     "datasinks": ["ConnectedSubmodel/ConnectedPropertyB"],
     "trigger": "timer",
     "triggerData" : {
