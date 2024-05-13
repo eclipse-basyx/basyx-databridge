@@ -1,0 +1,121 @@
+{
+    "$id": "https://example.com/person.schema.json",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "opcuaconsumer.json",
+    "type": "object",
+    "required": [
+        "uniqueId",
+        "pathToService",
+        "nodeInformation"
+    ],
+    "properties": {
+        "uniqueId": {
+            "title": "Unique ID",
+            "type": "string",
+            "description": "Unique ID to match options",
+            "pattern": "^[a-z0-9-]+$"
+        },
+        "serverUrl": {
+            "title": "Hostname or IP",
+            "type": "string",
+            "description": "IP or Hostname of the OPC UA Server",
+            "default": "127.0.0.1",
+            "pattern": "^([a-z0-9-_\\.]+\\.[a-z]{1,3}|[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3})$"
+        },
+        "serverPort": {
+            "title": "Port",
+            "description": "Port of the OPC UA Server",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 65535,
+            "default": "4048"
+        },
+        "pathToService": {
+            "title": "Path to Service",
+            "type": "string",
+            "description": "URI of the Service in the OPC UA Server",
+            "pattern": "[a-z/]+"
+        },
+        "nodeInformation": {
+            "title": "OPC UA Node ID",
+            "type": "string",
+            "description": "Path to a variable node in the OPC UA Server"
+        },
+        "username": {
+            "title": "Username",
+            "type": "string",
+            "description": "Username to authenticate to the OPC UA Server"
+        },
+        "password": {
+            "title": "Password",
+            "type": "string",
+            "description": "Password to authenticate to the OPC UA Server"
+        },
+        "parameters": {
+            "title": "Parameters",
+            "type": "object",
+            "properties": {
+                "requestedPublishingInterval": {
+                    "type": "integer",
+                    "description": "Interval to request the value of the variable",
+                    "minimum": 500,
+                    "default": "500"
+                }, 
+                "clientId": {
+                    "type": "string",
+                    "description": "A virtual client id to force the creation of a new connection instance"
+                },
+                "dataChangeFilterDeadbandType": {
+                    "type": "integer",
+                    "description": "Deadband type for MonitorFilterType DataChangeFilter"
+                },
+                "dataChangeFilterDeadbandValue": {
+                    "type": "number",
+                    "description": "Deadband value for MonitorFilterType DataChangeFilter"
+                },
+                "allowedSecurityPolicies": {
+                    "enum": [
+                        "None",
+                        "Basic128Rsa15",
+                        "Basic256",
+                        "Basic256Sha256",
+                        "Aes128_Sha256_RsaOaep",
+                        "Aes256_Sha256_RsaPss"
+                    ],
+                    "default": "None",
+                    "description": "A set of allowed security policy URIs. Default is to accept all and use the highest"
+                },
+                "keyAlias": {
+                    "type": "string",
+                    "description": "The name of the key in the keystore file"
+                },
+                "keyPassword": {
+                    "type": "string",
+                    "description": "The key password"
+                },
+                "keyStorePassword": {
+                    "type": "string",
+                    "description": "The keystore password"
+                },
+                "keyStoreType": {
+                    "type": "string",
+                    "description": "The key store type"
+                },
+                "keyStoreUrl": {
+                    "type": "string",
+                    "description": "The URL where the key should be loaded from"
+                },
+                "sessionName": {
+                    "type": "string",
+                    "description": "Session name",
+                    "pattern": "[a-z0-9-]*"
+                },
+                "sessionTimeout": {
+                    "type": "integer",
+                    "description": "Session timeout in milliseconds",
+                    "minimum": 0
+                }
+            }
+        }
+    }
+}

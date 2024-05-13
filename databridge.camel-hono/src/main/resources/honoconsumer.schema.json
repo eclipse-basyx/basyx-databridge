@@ -1,0 +1,51 @@
+{
+    "$id": "https://example.com/person.schema.json",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "honoconsumer.json",
+    "type": "object",
+    "required": [
+        "uniqueId",
+        "topic",
+        "userName",
+        "password",
+        "tenantId",
+        "deviceId"
+    ],
+    "properties": {
+        "uniqueId": {
+            "type": "string",
+            "description": "Unique ID to match options",
+            "pattern": "^[a-z0-9-]+$"
+        },
+        "serverUrl": {
+            "type": "string",
+            "description": "IP or Hostname of the Kafka Server",
+            "default": "127.0.0.1",
+            "pattern": "^([a-z0-9-_\\.]+\\.[a-z]{1,3}|[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3})$"
+        },
+        "serverPort": {
+            "description": "Port of the Kafka Server",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 65535,
+            "default": "15672"
+        },
+        "userName": {
+            "type": "string",
+            "description": "Username for Hono instance"
+        },
+        "password": {
+            "type": "string",
+            "description": "Password for username"
+        },
+        "tenantId": {
+            "type": "string",
+            "description": "ID of the tenant which want to use"
+        },
+        "deviceId": {
+            "type": "string",
+            "description": "ID of the device",
+            "pattern": "[a-z0-9-]+"
+        }
+    }
+}

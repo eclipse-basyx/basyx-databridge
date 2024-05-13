@@ -24,12 +24,21 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.databridge.examples.httpserver;
 
+import javax.servlet.http.HttpServlet;
+
 public class HttpDataSource {
+	
 	private HttpServer server;
 	
 	public void runHttpServer() throws InterruptedException {
 		DummyServlet servlet = new DummyServlet();
 		server = new HttpServer(8091, "localhost", "", servlet);
+		server.start();
+	}
+	
+	public void runHttpServer(String host, int port, HttpServlet httpServlet) {
+		server = new HttpServer(port, host, "", httpServlet);
+		
 		server.start();
 	}
 	

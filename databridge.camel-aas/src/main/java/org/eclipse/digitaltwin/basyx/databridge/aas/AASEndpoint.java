@@ -46,6 +46,7 @@ import org.eclipse.basyx.vab.modelprovider.api.IModelProvider;
 import org.eclipse.basyx.vab.protocol.http.connector.HTTPConnectorFactory;
 import org.eclipse.digitaltwin.basyx.databridge.aas.api.ApiType;
 import org.eclipse.digitaltwin.basyx.databridge.aas.http.HTTPRequest;
+import org.eclipse.digitaltwin.basyx.databridge.aas.util.AASComponentUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,7 +84,7 @@ public class AASEndpoint extends DefaultEndpoint {
 	public Producer createProducer() throws Exception {
 		return new AASProducer(this);
 	}
-	
+
 	@Override
 	public Consumer createConsumer(Processor processor) throws Exception {
 		return null;
@@ -135,7 +136,7 @@ public class AASEndpoint extends DefaultEndpoint {
 		if (api.equals(ApiType.BASYX)) {
 			setPropertyValueUsingBaSyxAPI(content);
 		} else {
-			setPropertyValueUsingDotAasV3Api(wrapStringValue(content.toString()));
+			setPropertyValueUsingDotAasV3Api(AASComponentUtil.wrapContent(content.toString()));
 		}
 
 		logger.info("Transferred message={}", content.toString());
@@ -187,13 +188,6 @@ public class AASEndpoint extends DefaultEndpoint {
 		return proxyUrl;
 	}
 
-	private String wrapStringValue(String content) {
-		if (content.isEmpty())
-			return content;
-
-		return "\"" + content + "\"";
-	}
-
 	private Object getContent(Object messageBody, ValueType propertyValueType) {
 		if (propertyValueType.equals(ValueType.String))
 			return removeQuotesFromString(messageBody.toString());
@@ -201,11 +195,11 @@ public class AASEndpoint extends DefaultEndpoint {
 		return ValueTypeHelper.getJavaObject(messageBody, propertyValueType);
 	}
 
-	private static String removeQuotesFromString(String messageBody) {
+	private String removeQuotesFromString(String messageBody) {
 		if (messageBody == null)
 			return null;
 
-		if (messageBody.startsWith("\"") && messageBody.endsWith("\"")) {
+		if (AASComponentUtil.isAlreadyWrapped(messageBody)) {
 			return messageBody.substring(1, messageBody.length() - 1);
 		}
 
@@ -226,10 +220,9 @@ public class AASEndpoint extends DefaultEndpoint {
 
 		return createDotAasApiProxyUrl();
 	}
-	
-    @Override 
-    public PollingConsumer createPollingConsumer() throws Exception {
-    	AASPollingConsumer consumer = new AASPollingConsumer(this);
-  		return consumer;
-    }	
+
+	@Override
+	public PollingConsumer createPollingConsumer() throws Exception {
+		return new AASPollingConsumer(this);
+	}
 }
