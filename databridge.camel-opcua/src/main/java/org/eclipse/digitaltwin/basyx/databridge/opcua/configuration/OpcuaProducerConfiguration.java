@@ -24,7 +24,10 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.databridge.opcua.configuration;
 
-import com.google.gson.annotations.JsonAdapter;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.basyx.vab.protocol.opcua.types.SecurityPolicy;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.entity.DataSinkConfiguration;
@@ -32,14 +35,12 @@ import org.eclipse.digitaltwin.basyx.databridge.opcua.configuration.factory.Opcu
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
+import com.google.gson.annotations.JsonAdapter;
 
 /**
  * An implementation of OpcUa Producer configuration
  *
- * @author Aaron Zielstorff
+ * @author zielstor
  *
  */
 @JsonAdapter(OpcuaProducerConfigurationDeserializer.class)
@@ -65,7 +66,7 @@ public class OpcuaProducerConfiguration extends DataSinkConfiguration {
             String password,
             Map<String, String> configuration
     ) {
-        super(uniqueId, serverUrl, serverPort);
+		super(uniqueId);
 
         this.pathToService = pathToService;
         this.nodeInformation = nodeInformation;
@@ -130,8 +131,8 @@ public class OpcuaProducerConfiguration extends DataSinkConfiguration {
         return String.format(
                 "milo-client:opc.tcp://%s%s:%d/%s?node=RAW(%s)%s",
                 credentials,
-                getServerUrl(),
-                getServerPort(),
+				// getServerUrl(),
+				// getServerPort(),
                 getPathToService(),
                 getNodeInformation(),
                 parameters.length() > 0 ? "&" + parameters : StringUtils.EMPTY);
