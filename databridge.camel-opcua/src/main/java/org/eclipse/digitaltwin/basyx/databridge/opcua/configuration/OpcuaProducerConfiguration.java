@@ -47,6 +47,8 @@ import com.google.gson.annotations.JsonAdapter;
 public class OpcuaProducerConfiguration extends DataSinkConfiguration {
     protected static Logger logger = LoggerFactory.getLogger(OpcuaProducerConfiguration.class);
 
+	private String serverUrl;
+	private int serverPort;
     private String pathToService;
     private String nodeInformation;
     private String username;
@@ -68,6 +70,8 @@ public class OpcuaProducerConfiguration extends DataSinkConfiguration {
     ) {
 		super(uniqueId);
 
+		this.serverUrl = serverUrl;
+		this.serverPort = serverPort;
         this.pathToService = pathToService;
         this.nodeInformation = nodeInformation;
         this.username = username;
@@ -79,6 +83,22 @@ public class OpcuaProducerConfiguration extends DataSinkConfiguration {
         if (!this.configuration.containsKey("requestedPublishingInterval"))
             this.configuration.put("requestedPublishingInterval", "1000");
     }
+
+	public String getServerUrl() {
+		return serverUrl;
+	}
+
+	public void setServerUrl(String serverUrl) {
+		this.serverUrl = serverUrl;
+	}
+
+	public int getServerPort() {
+		return serverPort;
+	}
+
+	public void setServerPort(int serverPort) {
+		this.serverPort = serverPort;
+	}
 
     public String getPathToService() {
         return pathToService;
@@ -131,8 +151,8 @@ public class OpcuaProducerConfiguration extends DataSinkConfiguration {
         return String.format(
                 "milo-client:opc.tcp://%s%s:%d/%s?node=RAW(%s)%s",
                 credentials,
-				// getServerUrl(),
-				// getServerPort(),
+				getServerUrl(),
+				getServerPort(),
                 getPathToService(),
                 getNodeInformation(),
                 parameters.length() > 0 ? "&" + parameters : StringUtils.EMPTY);
