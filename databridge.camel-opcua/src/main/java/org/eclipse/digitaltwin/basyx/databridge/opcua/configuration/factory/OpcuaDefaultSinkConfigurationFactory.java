@@ -34,7 +34,7 @@ import org.eclipse.digitaltwin.basyx.databridge.opcua.configuration.OpcuaProduce
  *
  */
 public class OpcuaDefaultSinkConfigurationFactory extends DataSinkConfigurationFactory {
-	public static final String DEFAULT_FILE_PATH = "opcuaproducer.json";
+	public static final String DEFAULT_FILE_PATH = "opcuadatasink.json";
 	
 	public OpcuaDefaultSinkConfigurationFactory(ClassLoader loader) {
 		super(DEFAULT_FILE_PATH, loader, OpcuaProducerConfiguration.class);
