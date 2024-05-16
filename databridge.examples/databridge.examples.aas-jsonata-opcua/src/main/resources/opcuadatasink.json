@@ -1,7 +1,7 @@
 [
 	{
 		"uniqueId": "exampleOPCUA1",
-		"nodeInformation": "ns=2;s=HelloWorld/ScalarTypes/Double",
+		"nodeInformation": "ns=2;s=HelloWorld/ScalarTypes/Variant",
 		"serverUrl": "127.0.0.1",
 		"serverPort": 12686,
 		"pathToService": "milo",
@@ -12,17 +12,6 @@
 			"keyStoreType": null,
 			"keyStorePassword": null,
 			"keyStoreUrl": null,
-			"requestedPublishingInterval": 50
-		}
-	},
-	{
-		"uniqueId": "exampleOPCUA2",
-		"nodeInformation": "ns=2;s=HelloWorld/ScalarTypes/Integer",
-		"serverUrl": "127.0.0.1",
-		"serverPort": 12686,
-		"pathToService": "milo",
-		"parameters": {
-			"allowedSecurityPolicies": "Basic256Sha256",
 			"requestedPublishingInterval": 50
 		}
 	}

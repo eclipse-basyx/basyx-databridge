@@ -11,18 +11,5 @@
 		"triggerData": {
 			"timerName": "timer1"
 		}
-	},
-	{
-		"datasource": "exampleAAS2",
-		"transformers": [
-			"jsonataA"
-		],
-		"datasinks": [
-			"exampleOPCUA2"
-		],
-		"trigger": "timer",
-		"triggerData": {
-			"timerName": "timer1"
-		}
 	}
 ]

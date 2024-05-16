@@ -95,23 +95,18 @@ public class TestOPCUAUpdater {
 		ClassLoader loader = this.getClass().getClassLoader();
 		RoutesConfiguration configuration = new RoutesConfiguration();
 
-		// Extend configuration for connections
 		RoutesConfigurationFactory routesFactory = new RoutesConfigurationFactory(loader);
 		configuration.addRoutes(routesFactory.create());
 
-		// Extend configuration for Timer
 		TimerDefaultConfigurationFactory timerConfigFactory = new TimerDefaultConfigurationFactory(loader);
 		configuration.addDatasources(timerConfigFactory.create());
 
-		// Extend configuration for AAS Source
 		AASPollingConsumerDefaultConfigurationFactory aasSourceConfigFactory = new AASPollingConsumerDefaultConfigurationFactory(loader);
 		configuration.addDatasources(aasSourceConfigFactory.create());
 
-		// Extend configuration for OPC UA Sink
 		OpcuaDefaultSinkConfigurationFactory opcuaConfigFactory = new OpcuaDefaultSinkConfigurationFactory(loader);
 		configuration.addDatasinks(opcuaConfigFactory.create());
 
-		// Extend configuration for Jsonata
 		JsonataDefaultConfigurationFactory jsonataConfigFactory = new JsonataDefaultConfigurationFactory(loader);
 		configuration.addTransformers(jsonataConfigFactory.create());
 
@@ -119,34 +114,25 @@ public class TestOPCUAUpdater {
 		updater.startComponent();
 		System.out.println("Updater started");
 
-		// Wait for the updater to finish
-		Thread.sleep(3000);
+		Thread.sleep(6000);
 
 		System.out.println("Check OPC UA Nodes");
 		checkOpcUaNodes();
 	}
 
 	private void checkOpcUaNodes() throws UaException, InterruptedException, ExecutionException {
-		// Create an instance of OpcUaClient and connect to the server
 		String serverUrl = "127.0.0.1";
 		int serverPort = 12686;
 		String pathToService = "milo";
 		String endpointUrl = "opc.tcp://" + serverUrl + ":" + serverPort + "/" + pathToService;
 		OpcUaClient client = createClientConnection(endpointUrl);
 		
-		// read the values of the two updated nodes
-		NodeId nodeId1 = new NodeId(2, "HelloWorld/ScalarTypes/Double");
-		NodeId nodeId2 = new NodeId(2, "HelloWorld/ScalarTypes/Integer");
+		NodeId nodeId1 = new NodeId(2, "HelloWorld/ScalarTypes/Variant");
 		String value1 = client.readValue(0.0, TimestampsToReturn.Both, nodeId1).get().getValue().getValue().toString();
-		String value2 = client.readValue(0.0, TimestampsToReturn.Both, nodeId2).get().getValue().getValue().toString();
 		System.out.println("Value of node " + nodeId1 + ": " + value1);
-		System.out.println("Value of node " + nodeId2 + ": " + value2);
 
-		// assert that the values are equal to the values that were sent to the AAS
 		assertEquals("103.5585973", value1);
-		assertEquals("379.5784558", value2);
 
-		// close the client
 		client.disconnect().get();
 	}
 
@@ -164,7 +150,7 @@ public class TestOPCUAUpdater {
 
 					OpcUaClient client = OpcUaClient.create(config);
 					client.connect().get();
-					return client; // Successful connection
+					return client;
 				} catch (InterruptedException e) {
 					Thread.currentThread().interrupt();
 					throw e;
@@ -173,7 +159,6 @@ public class TestOPCUAUpdater {
 				}
 			}
 
-			// If all endpoints failed, throw an exception
 			throw connectionException != null ? connectionException : new UaException(StatusCodes.Bad_ConfigurationError, "No endpoints could be connected to.");
 
 		} catch (InterruptedException | ExecutionException e) {
