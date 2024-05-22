@@ -26,9 +26,11 @@ package org.eclipse.digitaltwin.basyx.databridge.examples.httppollingjsonatadele
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.io.*;
+import java.util.*;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -102,13 +104,15 @@ public class TestAASUpdater {
 		return configuration;
 	}
 	
-	private String getContentFromDelegatedEndpoint() throws IOException, ClientProtocolException {
+	private String getContentFromDelegatedEndpoint() throws IOException {
 		CloseableHttpClient client = HttpClients.createDefault();
 		HttpGet request = new HttpGet("http://localhost:8090/valueA");
 		CloseableHttpResponse resp = client.execute(request);
-		String content = new String(resp.getEntity().getContent().readAllBytes(), StandardCharsets.UTF_8);
+		ObjectMapper mapper = new ObjectMapper();
+		Map<String, Object> responseDataMap = mapper.readValue(resp.getEntity().getContent(), new TypeReference<Map<String, Object>>() {});
+		List<Map<String, Object>> objectsList = (List<Map<String, Object>>) responseDataMap.get("objects");
+		String content = String.valueOf(objectsList.get(0).get("value"));
 
-		client.close();
 		return content;
 	}
 	

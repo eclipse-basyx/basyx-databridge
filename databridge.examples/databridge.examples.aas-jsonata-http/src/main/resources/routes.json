@@ -1,7 +1,7 @@
 [
 	{
 		"datasource": "exampleAAS1",
-		"transformers": ["jsonataA"],
+		"transformers": [["jsonataA"]],
 		"datasinks":["Server1"],
 		"trigger": "timer",
 		"triggerData": {
@@ -10,7 +10,7 @@
 	},
 	{
 		"datasource": "exampleAAS2",
-		"transformers": ["jsonataB"],
+		"transformers": [["jsonataB"]],
 		"datasinks":["Server2"],
 		"trigger": "timer",
 		"triggerData": {

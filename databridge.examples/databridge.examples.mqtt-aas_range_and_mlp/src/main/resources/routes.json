@@ -1,13 +1,13 @@
 [
 	{
 		"datasource": "property1",
-		"transformers": [],
+		"transformers": [[]],
 		"datasinks": ["ConnectedSubmodel/ConnectedMLP"],
 		"trigger": "event"
 	},
 	{
 		"datasource": "property2",
-		"transformers": [],
+		"transformers": [[]],
 		"datasinks": ["ConnectedSubmodel/ConnectedRange"],
 		"trigger": "event"
 	}

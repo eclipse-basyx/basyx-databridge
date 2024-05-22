@@ -40,7 +40,7 @@ public class TimerRouteConfiguration extends RouteConfiguration {
 
 	private String timerName;
 
-	public TimerRouteConfiguration(String datasource, List<String> transformers, List<String> datasinks) {
+	public TimerRouteConfiguration(String datasource, List<List<String>> transformers, List<String> datasinks) {
 		super(ROUTE_TRIGGER, datasource, transformers, datasinks);
 	}
 

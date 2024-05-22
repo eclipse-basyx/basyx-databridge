@@ -48,11 +48,12 @@ public class RouteCreatorHelper {
 		return endpoints.toArray(new String[0]);
 	}
 
-	public static String[] getDataTransformerEndpoints(RoutesConfiguration routesConfiguration, List<String> transformerIdList) {
-		List<String> endpoints = new ArrayList<>();
-		for (String transformerId : transformerIdList) {
-			endpoints.add(routesConfiguration.getTransformers().get(transformerId).getConnectionURI());
-		}
-		return endpoints.toArray(new String[0]);
+	public static String[][] getDataTransformerEndpoints(RoutesConfiguration routesConfiguration, List<List<String>> transformerIdLists) {
+
+		return transformerIdLists.stream()
+				.map(transformerIdList -> transformerIdList.stream()
+						.map(transformerId -> routesConfiguration.getTransformers().get(transformerId).getConnectionURI())
+						.toArray(String[]::new))
+				.toArray(String[][]::new);
 	}
 }

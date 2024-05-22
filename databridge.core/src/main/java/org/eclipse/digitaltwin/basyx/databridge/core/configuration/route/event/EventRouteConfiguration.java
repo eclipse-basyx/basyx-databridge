@@ -37,7 +37,7 @@ import org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.core.Ro
 public class EventRouteConfiguration extends RouteConfiguration {
 	public static final String ROUTE_TRIGGER = "event";
 
-	public EventRouteConfiguration(String datasource, List<String> transformers, List<String> datasinks) {
+	public EventRouteConfiguration(String datasource, List<List<String>> transformers, List<String> datasinks) {
 		super(ROUTE_TRIGGER, datasource, transformers, datasinks);
 	}
 
