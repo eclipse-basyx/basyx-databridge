@@ -1,0 +1,7 @@
+[
+	{
+		"uniqueId": "exampleAAS1",
+		"submodelEndpoint": "http://localhost:4001/shells/TestUpdatedDeviceAAS/aas/submodels/telemetryDataStructureTest/submodel",
+		"idShortPath": "pressure"
+	}
+]
