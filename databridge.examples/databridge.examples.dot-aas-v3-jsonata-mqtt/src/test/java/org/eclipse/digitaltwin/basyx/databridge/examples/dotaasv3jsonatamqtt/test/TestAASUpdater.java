@@ -254,7 +254,7 @@ public class TestAASUpdater {
 
 	@SuppressWarnings("resource")
 	private static void createExpectationForGetRequestForPressureValue() throws IOException {
-		String exampleRequest = FileUtils.readFileToString(new File("pressure.json"), StandardCharsets.UTF_8);
+		String exampleRequest = FileUtils.readFileToString(new File(TestAASUpdater.class.getResource("/pressure.json").getFile()), StandardCharsets.UTF_8);
 		new MockServerClient("localhost", 4001)
 				.when(request().withMethod("GET").withPath(PRESSURE_SME_PATH))
 				.respond(response().withStatusCode(HttpStatus.SC_OK)
@@ -264,7 +264,7 @@ public class TestAASUpdater {
 
 	@SuppressWarnings("resource")
 	private static void createExpectationForGetRequestForRotationValue() throws IOException {
-		String exampleRequest = FileUtils.readFileToString(new File("rotation.json"), StandardCharsets.UTF_8);
+		String exampleRequest = FileUtils.readFileToString(new File(TestAASUpdater.class.getResource("/rotation.json").getFile()), StandardCharsets.UTF_8);
 		new MockServerClient("localhost", 4001)
 				.when(request().withMethod("GET").withPath(ROTATION_SME_PATH))
 				.respond(response().withStatusCode(HttpStatus.SC_OK)
@@ -274,7 +274,7 @@ public class TestAASUpdater {
 
 	@SuppressWarnings("resource")
 	private static void createExpectationForGetRequestForCompleteSubmodel() throws IOException {
-		String exampleRequest = FileUtils.readFileToString(new File("submodel.json"), StandardCharsets.UTF_8);
+		String exampleRequest = FileUtils.readFileToString(new File(TestAASUpdater.class.getResource("/completeSubmodel.json").getFile()), StandardCharsets.UTF_8);
 		new MockServerClient("localhost", 4001)
 				.when(request().withMethod("GET").withPath(COMPLETE_SUBMODEL_PATH))
 				.respond(response().withStatusCode(HttpStatus.SC_OK)
