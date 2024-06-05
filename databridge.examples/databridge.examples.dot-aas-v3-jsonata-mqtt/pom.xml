@@ -51,29 +51,6 @@
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
-        <!-- BaSyx SDK -->
-        <dependency>
-            <groupId>org.eclipse.basyx</groupId>
-            <artifactId>basyx.sdk</artifactId>
-            <version>1.2.0</version>
-        </dependency>
-
-        <!-- BaSyx SDK tests -->
-        <dependency>
-            <groupId>org.eclipse.basyx</groupId>
-            <artifactId>basyx.sdk</artifactId>
-            <version>1.4.0</version>
-            <classifier>tests</classifier>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- Depends on the components library -->
-        <dependency>
-            <groupId>org.eclipse.basyx</groupId>
-            <artifactId>basyx.components.lib</artifactId>
-            <version>1.4.0</version>
-        </dependency>
-
         <!-- JUnit 4 for running JUnit tests -->
         <dependency>
             <groupId>junit</groupId>
@@ -118,5 +95,13 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+            </testResource>
+        </testResources>
+    </build>
 
 </project>

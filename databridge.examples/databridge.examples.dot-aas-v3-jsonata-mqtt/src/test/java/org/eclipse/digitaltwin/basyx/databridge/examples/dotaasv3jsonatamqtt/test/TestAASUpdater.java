@@ -30,6 +30,7 @@ import static org.mockserver.model.HttpResponse.response;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -41,6 +42,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpStatus;
 import org.eclipse.digitaltwin.basyx.databridge.aas.configuration.factory.AASPollingConsumerDefaultConfigurationFactory;
 import org.eclipse.digitaltwin.basyx.databridge.core.component.DataBridgeComponent;
@@ -68,11 +70,11 @@ import io.moquette.broker.config.ResourceLoaderConfig;
 
 public class TestAASUpdater {
 
-	public static final String PRESSURE_SME_PATH = "http://localhost:4001/submodels/aHR0cHM6Ly9leGFtcGxlLmNvbS9pZHMvc20vODU4M18zMTQwXzcwMzJfOTc2Ng/submodel-elements/pressure";
-	public static final String ROTATION_SME_PATH = "http://localhost:4001/submodels/aHR0cHM6Ly9leGFtcGxlLmNvbS9pZHMvc20vODU4M18zMTQwXzcwMzJfOTc2Ng/submodel-elements/rotation";
-	public static final String COMPLETE_SUBMODEL_PATH = "http://localhost:4001/submodels/aHR0cHM6Ly9leGFtcGxlLmNvbS9pZHMvc20vODU4M18zMTQwXzcwMzJfOTc2Ng";
+	public static final String PRESSURE_SME_PATH = "/submodels/aHR0cHM6Ly9leGFtcGxlLmNvbS9pZHMvc20vODU4M18zMTQwXzcwMzJfOTc2Ng/submodel-elements/pressure/";
+	public static final String ROTATION_SME_PATH = "/submodels/aHR0cHM6Ly9leGFtcGxlLmNvbS9pZHMvc20vODU4M18zMTQwXzcwMzJfOTc2Ng/submodel-elements/rotation/";
+	public static final String COMPLETE_SUBMODEL_PATH = "/submodels/aHR0cHM6Ly9leGFtcGxlLmNvbS9pZHMvc20vODU4M18zMTQwXzcwMzJfOTc2Ng/";
 
-	private static String mqtt_broker_url = "tcp://broker.mqttdashboard.com:1883";
+	private static String mqtt_broker_url = "tcp://127.0.0.1:1884";
 	private static String user_name = "test1";
 	private static String password = "1234567";
 	private static String client_id = UUID.randomUUID().toString();
@@ -247,14 +249,16 @@ public class TestAASUpdater {
 
 	private static void configureAndStartMqttBroker() throws IOException {
 		mqttBroker = new Server();
-		IResourceLoader classpathLoader = new ClasspathResourceLoader();
+		IResourceLoader classpathLoader = new ClasspathResourceLoader("config.moquette");
 		final IConfig classPathConfig = new ResourceLoaderConfig(classpathLoader);
 		mqttBroker.startServer(classPathConfig);
 	}
 
 	@SuppressWarnings("resource")
 	private static void createExpectationForGetRequestForPressureValue() throws IOException {
-		String exampleRequest = FileUtils.readFileToString(new File(TestAASUpdater.class.getResource("/pressure.json").getFile()), StandardCharsets.UTF_8);
+		InputStream stream = TestAASUpdater.class.getResourceAsStream("/pressure.json");
+		String exampleRequest = IOUtils.toString(stream, StandardCharsets.UTF_8);
+
 		new MockServerClient("localhost", 4001)
 				.when(request().withMethod("GET").withPath(PRESSURE_SME_PATH))
 				.respond(response().withStatusCode(HttpStatus.SC_OK)
@@ -264,7 +268,8 @@ public class TestAASUpdater {
 
 	@SuppressWarnings("resource")
 	private static void createExpectationForGetRequestForRotationValue() throws IOException {
-		String exampleRequest = FileUtils.readFileToString(new File(TestAASUpdater.class.getResource("/rotation.json").getFile()), StandardCharsets.UTF_8);
+		InputStream stream = TestAASUpdater.class.getResourceAsStream("/rotation.json");
+		String exampleRequest = IOUtils.toString(stream, StandardCharsets.UTF_8);
 		new MockServerClient("localhost", 4001)
 				.when(request().withMethod("GET").withPath(ROTATION_SME_PATH))
 				.respond(response().withStatusCode(HttpStatus.SC_OK)
@@ -274,11 +279,13 @@ public class TestAASUpdater {
 
 	@SuppressWarnings("resource")
 	private static void createExpectationForGetRequestForCompleteSubmodel() throws IOException {
-		String exampleRequest = FileUtils.readFileToString(new File(TestAASUpdater.class.getResource("/completeSubmodel.json").getFile()), StandardCharsets.UTF_8);
+		InputStream stream = TestAASUpdater.class.getResourceAsStream("/completeSubmodel.json");
+		String exampleRequest = IOUtils.toString(stream, StandardCharsets.UTF_8);
 		new MockServerClient("localhost", 4001)
 				.when(request().withMethod("GET").withPath(COMPLETE_SUBMODEL_PATH))
 				.respond(response().withStatusCode(HttpStatus.SC_OK)
 						.withBody(exampleRequest)
 						.withHeaders(new Header("Content-Type", "application/json; charset=utf-8")));
 	}
+
 }
