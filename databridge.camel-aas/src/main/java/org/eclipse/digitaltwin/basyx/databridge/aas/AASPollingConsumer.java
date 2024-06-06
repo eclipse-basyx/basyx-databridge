@@ -162,7 +162,8 @@ public class AASPollingConsumer extends PollingConsumerSupport {
 			ConnectedSubmodel sm = new ConnectedSubmodel(this.proxy);
 			return new GSONTools(new DefaultTypeFactory()).serialize(SubmodelElementMapCollectionConverter.smToMap(sm.getLocalCopy()));
 		}else{
-			return getResponseAsString(executeGetOnURL(getMetamodelUrl()));
+			String metamodelUrl = getMetamodelUrl().substring(2);
+			return getResponseAsString(executeGetOnURL(metamodelUrl));
 		}
 	}
 
