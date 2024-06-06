@@ -1,41 +1,14 @@
-[ {
-  "modelType" : {
-    "name" : "Property"
+[
+  {
+    "idShort": "pressure",
+    "valueType": "xs:string",
+    "value": "103.5585973",
+    "modelType": "Property"
   },
-  "kind" : "Instance",
-  "value" : "103.5585973",
-  "valueType" : "anyType",
-  "idShort" : "pressure",
-  "qualifiers" : [ ],
-  "semanticId" : {
-    "keys" : [ ]
-  },
-  "parent" : {
-    "keys" : [ {
-      "type" : "Submodel",
-      "local" : true,
-      "value" : "https://example.com/ids/sm/8583_3140_7032_9766",
-      "idType" : "IRI"
-    } ]
+  {
+    "idShort": "rotation",
+    "valueType": "xs:string",
+    "value": "379.5784558",
+    "modelType": "Property"
   }
-}, {
-  "modelType" : {
-    "name" : "Property"
-  },
-  "kind" : "Instance",
-  "value" : "379.5784558",
-  "valueType" : "anyType",
-  "idShort" : "rotation",
-  "qualifiers" : [ ],
-  "semanticId" : {
-    "keys" : [ ]
-  },
-  "parent" : {
-    "keys" : [ {
-      "type" : "Submodel",
-      "local" : true,
-      "value" : "https://example.com/ids/sm/8583_3140_7032_9766",
-      "idType" : "IRI"
-    } ]
-  }
-} ]
+]

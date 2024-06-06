@@ -5,9 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.eclipse.digitaltwin.basyx</groupId>
-        <artifactId>databridge.parent</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
-        <relativePath>../../pom.xml</relativePath>
+        <artifactId>databridge.examples</artifactId>
+        <version>${revision}</version>
     </parent>
 
     <artifactId>databridge.examples.dot-aas-v3-jsonata-mqtt</artifactId>

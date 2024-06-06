@@ -24,6 +24,7 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.databridge.examples.dotaasv3jsonatamqtt.test;
 
+import static java.lang.Thread.sleep;
 import static org.junit.Assert.assertEquals;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
@@ -36,6 +37,8 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -70,9 +73,9 @@ import io.moquette.broker.config.ResourceLoaderConfig;
 
 public class TestAASUpdater {
 
-	public static final String PRESSURE_SME_PATH = "/submodels/aHR0cHM6Ly9leGFtcGxlLmNvbS9pZHMvc20vODU4M18zMTQwXzcwMzJfOTc2Ng/submodel-elements/pressure/";
-	public static final String ROTATION_SME_PATH = "/submodels/aHR0cHM6Ly9leGFtcGxlLmNvbS9pZHMvc20vODU4M18zMTQwXzcwMzJfOTc2Ng/submodel-elements/rotation/";
-	public static final String COMPLETE_SUBMODEL_PATH = "/submodels/aHR0cHM6Ly9leGFtcGxlLmNvbS9pZHMvc20vODU4M18zMTQwXzcwMzJfOTc2Ng/";
+	public static final String PRESSURE_SME_PATH = "/submodels/aHR0cHM6Ly9leGFtcGxlLmNvbS9pZHMvc20vODU4M18zMTQwXzcwMzJfOTc2Ng/submodel-elements/pressure";
+	public static final String ROTATION_SME_PATH = "/submodels/aHR0cHM6Ly9leGFtcGxlLmNvbS9pZHMvc20vODU4M18zMTQwXzcwMzJfOTc2Ng/submodel-elements/rotation";
+	public static final String COMPLETE_SUBMODEL_PATH = "/submodels/aHR0cHM6Ly9leGFtcGxlLmNvbS9pZHMvc20vODU4M18zMTQwXzcwMzJfOTc2Ng";
 
 	private static String mqtt_broker_url = "tcp://127.0.0.1:1884";
 	private static String user_name = "test1";
@@ -80,7 +83,7 @@ public class TestAASUpdater {
 	private static String client_id = UUID.randomUUID().toString();
 
 	private static Logger logger = LoggerFactory.getLogger(TestAASUpdater.class);
-	private static String receivedMessage;
+	private static Map<String,String> receivedMessage = new HashMap<>();
 
 	private static DataBridgeComponent updater;
 	protected static Server mqttBroker;
@@ -133,16 +136,15 @@ public class TestAASUpdater {
 
 		fetchExpectedValue(topic);
 
-		assertEquals(receivedMessage, expectedValue);
+		assertEquals(receivedMessage.get(topic), expectedValue);
 	}
 
 	private void assertAllProperties(String expectedValue, String topic) throws MqttSecurityException, MqttPersistenceException, MqttException, InterruptedException, JsonMappingException, JsonProcessingException {
-
 		fetchExpectedValue(topic);
 
 		ObjectMapper mapper = new ObjectMapper();
 
-		assertEquals(mapper.readTree(receivedMessage), mapper.readTree(expectedValue));
+		assertEquals(mapper.readTree(receivedMessage.get(topic)), mapper.readTree(expectedValue));
 	}
 
 	private static void fetchExpectedValue(String currentTopic) throws MqttException, MqttSecurityException, MqttPersistenceException, InterruptedException {
@@ -161,7 +163,7 @@ public class TestAASUpdater {
 				@Override
 				public void messageArrived(String topic, MqttMessage message) throws Exception {
 
-					receivedMessage = new String(message.getPayload(), StandardCharsets.UTF_8);
+					receivedMessage.put(topic,new String(message.getPayload(), StandardCharsets.UTF_8));
 				}
 
 				@Override
@@ -244,7 +246,7 @@ public class TestAASUpdater {
 	}
 
 	private static void waitForPropagation() throws InterruptedException {
-		Thread.sleep(5000);
+		sleep(5000);
 	}
 
 	private static void configureAndStartMqttBroker() throws IOException {
