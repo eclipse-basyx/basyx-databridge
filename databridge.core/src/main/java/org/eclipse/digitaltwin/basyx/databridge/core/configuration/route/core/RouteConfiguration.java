@@ -33,8 +33,9 @@ public class RouteConfiguration {
 	private String trigger;
 	private String routeId;
 	private String datasource;
-	private List<List<String>> transformers = new ArrayList<>();
+	private List<String> transformers = new ArrayList<>();
 	private List<String> datasinks = new ArrayList<>();
+	private Map<String, String[]> datasinkMappingConfiguration;
 
 	private Map<String, Object> triggerData = new HashMap<>();
 
@@ -47,8 +48,24 @@ public class RouteConfiguration {
 	 * @param datasource
 	 * @param transformers
 	 * @param datasinks
+	 * @param datasinkMappingConfiguration
 	 */
-	public RouteConfiguration(String trigger, String datasource, List<List<String>> transformers, List<String> datasinks) {
+	public RouteConfiguration(String trigger, String datasource, List<String> transformers, List<String> datasinks, Map<String, String[]> datasinkMappingConfiguration) {
+		this.trigger = trigger;
+		this.datasource = datasource;
+		this.transformers = transformers;
+		this.datasinks = datasinks;
+		this.datasinkMappingConfiguration = datasinkMappingConfiguration;
+	}
+
+	/**
+	 * @param trigger
+	 * @param routeId
+	 * @param datasource
+	 * @param transformers
+	 * @param datasinks
+	 */
+	public RouteConfiguration(String trigger, String datasource, List<String> transformers, List<String> datasinks) {
 		this.trigger = trigger;
 		this.datasource = datasource;
 		this.transformers = transformers;
@@ -56,7 +73,7 @@ public class RouteConfiguration {
 	}
 
 	public RouteConfiguration(RouteConfiguration configuration) {
-		this(configuration.getRouteTrigger(), configuration.getDatasource(), configuration.getTransformers(), configuration.getDatasinks());
+		this(configuration.getRouteTrigger(), configuration.getDatasource(), configuration.getTransformers(), configuration.getDatasinks(), configuration.getDatasinkMappingConfiguration());
 		setRouteId(configuration.getRouteId());
 		this.triggerData = configuration.triggerData;
 	}
@@ -81,11 +98,11 @@ public class RouteConfiguration {
 		return trigger;
 	}
 
-	public List<List<String>> getTransformers() {
+	public List<String> getTransformers() {
 		return transformers;
 	}
 
-	public void setTransformers(List<List<String>> transformers) {
+	public void setTransformers(List<String> transformers) {
 		this.transformers = transformers;
 	}
 
@@ -95,6 +112,14 @@ public class RouteConfiguration {
 
 	public void setDatasource(String datasource) {
 		this.datasource = datasource;
+	}
+
+	public Map<String, String[]> getDatasinkMappingConfiguration() {
+		return datasinkMappingConfiguration;
+	}
+
+	public void setDatasinkMappingConfiguration(Map<String, String[]> datasinkMappingConfiguration) {
+		this.datasinkMappingConfiguration = datasinkMappingConfiguration;
 	}
 
 }

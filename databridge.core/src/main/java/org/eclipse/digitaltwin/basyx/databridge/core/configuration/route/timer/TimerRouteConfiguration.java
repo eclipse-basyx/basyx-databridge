@@ -25,6 +25,7 @@
 package org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.timer;
 
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.core.RouteConfiguration;
 
@@ -40,8 +41,12 @@ public class TimerRouteConfiguration extends RouteConfiguration {
 
 	private String timerName;
 
-	public TimerRouteConfiguration(String datasource, List<List<String>> transformers, List<String> datasinks) {
+	public TimerRouteConfiguration(String datasource, List<String> transformers, List<String> datasinks) {
 		super(ROUTE_TRIGGER, datasource, transformers, datasinks);
+	}
+
+	public TimerRouteConfiguration(String datasource, List<String> transformers, List<String> datasinks, Map<String, String[]> datasinkMapping) {
+		super(ROUTE_TRIGGER, datasource, transformers, datasinks, datasinkMapping);
 	}
 
 	public TimerRouteConfiguration(RouteConfiguration configuration) {

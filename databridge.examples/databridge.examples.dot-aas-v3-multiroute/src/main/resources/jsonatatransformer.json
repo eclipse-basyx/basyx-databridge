@@ -1,0 +1,14 @@
+[
+	{
+		"uniqueId": "processData",
+		"queryPath": "processData.jsonata",
+		"inputType": "JsonString",
+		"outputType": "JsonString"
+	},
+	{
+		"uniqueId": "processDuration",
+		"queryPath": "processDuration.jsonata",
+		"inputType": "JsonString",
+		"outputType": "JsonString"
+	}
+]

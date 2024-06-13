@@ -24,8 +24,15 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.timer;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.model.MulticastDefinition;
+import org.apache.camel.model.RouteDefinition;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.core.AbstractRouteCreator;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.core.RouteConfiguration;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.core.RouteCreatorHelper;
@@ -43,27 +50,43 @@ public class TimerRouteCreator extends AbstractRouteCreator {
 	}
 
 	@Override
-	protected void configureRoute(RouteConfiguration routeConfig, String dataSourceEndpoint, String[] dataSinkEndpoints, String[][] dataTransformerEndpoints, String routeId) {
-		TimerRouteConfiguration timerConfig = (TimerRouteConfiguration) routeConfig;
-		String timerEndpoint = RouteCreatorHelper.getDataSourceEndpoint(getRoutesConfiguration(), timerConfig.getTimerName());
-		MulticastDefinition routeDefinition = getRouteBuilder().from(timerEndpoint).pollEnrich(dataSourceEndpoint, TIMEOUT).routeId(routeId).multicast();
+	protected void configureRoute(RouteConfiguration routeConfig, String dataSourceEndpoint, String[] dataSinkEndpoints, String[] dataTransformerEndpoints, String routeId) {
+		RouteDefinition routeDefinition = startRouteDefinition((TimerRouteConfiguration) routeConfig, dataSourceEndpoint, routeId);
 
-		if (!(dataTransformerEndpoints == null || dataTransformerEndpoints.length == 0) && dataSinkEndpoints.length == dataTransformerEndpoints.length) {
-
-			for (int i = 0; i <dataTransformerEndpoints.length; i++){
-				routeDefinition
-						.pipeline()
-						.to(dataTransformerEndpoints[i])
-						.to(dataSinkEndpoints[i])
-						.end();
-			}
-
-		} else {
-			logger.error("the number of transformers and sinks does not match!");
-			for (String endpoint : dataSinkEndpoints) routeDefinition.to(endpoint);
+		if (!(dataTransformerEndpoints == null || dataTransformerEndpoints.length == 0)) {
+			routeDefinition.to(dataTransformerEndpoints)
+					.to("log:" + routeId);
 		}
 
-		routeDefinition.end().to("log:" + routeId);
+		routeDefinition.to(dataSinkEndpoints)
+				.to("log:" + routeId);
 	}
 
+	@Override
+	protected void configureRoute(RouteConfiguration routeConfig, String dataSourceEndpoint, String[] dataSinkEndpoints, String[] dataTransformerEndpoints, Map<String, String[]> dataSinkMapping, String routeId) {
+		MulticastDefinition routeDefinition = startRouteDefinition((TimerRouteConfiguration) routeConfig, dataSourceEndpoint, routeId).multicast();
+		dataSinkMapping.forEach((dataSink, dataTransformers) -> routeDefinition.pipeline()
+				.to(dataTransformers)
+				.to(dataSink)
+				.to("log:" + routeId));
+
+		getUnmappedEndpoints(dataSinkEndpoints, dataSinkMapping).forEach(dataSink -> routeDefinition.to(dataSink)
+				.to("log: " + routeId));
+
+		routeDefinition.end();
+	}
+
+	private List<String> getUnmappedEndpoints(String[] dataSinkEndpoints, Map<String, String[]> dataSinkMapping) {
+		return Arrays.stream(dataSinkEndpoints)
+				.filter(Predicate.not(dataSinkMapping::containsKey))
+				.collect(Collectors.toList());
+	}
+
+	private RouteDefinition startRouteDefinition(TimerRouteConfiguration timerRouteConfig, String dataSourceEndpoint, String routeId) {
+		String timerEndpoint = RouteCreatorHelper.getDataSourceEndpoint(getRoutesConfiguration(), timerRouteConfig.getTimerName());
+		return getRouteBuilder().from(timerEndpoint)
+				.pollEnrich(dataSourceEndpoint, TIMEOUT)
+				.routeId(routeId)
+				.to("log:" + routeId);
+	}
 }

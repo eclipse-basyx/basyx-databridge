@@ -23,8 +23,9 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
-
 package org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.core;
+
+import java.util.Map;
 
 import org.apache.camel.builder.RouteBuilder;
 
@@ -53,11 +54,18 @@ public abstract class AbstractRouteCreator implements IRouteCreator {
 	public void addRouteToRouteBuilder(RouteConfiguration routeConfig) {
 		String dataSourceEndpoint = RouteCreatorHelper.getDataSourceEndpoint(routesConfiguration, routeConfig.getDatasource());
 		String[] dataSinkEndpoints = RouteCreatorHelper.getDataSinkEndpoints(routesConfiguration, routeConfig.getDatasinks());
-		String[][] dataTransformerEndpoints = RouteCreatorHelper.getDataTransformerEndpoints(routesConfiguration, routeConfig.getTransformers());
+		String[] dataTransformerEndpoints = RouteCreatorHelper.getDataTransformerEndpoints(routesConfiguration, routeConfig.getTransformers());
+		Map<String, String[]> datasinkMapping = RouteCreatorHelper.getDataSinkMapping(routesConfiguration, routeConfig.getDatasinkMappingConfiguration());
 		String routeId = routeConfig.getRouteId();
 
-		configureRoute(routeConfig, dataSourceEndpoint, dataSinkEndpoints, dataTransformerEndpoints, routeId);
+		if (datasinkMapping == null || datasinkMapping.isEmpty()) {
+			configureRoute(routeConfig, dataSourceEndpoint, dataSinkEndpoints, dataTransformerEndpoints, routeId);
+		} else {
+			configureRoute(routeConfig, dataSourceEndpoint, dataSinkEndpoints, dataTransformerEndpoints, datasinkMapping, routeId);
+		}
 	}
 
-	protected abstract void configureRoute(RouteConfiguration routeConfig, String dataSourceEndpoint, String[] dataSinkEndpoints, String[][] dataTransformerEndpoints, String routeId);
+	protected abstract void configureRoute(RouteConfiguration routeConfig, String dataSourceEndpoint, String[] dataSinkEndpoints, String[] dataTransformerEndpoints, String routeId);
+
+	protected abstract void configureRoute(RouteConfiguration routeConfig, String dataSourceEndpoint, String[] dataSinkEndpoints, String[] dataTransformerEndpoints, Map<String, String[]> DataSinkMapping, String routeId);
 }
