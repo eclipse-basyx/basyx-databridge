@@ -1,7 +1,7 @@
 [
 	{
 		"datasource": "httpsource",
-		"transformers": [["jsonataA"]],
+		"transformers": ["jsonataA"],
 		"trigger": "request",
 		"triggerData": {
 			"host": "localhost",
