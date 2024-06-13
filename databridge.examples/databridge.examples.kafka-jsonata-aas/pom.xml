@@ -10,7 +10,8 @@
 
 	<artifactId>databridge.examples.kafka-jsonata-aas</artifactId>
 	<name>Kafka jsonATA AAS</name>
-	<description>An Integration example using kafka as a data source, jsonATA as data transformer and AAS as sink</description>
+	<description>An Integration example using kafka as a data source, jsonATA as
+		data transformer and AAS as sink</description>
 
 
 	<packaging>jar</packaging>
@@ -110,6 +111,7 @@
 			<groupId>org.apache.kafka</groupId>
 			<artifactId>kafka-clients</artifactId>
 			<version>3.4.0</version>
+			<scope>test</scope>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.apache.kafka/kafka -->

@@ -9,8 +9,8 @@
 	</parent>
 	<artifactId>databridge.examples.kafka-jsonatamultiple-aas</artifactId>
 	<name>Kafka Jsonata Multiple AAS</name>
-	<description>Kafka to Jsonata multiple transformation in pipeline to AAS server multiple</description>
-
+	<description>Kafka to Jsonata multiple transformation in pipeline to AAS
+		server multiple</description>
 
 
 	<packaging>jar</packaging>
@@ -67,7 +67,7 @@
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
-		
+
 		<!-- BaSyx SDK -->
 		<dependency>
 			<groupId>org.eclipse.basyx</groupId>
@@ -104,12 +104,29 @@
 			<version>4.13.2</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<!-- https://mvnrepository.com/artifact/org.apache.kafka/kafka-clients -->
-        <dependency>
-            <groupId>org.apache.kafka</groupId>
-            <artifactId>kafka-clients</artifactId>
-            <version>3.4.0</version>
-        </dependency>
+		<dependency>
+			<groupId>org.apache.kafka</groupId>
+			<artifactId>kafka-clients</artifactId>
+			<version>3.4.0</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.apache.kafka/kafka -->
+		<dependency>
+			<groupId>org.apache.kafka</groupId>
+			<artifactId>kafka_2.13</artifactId>
+			<version>3.4.0</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Zookeeper server -->
+		<dependency>
+			<groupId>org.apache.curator</groupId>
+			<artifactId>curator-test</artifactId>
+			<version>5.5.0</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 </project>
