@@ -16,6 +16,7 @@
 
 	<modules>
 		<module>databridge.examples.aas-jsonata-mqtt</module>
+		<module>databridge.examples.dot-aas-v3-jsonata-mqtt</module>
 		<module>databridge.examples.aas-jsonata-http</module>
 		<module>databridge.examples.aas-jsonata-opcua</module>
 		<module>databridge.examples.aasserver</module>

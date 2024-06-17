@@ -1,0 +1,20 @@
+{
+  "idShort": "telemetryDataStructureTest",
+  "id": "https://example.com/ids/sm/8583_3140_7032_9766",
+  "kind": "Instance",
+  "submodelElements": [
+    {
+      "idShort": "pressure",
+      "valueType": "xs:string",
+      "value": "103.5585973",
+      "modelType": "Property"
+    },
+    {
+      "idShort": "rotation",
+      "valueType": "xs:string",
+      "value": "379.5784558",
+      "modelType": "Property"
+    }
+  ],
+  "modelType": "Submodel"
+}
