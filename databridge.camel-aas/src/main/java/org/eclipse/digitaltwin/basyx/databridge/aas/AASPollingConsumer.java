@@ -163,23 +163,22 @@ public class AASPollingConsumer extends PollingConsumerSupport {
 			return new GSONTools(new DefaultTypeFactory()).serialize(SubmodelElementMapCollectionConverter.smToMap(sm.getLocalCopy()));
 		}else{
 			String metamodelUrl = getMetamodelUrl().substring(2);
-			return getResponseAsString(executeGetOnURL(metamodelUrl));
+			return EntityUtils.toString(executeGetOnURL(metamodelUrl).getEntity(), "UTF-8");
 		}
 	}
 
-	public static String getResponseAsString(CloseableHttpResponse retrievalResponse) throws IOException, ParseException {
-		return EntityUtils.toString(retrievalResponse.getEntity(), "UTF-8");
-	}
-
-	public static CloseableHttpResponse executeGetOnURL(String url) throws IOException {
+	private static CloseableHttpResponse executeGetOnURL(String url) throws IOException {
 		CloseableHttpClient client = HttpClients.createDefault();
 		HttpGet getRequest = createGetRequestWithHeader(url);
+
 		return client.execute(getRequest);
 	}
+
 	private static HttpGet createGetRequestWithHeader(String url) {
 		HttpGet aasCreateRequest = new HttpGet(url);
 		aasCreateRequest.setHeader("Content-type", "application/json");
 		aasCreateRequest.setHeader("Accept", "application/json");
+
 		return aasCreateRequest;
 	}
 
