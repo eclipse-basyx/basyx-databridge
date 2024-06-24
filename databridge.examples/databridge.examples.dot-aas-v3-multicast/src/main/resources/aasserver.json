@@ -1,0 +1,32 @@
+[
+	{
+		"uniqueId": "process/processId",
+		"submodelEndpoint": "http://localhost:4001/submodels/cHJvY2Vzcw==",
+		"idShortPath": "processId",
+		"api": "DotAAS-V3"
+	},
+	{
+		"uniqueId": "process/processResult",
+		"submodelEndpoint": "http://localhost:4001/submodels/cHJvY2Vzcw==",
+		"idShortPath": "processResult",
+		"api": "DotAAS-V3"
+	},
+	{
+		"uniqueId": "process/processData",
+		"submodelEndpoint": "http://localhost:4001/submodels/cHJvY2Vzcw==",
+		"idShortPath": "processData",
+		"api": "DotAAS-V3"
+	},
+	{
+		"uniqueId": "process/processData_raw",
+		"submodelEndpoint": "http://localhost:4001/submodels/cHJvY2Vzcw==",
+		"idShortPath": "processData_raw",
+		"api": "DotAAS-V3"
+	},
+	{
+		"uniqueId": "process/processDuration",
+		"submodelEndpoint": "http://localhost:4001/submodels/cHJvY2Vzcw==",
+		"idShortPath": "processDuration",
+		"api": "DotAAS-V3"
+	}
+]

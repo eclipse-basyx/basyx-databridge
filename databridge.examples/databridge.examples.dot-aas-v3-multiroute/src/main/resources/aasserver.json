@@ -1,0 +1,14 @@
+[
+	{
+		"uniqueId": "one/duration",
+		"submodelEndpoint": "http://localhost:4001/submodels/b25l",
+		"idShortPath": "duration",
+		"api": "DotAAS-V3"
+	},
+	{
+		"uniqueId": "other/duration",
+		"submodelEndpoint": "http://localhost:4001/submodels/b3RoZXI=",
+		"idShortPath": "duration",
+		"api": "DotAAS-V3"
+	}
+]

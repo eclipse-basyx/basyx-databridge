@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2021 the Eclipse BaSyx Authors
+ * Copyright (C) 2024 the Eclipse BaSyx Authors
  * 
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -24,35 +24,57 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.core;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+/**
+ * @author DataBridge authors, jungjan
+ */
 public class RouteCreatorHelper {
 	private RouteCreatorHelper() {
 	}
 
 	public static String getDataSourceEndpoint(RoutesConfiguration routesConfiguration, String dataSourceId) {
-		return routesConfiguration.getDatasources().get(dataSourceId).getConnectionURI();
+		return routesConfiguration.getDatasources()
+				.get(dataSourceId)
+				.getConnectionURI();
 	}
 
 	public static String getDataSinkEndpoint(RoutesConfiguration routesConfiguration, String dataSinkId) {
-		return routesConfiguration.getDatasinks().get(dataSinkId).getConnectionURI();
+		return routesConfiguration.getDatasinks()
+				.get(dataSinkId)
+				.getConnectionURI();
 	}
 
 	public static String[] getDataSinkEndpoints(RoutesConfiguration routesConfiguration, List<String> dataSinkIdList) {
-		List<String> endpoints = new ArrayList<>();
-		for (String dataSinkId : dataSinkIdList) {
-			endpoints.add(routesConfiguration.getDatasinks().get(dataSinkId).getConnectionURI());
-		}
+		return dataSinkIdList.stream()
+				.map(routesConfiguration.getDatasinks()::get)
+				.map(dataSinkConfiguration -> dataSinkConfiguration.getConnectionURI())
+				.toArray(String[]::new);
 
-		return endpoints.toArray(new String[0]);
 	}
 
-	public static String[] getDataTransformerEndpoints(RoutesConfiguration routesConfiguration, List<String> transformerIdList) {
-		List<String> endpoints = new ArrayList<>();
-		for (String transformerId : transformerIdList) {
-			endpoints.add(routesConfiguration.getTransformers().get(transformerId).getConnectionURI());
+	public static String[] getDataTransformerEndpoints(RoutesConfiguration routesConfiguration, List<String> transformerIdLists) {
+		return transformerIdLists.stream()
+				.map(routesConfiguration.getTransformers()::get)
+				.map(dataTransformerConfiguration -> dataTransformerConfiguration.getConnectionURI())
+				.toArray(String[]::new);
+	}
+
+	public static Map<String, String[]> getDataSinkMapping(RoutesConfiguration routesConfiguration, Map<String, String[]> datasinkMappingConfiguration) {
+		if (datasinkMappingConfiguration == null || datasinkMappingConfiguration.isEmpty()) {
+			return null;
 		}
-		return endpoints.toArray(new String[0]);
+		Set<String> dataSinkIds = datasinkMappingConfiguration.keySet();
+		Map<String, String> resolvedDataSinkEndpoints = dataSinkIds.stream()
+				.collect(Collectors.toMap(dataSinkId -> dataSinkId, dataSinkId -> routesConfiguration.getDatasinks()
+						.get(dataSinkId)
+						.getConnectionURI()));
+
+		return dataSinkIds.stream()
+				.collect(Collectors.toMap(resolvedDataSinkEndpoints::get, dataSinkId -> getDataTransformerEndpoints(routesConfiguration, Arrays.asList(datasinkMappingConfiguration.get(dataSinkId)))));
 	}
 }

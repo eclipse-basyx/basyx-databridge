@@ -1,0 +1,6 @@
+(
+	$diff := $toMillis(ProcessData.EndPorcess) - $toMillis(ProcessData.StartProcess);
+	$minutes := $floor($diff / 60000);
+	$seconds := $floor(($diff % 60000) / 1000);
+	$string($minutes) & "M" & $string($seconds) & "S"
+)

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2021 the Eclipse BaSyx Authors
+ * Copyright (C) 2024 the Eclipse BaSyx Authors
  * 
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -29,12 +29,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author DataBridge authors, jungjan
+ */
 public class RouteConfiguration {
 	private String trigger;
 	private String routeId;
 	private String datasource;
 	private List<String> transformers = new ArrayList<>();
 	private List<String> datasinks = new ArrayList<>();
+	private Map<String, String[]> datasinkMappingConfiguration;
 
 	private Map<String, Object> triggerData = new HashMap<>();
 
@@ -42,11 +46,46 @@ public class RouteConfiguration {
 	}
 
 	/**
+	 * Constructs a new RouteConfiguration object with a mapping configuration to
+	 * map distinct transformators to multiple datasinks.
+	 *
 	 * @param trigger
+	 *            the trigger for the route configuration
 	 * @param routeId
+	 *            the ID of the route
 	 * @param datasource
+	 *            the datasource associated with the route
 	 * @param transformers
+	 *            the list of transformers to be applied in the route
 	 * @param datasinks
+	 *            the list of datasinks to which data should be routed
+	 * @param datasinkMappingConfiguration
+	 *            the mapping configuration for datasinks, mapping each datasink to
+	 *            its corresponding configuration
+	 */
+	public RouteConfiguration(String trigger, String datasource, List<String> transformers, List<String> datasinks, Map<String, String[]> datasinkMappingConfiguration) {
+		this.trigger = trigger;
+		this.datasource = datasource;
+		this.transformers = transformers;
+		this.datasinks = datasinks;
+		this.datasinkMappingConfiguration = datasinkMappingConfiguration;
+	}
+
+	/**
+	 * Constructs a new RouteConfiguration object without a mapping configuration to
+	 * map distinct transformators to multiple datasinks. I.e., all transformators
+	 * would be equally applied to all data sinks.
+	 *
+	 * @param trigger
+	 *            the trigger for the route configuration
+	 * @param routeId
+	 *            the ID of the route (optional, can be null)
+	 * @param datasource
+	 *            the datasource associated with the route
+	 * @param transformers
+	 *            the list of transformers to be applied in the route
+	 * @param datasinks
+	 *            the list of datasinks to which data should be routed
 	 */
 	public RouteConfiguration(String trigger, String datasource, List<String> transformers, List<String> datasinks) {
 		this.trigger = trigger;
@@ -56,7 +95,7 @@ public class RouteConfiguration {
 	}
 
 	public RouteConfiguration(RouteConfiguration configuration) {
-		this(configuration.getRouteTrigger(), configuration.getDatasource(), configuration.getTransformers(), configuration.getDatasinks());
+		this(configuration.getRouteTrigger(), configuration.getDatasource(), configuration.getTransformers(), configuration.getDatasinks(), configuration.getDatasinkMappingConfiguration());
 		setRouteId(configuration.getRouteId());
 		this.triggerData = configuration.triggerData;
 	}
@@ -95,6 +134,14 @@ public class RouteConfiguration {
 
 	public void setDatasource(String datasource) {
 		this.datasource = datasource;
+	}
+
+	public Map<String, String[]> getDatasinkMappingConfiguration() {
+		return datasinkMappingConfiguration;
+	}
+
+	public void setDatasinkMappingConfiguration(Map<String, String[]> datasinkMappingConfiguration) {
+		this.datasinkMappingConfiguration = datasinkMappingConfiguration;
 	}
 
 }

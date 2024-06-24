@@ -26,13 +26,21 @@ package org.eclipse.digitaltwin.basyx.databridge.examples.kafkajsonatamultipleaa
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Properties;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.curator.test.TestingServer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.apache.kafka.common.utils.Time;
 import org.eclipse.basyx.aas.manager.ConnectedAssetAdministrationShellManager;
 import org.eclipse.basyx.aas.metamodel.connected.ConnectedAssetAdministrationShell;
 import org.eclipse.basyx.aas.metamodel.map.descriptor.CustomId;
@@ -53,73 +61,146 @@ import org.eclipse.digitaltwin.basyx.databridge.kafka.configuration.factory.Kafk
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttPersistenceException;
 import org.eclipse.paho.client.mqttv3.MqttSecurityException;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import kafka.server.KafkaConfig;
+import kafka.server.KafkaServer;
+import scala.Option;
 
 public class TestAASUpdater {
+	private static Logger logger = LoggerFactory.getLogger(TestAASUpdater.class);
 	private static AASServerComponent aasServer;
 	private static DataBridgeComponent updater;
 	private static InMemoryRegistry registry;
+	
+	private static KafkaServer kafkaServer;
+	private static String kafkaTmpLogsDirPath;
 
+	private static TestingServer zookeeper;
+	
 	protected static IIdentifier deviceAAS = new CustomId("TestUpdatedDeviceAAS");
 	private static BaSyxContextConfiguration aasContextConfig;
 
 	@BeforeClass
-	public static void setUp() throws IOException {
-		registry = new InMemoryRegistry();
+	public static void setUp() throws Exception {
+		configureAndStartKafkaServer();
+		configureAndStartAASServer();
+		configureAndStartUpdaterComponent();
+		
+	}
 
+	private static void configureAndStartAASServer() {
 		aasContextConfig = new BaSyxContextConfiguration(4001, "");
 		BaSyxAASServerConfiguration aasConfig = new BaSyxAASServerConfiguration(AASServerBackend.INMEMORY, "aasx/updatertest.aasx");
 		aasServer = new AASServerComponent(aasContextConfig, aasConfig);
-		aasServer.setRegistry(registry);
+		aasServer.setRegistry(registry = new InMemoryRegistry());
+		aasServer.startComponent();
+	}
+	
+	@AfterClass
+	public static void tearDown() throws IOException {
+		updater.stopComponent();
+		aasServer.stopComponent();
+		zookeeper.close();
+		aasServer.stopComponent();
+		clearLogs();
 	}
 
-	@Ignore
 	@Test
 	public void test() throws Exception {
-		aasServer.startComponent();
-		System.out.println("AAS STARTED");
-		Thread.sleep(1000);
-		System.out.println("START UPDATER");
-		ClassLoader loader = this.getClass().getClassLoader();
-		RoutesConfiguration configuration = new RoutesConfiguration();
-
-		// Extend configutation for connections
-		RoutesConfigurationFactory routesFactory = new RoutesConfigurationFactory(loader);
-		configuration.addRoutes(routesFactory.create());
-
-		// Extend configutation for Kafka Source
-		KafkaDefaultConfigurationFactory kafkaConfigFactory = new KafkaDefaultConfigurationFactory(loader);
-		configuration.addDatasources(kafkaConfigFactory.create());
-
-		// Extend configuration for AAS
-		AASProducerDefaultConfigurationFactory aasConfigFactory = new AASProducerDefaultConfigurationFactory(loader);
-		configuration.addDatasinks(aasConfigFactory.create());
-
-		// Extend configuration for Jsonata
-		JsonataDefaultConfigurationFactory jsonataConfigFactory = new JsonataDefaultConfigurationFactory(loader);
-		configuration.addTransformers(jsonataConfigFactory.create());
-
-		updater = new DataBridgeComponent(configuration);
-		updater.startComponent();
-		System.out.println("UPDATER STARTED");
 		publishNewDatapoint();
 		Thread.sleep(5000);
 		checkIfPropertyIsUpdated();
-		updater.stopComponent();
-		aasServer.stopComponent();
+	}
+
+	private static void configureAndStartUpdaterComponent() {
+		ClassLoader loader = TestAASUpdater.class.getClassLoader();
+		RoutesConfiguration configuration = new RoutesConfiguration();
+
+		addRoutes(loader, configuration);
+		addKafkaSource(loader, configuration);
+		addDatasinks(loader, configuration);
+		addDataTransformers(loader, configuration);
+
+		updater = new DataBridgeComponent(configuration);
+		updater.startComponent();
+	}
+	
+	private static void addRoutes(ClassLoader loader, RoutesConfiguration configuration) {
+		RoutesConfigurationFactory routesFactory = new RoutesConfigurationFactory(loader);
+		configuration.addRoutes(routesFactory.create());
+	}
+	
+	private static void addKafkaSource(ClassLoader loader, RoutesConfiguration configuration) {
+		KafkaDefaultConfigurationFactory kafkaConfigFactory = new KafkaDefaultConfigurationFactory(loader);
+		configuration.addDatasources(kafkaConfigFactory.create());
+	}
+	
+	private static void addDatasinks(ClassLoader loader, RoutesConfiguration configuration) {
+		AASProducerDefaultConfigurationFactory aasConfigFactory = new AASProducerDefaultConfigurationFactory(loader);
+		configuration.addDatasinks(aasConfigFactory.create());
+	}
+
+	private static void addDataTransformers(ClassLoader loader, RoutesConfiguration configuration) {
+		JsonataDefaultConfigurationFactory jsonataConfigFactory = new JsonataDefaultConfigurationFactory(loader);
+		configuration.addTransformers(jsonataConfigFactory.create());
 	}
 
 	private void checkIfPropertyIsUpdated() throws InterruptedException {
 		ConnectedAssetAdministrationShellManager manager = new ConnectedAssetAdministrationShellManager(registry);
-		ConnectedAssetAdministrationShell aas = manager.retrieveAAS(deviceAAS);
-		ISubmodel sm = aas.getSubmodels().get("ConnectedSubmodel");
-		ISubmodelElement updatedProp = sm.getSubmodelElement("ConnectedPropertyA");
+		ConnectedAssetAdministrationShell shell = manager.retrieveAAS(deviceAAS);
+		ISubmodel submodel = shell.getSubmodels().get("ConnectedSubmodel");
+		ISubmodelElement updatedProp = submodel.getSubmodelElement("ConnectedPropertyA");
 		Object propValue = updatedProp.getValue();
 		System.out.println("UpdatedPROP" + propValue);
 		assertEquals("198.56", propValue);
 
+	}
+	
+	private static void configureAndStartKafkaServer() throws Exception {
+		startZookeeper();
+		startKafkaServer();
+	}
+
+	private static void startKafkaServer() throws IOException {
+		KafkaConfig kafkaConfig = new KafkaConfig(loadKafkaConfigProperties());
+		
+		kafkaTmpLogsDirPath = kafkaConfig.getString("log.dirs");
+		
+		createKafkaLogDirectoryIfNotExists(Paths.get(kafkaTmpLogsDirPath));
+
+		Option<String> threadNamePrefix = Option.apply("kafka-server");
+
+		kafkaServer = new KafkaServer(kafkaConfig, Time.SYSTEM, threadNamePrefix, true);
+		kafkaServer.startup();
+		
+		logger.info("Kafka server started");
+	}
+	
+	private static Properties loadKafkaConfigProperties() {
+		Properties props = new Properties();
+		try (FileInputStream configFile = new FileInputStream("src/test/resources/kafkaconfig.properties")) {
+			props.load(configFile);
+			return props;
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new RuntimeException("Unable to load kafka config from properties file");
+		}
+	}
+	
+	private static void createKafkaLogDirectoryIfNotExists(Path kafkaTempDirPath) throws IOException {		
+		if (!Files.exists(kafkaTempDirPath))
+			Files.createDirectory(kafkaTempDirPath);
+	}
+
+	private static void startZookeeper() throws Exception {
+		zookeeper = new TestingServer(2181, true);
+
+		logger.info("Zookeeper server started: " + zookeeper.getConnectString());
 	}
 
 	private void publishNewDatapoint() throws MqttException, MqttSecurityException, MqttPersistenceException {
@@ -127,21 +208,29 @@ public class TestAASUpdater {
 
 		String bootstrapServer = "127.0.0.1:9092";
 
-		// create producer properties
+		Properties properties = createProducerProperties(bootstrapServer);
+
+		KafkaProducer<String, String> producer = new KafkaProducer<String, String>(properties);
+
+		ProducerRecord<String, String> producerRecord = new ProducerRecord<String, String>("first-topic", json);
+
+		producer.send(producerRecord);
+		producer.flush();
+		producer.close();
+	}
+
+	private Properties createProducerProperties(String bootstrapServer) {
 		Properties properties = new Properties();
 		properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);
 		properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
 		properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-
-		// create the producer
-		KafkaProducer<String, String> producer = new KafkaProducer<String, String>(properties);
-
-		// create a producer record
-		ProducerRecord<String, String> producerRecord = new ProducerRecord<String, String>("first-topic", json);
-
-		// send data
-		producer.send(producerRecord);
-		producer.flush();
-		producer.close();
+		return properties;
+	}
+	
+	private static void clearLogs() throws IOException {
+		Path tempLogDirPath = Paths.get(kafkaTmpLogsDirPath);
+		
+		if (Files.exists(tempLogDirPath))
+			FileUtils.deleteDirectory(new File(kafkaTmpLogsDirPath));
 	}
 }
