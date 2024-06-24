@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2021 the Eclipse BaSyx Authors
+ * Copyright (C) 2024 the Eclipse BaSyx Authors
  * 
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -37,12 +37,10 @@ import org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.core.Ab
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.core.RouteConfiguration;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.core.RouteCreatorHelper;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.core.RoutesConfiguration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+/**
+ * @author DataBridge authors, jungjan
+ */
 public class TimerRouteCreator extends AbstractRouteCreator {
-	private static Logger logger = LoggerFactory.getLogger(TimerRouteCreator.class);
-
 	private static final Long TIMEOUT = 5000L;
 
 	public TimerRouteCreator(RouteBuilder routeBuilder, RoutesConfiguration routesConfiguration) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2021 the Eclipse BaSyx Authors
+ * Copyright (C) 2024 the Eclipse BaSyx Authors
  * 
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -24,13 +24,15 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.core;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * @author DataBridge authors, jungjan
+ */
 public class RouteCreatorHelper {
 	private RouteCreatorHelper() {
 	}
@@ -48,14 +50,11 @@ public class RouteCreatorHelper {
 	}
 
 	public static String[] getDataSinkEndpoints(RoutesConfiguration routesConfiguration, List<String> dataSinkIdList) {
-		List<String> endpoints = new ArrayList<>();
-		for (String dataSinkId : dataSinkIdList) {
-			endpoints.add(routesConfiguration.getDatasinks()
-					.get(dataSinkId)
-					.getConnectionURI());
-		}
+		return dataSinkIdList.stream()
+				.map(routesConfiguration.getDatasinks()::get)
+				.map(dataSinkConfiguration -> dataSinkConfiguration.getConnectionURI())
+				.toArray(String[]::new);
 
-		return endpoints.toArray(new String[0]);
 	}
 
 	public static String[] getDataTransformerEndpoints(RoutesConfiguration routesConfiguration, List<String> transformerIdLists) {

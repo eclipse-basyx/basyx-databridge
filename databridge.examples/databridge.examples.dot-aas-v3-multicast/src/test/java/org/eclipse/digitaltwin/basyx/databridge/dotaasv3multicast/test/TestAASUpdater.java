@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2021 the Eclipse BaSyx Authors
+ * Copyright (C) 2024 the Eclipse BaSyx Authors
  * 
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -58,6 +58,9 @@ import io.moquette.broker.config.IConfig;
 import io.moquette.broker.config.IResourceLoader;
 import io.moquette.broker.config.ResourceLoaderConfig;
 
+/**
+ * @author jungjan
+ */
 public class TestAASUpdater {
 	private static final String INPUT_DATA = "{\"Process\": {\"ProcessID\": \"00001\",\"Result\": true,\"ProcessData\": {\"Volume_NV\": 410.5,\"Volume_AV\": 407.7,\"Charge\": \"0000000001\",\"Pressure\": \"43.31\",\"Speed\": \"0.158790365\",\"Temperature\": \"42\",\"Result\": \"1\",\"StartProcess\": \"2022-06-22T08:21:33.4300238Z\",\"Volume\": \"39.7\",\"Weight\": \"49.69\",\"EndPorcess\": \"2022-06-22T08:22:56.4085953Z\"}}}";
 
@@ -166,7 +169,6 @@ public class TestAASUpdater {
 		MqttClient mqttClient = new MqttClient("tcp://localhost:1884", "testClient", new MemoryPersistence());
 		mqttClient.connect();
 		mqttClient.publish(topic, new MqttMessage(INPUT_DATA.getBytes()));
-		System.out.println(INPUT_DATA);
 		mqttClient.disconnect();
 		mqttClient.close();
 	}

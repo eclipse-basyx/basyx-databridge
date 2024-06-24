@@ -9,8 +9,7 @@
 	</parent>
 	<artifactId>databridge.examples.kafka-jsonatamultiple-aas</artifactId>
 	<name>Kafka Jsonata Multiple AAS</name>
-	<description>Kafka to Jsonata multiple transformation in pipeline to AAS
-		server multiple</description>
+	<description>Kafka to Jsonata multiple transformation in pipeline to AAS server multiple</description>
 
 
 	<packaging>jar</packaging>

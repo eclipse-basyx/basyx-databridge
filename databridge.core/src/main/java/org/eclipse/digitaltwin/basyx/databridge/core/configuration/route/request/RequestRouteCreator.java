@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2023 the Eclipse BaSyx Authors
+ * Copyright (C) 2024 the Eclipse BaSyx Authors
  * 
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -37,19 +37,14 @@ import org.eclipse.digitaltwin.basyx.databridge.core.configuration.delegator.han
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.core.AbstractRouteCreator;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.core.RouteConfiguration;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.core.RoutesConfiguration;
-import org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.event.EventRouteCreator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Configures and creates the request route
  *
- * @author danish
+ * @author danish, jungjan
  *
  */
 public class RequestRouteCreator extends AbstractRouteCreator {
-	private static Logger logger = LoggerFactory.getLogger(EventRouteCreator.class);
-
 	private static final Long TIMEOUT = 5000L;
 
 	public RequestRouteCreator(RouteBuilder routeBuilder, RoutesConfiguration routesConfiguration) {

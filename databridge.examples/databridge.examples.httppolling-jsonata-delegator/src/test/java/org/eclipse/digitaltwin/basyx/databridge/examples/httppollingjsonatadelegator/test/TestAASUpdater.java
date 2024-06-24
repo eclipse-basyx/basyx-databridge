@@ -26,8 +26,9 @@ package org.eclipse.digitaltwin.basyx.databridge.examples.httppollingjsonatadele
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -104,6 +105,7 @@ public class TestAASUpdater {
 		return configuration;
 	}
 	
+	@SuppressWarnings("unchecked")
 	private String getContentFromDelegatedEndpoint() throws IOException {
 		CloseableHttpClient client = HttpClients.createDefault();
 		HttpGet request = new HttpGet("http://localhost:8090/valueA");
