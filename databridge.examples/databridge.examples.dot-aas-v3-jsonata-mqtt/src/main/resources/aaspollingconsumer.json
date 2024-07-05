@@ -1,0 +1,20 @@
+[
+	{
+		"uniqueId": "exampleAAS1",
+		"submodelEndpoint": "http://localhost:4001/submodels/aHR0cHM6Ly9leGFtcGxlLmNvbS9pZHMvc20vODU4M18zMTQwXzcwMzJfOTc2Ng",
+		"idShortPath": "pressure",
+		"api": "DotAAS-V3"
+	},
+	{
+		"uniqueId": "exampleAAS2",
+		"submodelEndpoint": "http://localhost:4001/submodels/aHR0cHM6Ly9leGFtcGxlLmNvbS9pZHMvc20vODU4M18zMTQwXzcwMzJfOTc2Ng",
+		"idShortPath": "rotation",
+		"api": "DotAAS-V3"
+	},
+	{
+		"uniqueId": "exampleAAS3",
+		"submodelEndpoint": "http://localhost:4001/submodels/aHR0cHM6Ly9leGFtcGxlLmNvbS9pZHMvc20vODU4M18zMTQwXzcwMzJfOTc2Ng",
+		"idShortPath": "",
+		"api": "DotAAS-V3"
+	}
+]

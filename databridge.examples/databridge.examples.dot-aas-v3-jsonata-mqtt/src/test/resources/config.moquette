@@ -1,0 +1,6 @@
+port 1884
+host 127.0.0.1
+websocket_port 8080
+allow_anonymous false
+username test1
+password 1234567

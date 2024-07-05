@@ -16,6 +16,10 @@ local.properties
 .recommenders
 **/.flattened-pom.xml
 
+### IntelliJ IDEA ###
+.idea
+*.iml
+
 */src/generated/*
 
 # External tool builders
