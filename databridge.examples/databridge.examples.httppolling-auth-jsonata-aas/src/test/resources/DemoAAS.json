@@ -1,0 +1,44 @@
+{
+  "assetAdministrationShells": [
+    {
+      "modelType": "AssetAdministrationShell",
+      "assetInformation": {
+        "assetKind": "Instance",
+        "globalAssetId": "https://example.com/ids/F/1680_8543_8115_4513"
+      },
+      "submodels": [
+        {
+          "keys": [
+            {
+              "type": "Submodel",
+              "value": "https://example.com/ids/Submodel/3175_4131_7631_3493"
+            }
+          ],
+          "type": "ModelReference"
+        }
+      ],
+      "id": "https://example.com/ids/AssetAdministrationShell/7580_2687_8591_8352",
+      "idShort": "DemoAAS"
+    }
+  ],
+  "submodels": [
+    {
+      "modelType": "Submodel",
+      "kind": "Instance",
+      "id": "https://example.com/ids/Submodel/3175_4131_7631_3493",
+      "idShort": "DemoSubmodel",
+      "submodelElements": [
+        {
+          "modelType": "Property",
+          "valueType": "xs:integer",
+          "idShort": "intProperty"
+        },
+        {
+          "modelType": "Property",
+          "valueType": "xs:string",
+          "idShort": "stringProperty"
+        }
+      ]
+    }
+  ]
+}

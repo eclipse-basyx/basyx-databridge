@@ -1,0 +1,14 @@
+[
+	{
+		"uniqueId": "SubmodelSink1",
+		"submodelEndpoint": "http://localhost:4001/submodels/aHR0cHM6Ly9leGFtcGxlLmNvbS9pZHMvU3VibW9kZWwvMzE3NV80MTMxXzc2MzFfMzQ5Mw",
+		"idShortPath": "intProperty",
+		"api": "DotAAS-V3"
+	},
+	{
+		"uniqueId": "SubmodelSink2",
+		"submodelEndpoint": "http://localhost:4001/submodels/aHR0cHM6Ly9leGFtcGxlLmNvbS9pZHMvU3VibW9kZWwvMzE3NV80MTMxXzc2MzFfMzQ5Mw",
+		"idShortPath": "stringProperty",
+		"api": "DotAAS-V3"
+	}
+]
