@@ -7,6 +7,9 @@
 		<artifactId>databridge.parent</artifactId>
 		<version>${revision}</version>
 	</parent>
+
+	<name>Camel SQL</name>
+	<description>SQL Data source integration using Camel</description>
 	<artifactId>databridge.camel-sql</artifactId>
 
 	<packaging>jar</packaging>
