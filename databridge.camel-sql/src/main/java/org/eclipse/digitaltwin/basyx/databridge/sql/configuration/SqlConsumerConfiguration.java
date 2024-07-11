@@ -29,7 +29,6 @@ import java.sql.SQLException;
 import javax.sql.DataSource;
 
 import org.apache.camel.CamelContext;
-import org.eclipse.digitaltwin.basyx.databridge.core.component.DataBridgeComponent;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.entity.DataSourceConfiguration;
 import org.mariadb.jdbc.MariaDbDataSource;
 import org.postgresql.ds.PGSimpleDataSource;
@@ -57,7 +56,7 @@ public class SqlConsumerConfiguration extends DataSourceConfiguration {
 
 	@Override
 	public String getConnectionURI() {
-		addSqlDataSourceContext(DataBridgeComponent.camelContext());
+		// addSqlDataSourceContext(DataBridgeComponent.camelContext());
 		return String.format("sql:%s" + "?dataSource=#%s", getQuery(), DB_CONNECTION); 
 	}
 	
