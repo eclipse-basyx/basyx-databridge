@@ -1,0 +1,25 @@
+[
+	{
+		"datasource": "sqlsource",
+		"transformers": [
+			"jsonataA",
+			"jsonataB"
+		],
+		"datasinks": [
+			"timestamp",
+			"value"
+		],
+		"datasinkMappingConfiguration": {
+			"timestamp": [
+				"jsonataA"
+			],
+			"value": [
+				"jsonataB"
+			]
+		},
+		"trigger": "timer",
+		"triggerData": {
+			"timerName": "timer1"
+		}
+	}
+]

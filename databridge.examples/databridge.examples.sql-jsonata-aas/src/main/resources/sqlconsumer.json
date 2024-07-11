@@ -1,0 +1,8 @@
+[
+  {
+    "uniqueId": "sqlsource",
+    "serverUrl": "src/main/resources/values.db",
+    "db": "sqlite",
+    "query": "SELECT value, timestamp FROM data ORDER BY value DESC LIMIT 1"
+  }
+]
