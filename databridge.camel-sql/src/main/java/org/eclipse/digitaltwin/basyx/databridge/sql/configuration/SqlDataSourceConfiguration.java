@@ -34,6 +34,8 @@ import org.mariadb.jdbc.MariaDbDataSource;
 import org.postgresql.ds.PGSimpleDataSource;
 import org.sqlite.SQLiteDataSource;
 
+import com.mysql.cj.jdbc.MysqlDataSource;
+
 /**
  * Handles registration of DataSource components to the CamelContext
  * 
@@ -76,6 +78,9 @@ public class SqlDataSourceConfiguration {
         case SQLITE:
             configureSqliteDataSource(context);
             break;
+        case MYSQL:
+            configureMySqlDataSource(context);
+            break;
         default:
             throw new IllegalStateException("Unknown Database");
         }
@@ -91,6 +96,14 @@ public class SqlDataSourceConfiguration {
 
     private void configurePostgresqlDataSource(CamelContext camelContext) {
         PGSimpleDataSource dataSource = new PGSimpleDataSource();
+        dataSource.setUrl(buildJdbcUrl());
+        dataSource.setUser(user);
+        dataSource.setPassword(password);
+        bindSqlDataSource(camelContext, dataSource);
+    }
+
+    private void configureMySqlDataSource(CamelContext camelContext) {
+        MysqlDataSource dataSource = new MysqlDataSource();
         dataSource.setUrl(buildJdbcUrl());
         dataSource.setUser(user);
         dataSource.setPassword(password);

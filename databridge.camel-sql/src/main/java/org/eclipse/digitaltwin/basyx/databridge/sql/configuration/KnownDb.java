@@ -30,7 +30,7 @@ package org.eclipse.digitaltwin.basyx.databridge.sql.configuration;
 import java.util.Arrays;
 
 public enum KnownDb {
-	MARIADB("mariadb"), POSTGRESQL("postgresql"), SQLITE("sqlite");
+	MARIADB("mariadb"), POSTGRESQL("postgresql"), SQLITE("sqlite"), MYSQL("mysql");
 
 	public final String label;
 

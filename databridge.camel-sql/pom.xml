@@ -60,5 +60,11 @@
 			<artifactId>sqlite-jdbc</artifactId>
 			<version>3.46.0.0</version>
 		</dependency>
+
+		<dependency>
+			<groupId>com.mysql</groupId>
+			<artifactId>mysql-connector-j</artifactId>
+			<version>8.4.0</version>
+		</dependency>
 	</dependencies>
 </project>
