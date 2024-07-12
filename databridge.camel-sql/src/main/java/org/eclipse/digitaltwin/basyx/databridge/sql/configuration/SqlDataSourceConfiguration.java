@@ -63,17 +63,17 @@ public class SqlDataSourceConfiguration {
 
     public void registerSqlDataSource(CamelContext context) {
         switch (KnownDb.fromLabel(db)) {
-        case mariaDB:
+        case MARIADB:
             try {
                 configureMariaDbDataSource(context);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
             break;
-        case postgreSQL:
+        case POSTGRESQL:
             configurePostgresqlDataSource(context);
             break;
-        case SQLite:
+        case SQLITE:
             configureSqliteDataSource(context);
             break;
         default:
@@ -105,7 +105,7 @@ public class SqlDataSourceConfiguration {
     }
 
     private String buildJdbcUrl() {
-        if (!db.equalsIgnoreCase(KnownDb.SQLite.label)) {
+        if (!db.equalsIgnoreCase(KnownDb.SQLITE.label)) {
             return String.format("jdbc:%s://%s:%d/%s", db, serverUrl, serverPort, dbName);
         } else {
             return String.format("jdbc:%s:%s", db, serverUrl);

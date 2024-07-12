@@ -62,10 +62,8 @@ public class TestAASUpdater {
 	private static ClassLoader loader = TestAASUpdater.class.getClassLoader();
 
 	@BeforeClass
-	public static void setUp() throws IOException {
+	public static void setUp() {
 		configureAndStartMockserver();
-		String path = System.getProperty("user.home");
-		System.out.println(path);
 		
 		try (TestDb testDb = new TestDb("src/main/resources/values.db")) {
 			
@@ -89,7 +87,7 @@ public class TestAASUpdater {
 	}
 
 	@Test
-	public void testSqlConfiguration() throws InterruptedException {
+	public void testSqlConfiguration() {
 		verifyCalls(VALUE_PATH, 2);
 	}
 
