@@ -29,22 +29,25 @@ import java.sql.SQLException;
 import javax.sql.DataSource;
 
 import org.apache.camel.CamelContext;
+import org.apache.camel.CamelContextAware;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.entity.DataSourceConfiguration;
 import org.mariadb.jdbc.MariaDbDataSource;
 import org.postgresql.ds.PGSimpleDataSource;
 import org.sqlite.SQLiteDataSource;
 
 /**
- * @author jungjan
+ * @author jungjan, mateusmolina
  */
-public class SqlConsumerConfiguration extends DataSourceConfiguration {
+public class SqlConsumerConfiguration extends DataSourceConfiguration implements CamelContextAware {
 	public static final String DB_CONNECTION = "dbcn";
-	
+
 	private String db;
 	private String dbName;
 	private String user;
 	private String password;
 	private String query;
+
+	private CamelContext camelContext;
 
 	public SqlConsumerConfiguration() {
 		super();
@@ -56,8 +59,8 @@ public class SqlConsumerConfiguration extends DataSourceConfiguration {
 
 	@Override
 	public String getConnectionURI() {
-		// addSqlDataSourceContext(DataBridgeComponent.camelContext());
-		return String.format("sql:%s" + "?dataSource=#%s", getQuery(), DB_CONNECTION); 
+		addSqlDataSourceContext(getCamelContext());
+		return String.format("sql:%s" + "?dataSource=#%s&outputType=SelectList", getQuery(), DB_CONNECTION);
 	}
 	
 	private void addSqlDataSourceContext(CamelContext context) {
@@ -79,38 +82,37 @@ public class SqlConsumerConfiguration extends DataSourceConfiguration {
 			throw new IllegalStateException("Unknown Database");
 		}
 	}
-    
 
 	private void configureMariaDbDataSource(CamelContext camelContext) throws SQLException {
-        MariaDbDataSource dataSource = new MariaDbDataSource();
-        dataSource.setUrl(buildJdbcUrl());
-        dataSource.setUser(getUser());
-        dataSource.setPassword(getPassword());
-        bindSqlDataSource(camelContext, dataSource);
-    }
+		MariaDbDataSource dataSource = new MariaDbDataSource();
+		dataSource.setUrl(buildJdbcUrl());
+		dataSource.setUser(getUser());
+		dataSource.setPassword(getPassword());
+		bindSqlDataSource(camelContext, dataSource);
+	}
 
-    private void configurePostgresqlDataSource(CamelContext camelContext) {
-        PGSimpleDataSource dataSource = new PGSimpleDataSource();
-        dataSource.setUrl(buildJdbcUrl());
-        dataSource.setUser(getUser());
-        dataSource.setPassword(getPassword());
-        bindSqlDataSource(camelContext, dataSource);
-    }
+	private void configurePostgresqlDataSource(CamelContext camelContext) {
+		PGSimpleDataSource dataSource = new PGSimpleDataSource();
+		dataSource.setUrl(buildJdbcUrl());
+		dataSource.setUser(getUser());
+		dataSource.setPassword(getPassword());
+		bindSqlDataSource(camelContext, dataSource);
+	}
 
-    private void configureSqliteDataSource(CamelContext camelContext) {
-        SQLiteDataSource dataSource = new SQLiteDataSource();
-        dataSource.setUrl(buildJdbcUrl());
-        dataSource.setDatabaseName(getDbName());
-        bindSqlDataSource(camelContext, dataSource);
-    }
-    
-    private String buildJdbcUrl() {
-    	if (!getDb().equalsIgnoreCase(KnownDb.SQLite.label)) {
-    		return String.format("jdbc:%s://%s:%d/%s", getDb(), getServerUrl(), getServerPort(), getDbName());
-    	} else {
-    		return String.format("jdbc:%s:%s", getDb(), getServerUrl());
-    	}
-    }
+	private void configureSqliteDataSource(CamelContext camelContext) {
+		SQLiteDataSource dataSource = new SQLiteDataSource();
+		dataSource.setUrl(buildJdbcUrl());
+		dataSource.setDatabaseName(getDbName());
+		bindSqlDataSource(camelContext, dataSource);
+	}
+
+	private String buildJdbcUrl() {
+		if (!getDb().equalsIgnoreCase(KnownDb.SQLite.label)) {
+			return String.format("jdbc:%s://%s:%d/%s", getDb(), getServerUrl(), getServerPort(), getDbName());
+		} else {
+			return String.format("jdbc:%s:%s", getDb(), getServerUrl());
+		}
+	}
 
 	private void bindSqlDataSource(CamelContext camelContext, DataSource dataSource) {
 		camelContext.getRegistry().bind(SqlConsumerConfiguration.DB_CONNECTION, dataSource);
@@ -154,6 +156,16 @@ public class SqlConsumerConfiguration extends DataSourceConfiguration {
 
 	public void setQuery(String query) {
 		this.query = query;
+	}
+
+	@Override
+	public CamelContext getCamelContext() {
+		return camelContext;
+	}
+
+	@Override
+	public void setCamelContext(CamelContext camelContext) {
+		this.camelContext = camelContext;
 	}
 
 }
