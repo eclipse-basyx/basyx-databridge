@@ -38,6 +38,7 @@ import org.eclipse.digitaltwin.basyx.databridge.core.component.DataBridgeCompone
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.factory.RoutesConfigurationFactory;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.core.RoutesConfiguration;
 import org.eclipse.digitaltwin.basyx.databridge.jsonata.configuration.factory.JsonataDefaultConfigurationFactory;
+import org.eclipse.digitaltwin.basyx.databridge.jsonjackson.configuration.factory.JsonJacksonDefaultConfigurationFactory;
 import org.eclipse.digitaltwin.basyx.databridge.sql.configuration.factory.SqlDefaultConfigurationFactory;
 import org.eclipse.digitaltwin.basyx.databridge.timer.configuration.factory.TimerDefaultConfigurationFactory;
 import org.junit.AfterClass;
@@ -49,10 +50,9 @@ import org.mockserver.model.HttpRequest;
 import org.mockserver.verify.VerificationTimes;
 
 /**
- * @author jungjan
+ * @author jungjan, mateusmolina
  */
 public class TestAASUpdater {
-	private static final String TIMESTAMP_PATH = "/submodels/dmFsdWU=/submodel-elements/timestamp/$value";
 	private static final String VALUE_PATH = "/submodels/dmFsdWU=/submodel-elements/value/$value";
 	
 	private static DataBridgeComponent updater;
@@ -90,7 +90,6 @@ public class TestAASUpdater {
 
 	@Test
 	public void testSqlConfiguration() throws InterruptedException {
-		verifyCalls(TIMESTAMP_PATH, 2);
 		verifyCalls(VALUE_PATH, 2);
 	}
 
@@ -112,6 +111,9 @@ public class TestAASUpdater {
 
 		AASProducerDefaultConfigurationFactory aasConfigFactory = new AASProducerDefaultConfigurationFactory(loader);
 		configuration.addDatasinks(aasConfigFactory.create());
+
+		JsonJacksonDefaultConfigurationFactory jsonJacksonConfigFactory = new JsonJacksonDefaultConfigurationFactory(loader);
+		configuration.addTransformers(jsonJacksonConfigFactory.create());
 
 		JsonataDefaultConfigurationFactory jsonataConfigFactory = new JsonataDefaultConfigurationFactory(loader);
 		configuration.addTransformers(jsonataConfigFactory.create());

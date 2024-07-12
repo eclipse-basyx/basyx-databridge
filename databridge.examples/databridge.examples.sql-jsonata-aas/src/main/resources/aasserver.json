@@ -1,11 +1,5 @@
 [
 	{
-		"uniqueId": "timestamp",
-		"submodelEndpoint": "http://localhost:4001/submodels/dmFsdWU=",
-		"idShortPath": "timestamp",
-		"api": "DotAAS-V3"
-	},
-	{
 		"uniqueId": "value",
 		"submodelEndpoint": "http://localhost:4001/submodels/dmFsdWU=",
 		"idShortPath": "value",
