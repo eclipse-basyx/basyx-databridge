@@ -33,13 +33,23 @@ import org.eclipse.digitaltwin.basyx.databridge.core.configuration.entity.DataSo
  */
 public class HttpPollingConsumerConfiguration extends DataSourceConfiguration {
 	public HttpPollingConsumerConfiguration() {}
+	private	String authUsername;
+	private String authPassword;
 	
-	public HttpPollingConsumerConfiguration(String uniqueId, String serverUrl, int serverPort) {
+	public HttpPollingConsumerConfiguration(String uniqueId, String serverUrl, int serverPort, String authUsername, String authPassword) {
 		super(uniqueId, serverUrl, serverPort);
+		this.authUsername = authUsername;
+		this.authPassword = authPassword;
 	}
 
 	@Override
 	public String getConnectionURI() {
+
+		if(!(authUsername == null || authPassword == null)) {
+			String dataSourceServerUrl = getServerUrl();
+			return dataSourceServerUrl + (dataSourceServerUrl.contains("?")? "&" : "?") + "authUsername=" + authUsername + "&authPassword=" + authPassword+"&authMethod=Basic&authenticationPreemptive=true";
+		}
+
 		return getServerUrl();
 	}
 }
