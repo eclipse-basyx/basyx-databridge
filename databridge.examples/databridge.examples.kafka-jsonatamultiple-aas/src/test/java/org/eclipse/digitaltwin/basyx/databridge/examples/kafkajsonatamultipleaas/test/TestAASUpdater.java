@@ -33,6 +33,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.curator.test.TestingServer;
@@ -41,6 +42,7 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.kafka.common.utils.Time;
+import org.awaitility.Awaitility;
 import org.eclipse.basyx.aas.manager.ConnectedAssetAdministrationShellManager;
 import org.eclipse.basyx.aas.metamodel.connected.ConnectedAssetAdministrationShell;
 import org.eclipse.basyx.aas.metamodel.map.descriptor.CustomId;
@@ -58,9 +60,6 @@ import org.eclipse.digitaltwin.basyx.databridge.core.configuration.factory.Route
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.core.RoutesConfiguration;
 import org.eclipse.digitaltwin.basyx.databridge.jsonata.configuration.factory.JsonataDefaultConfigurationFactory;
 import org.eclipse.digitaltwin.basyx.databridge.kafka.configuration.factory.KafkaDefaultConfigurationFactory;
-import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.MqttPersistenceException;
-import org.eclipse.paho.client.mqttv3.MqttSecurityException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -104,7 +103,8 @@ public class TestAASUpdater {
 	@AfterClass
 	public static void tearDown() throws IOException {
 		updater.stopComponent();
-		aasServer.stopComponent();
+		kafkaServer.shutdown();
+		kafkaServer.awaitShutdown();
 		zookeeper.close();
 		aasServer.stopComponent();
 		clearLogs();
@@ -113,8 +113,7 @@ public class TestAASUpdater {
 	@Test
 	public void test() throws Exception {
 		publishNewDatapoint();
-		Thread.sleep(5000);
-		checkIfPropertyIsUpdated();
+		awaitAndCheckPropertyValue("198.56", "ConnectedPropertyA");
 	}
 
 	private static void configureAndStartUpdaterComponent() {
@@ -149,16 +148,29 @@ public class TestAASUpdater {
 		JsonataDefaultConfigurationFactory jsonataConfigFactory = new JsonataDefaultConfigurationFactory(loader);
 		configuration.addTransformers(jsonataConfigFactory.create());
 	}
+	
+	private void awaitAndCheckPropertyValue(String expectedValue, String propertyIdShort) {
+	    Awaitility.await().with().pollInterval(2, TimeUnit.SECONDS).atMost(14, TimeUnit.SECONDS).untilAsserted(() -> assertEquals(expectedValue, retrievePropertyValue(propertyIdShort)));
+	}
+	
+	private Object retrievePropertyValue(String propertyIdShort) {
+		ConnectedAssetAdministrationShell aas = getAAS(deviceAAS);
 
-	private void checkIfPropertyIsUpdated() throws InterruptedException {
+		ISubmodelElement updatedProp = getSubmodelElement(aas, "ConnectedSubmodel", propertyIdShort);
+		return updatedProp.getValue();
+	}
+	
+	private ConnectedAssetAdministrationShell getAAS(IIdentifier identifier) {
 		ConnectedAssetAdministrationShellManager manager = new ConnectedAssetAdministrationShellManager(registry);
-		ConnectedAssetAdministrationShell shell = manager.retrieveAAS(deviceAAS);
-		ISubmodel submodel = shell.getSubmodels().get("ConnectedSubmodel");
-		ISubmodelElement updatedProp = submodel.getSubmodelElement("ConnectedPropertyA");
-		Object propValue = updatedProp.getValue();
-		System.out.println("UpdatedPROP" + propValue);
-		assertEquals("198.56", propValue);
+		
+		return manager.retrieveAAS(identifier);
+	}
 
+	private ISubmodelElement getSubmodelElement(ConnectedAssetAdministrationShell aas, String submodelId,
+			String submodelElementId) {
+		ISubmodel sm = aas.getSubmodels().get(submodelId);
+		
+		return sm.getSubmodelElement(submodelElementId);
 	}
 	
 	private static void configureAndStartKafkaServer() throws Exception {
@@ -203,9 +215,8 @@ public class TestAASUpdater {
 		logger.info("Zookeeper server started: " + zookeeper.getConnectString());
 	}
 
-	private void publishNewDatapoint() throws MqttException, MqttSecurityException, MqttPersistenceException {
+	private void publishNewDatapoint() {
 		String json = "{\"Account\":{\"Account Name\":\"Firefly\",\"Order\":[{\"OrderID\":\"order103\",\"Product\":[{\"Product Name\":\"Bowler Hat\",\"ProductID\":858383,\"SKU\":\"0406654608\",\"Description\":{\"Colour\":\"Purple\",\"Width\":300,\"Height\":200,\"Depth\":210,\"Weight\":0.75},\"Price\":34.45,\"Quantity\":2},{\"Product Name\":\"Trilby hat\",\"ProductID\":858236,\"SKU\":\"0406634348\",\"Description\":{\"Colour\":\"Orange\",\"Width\":300,\"Height\":200,\"Depth\":210,\"Weight\":0.6},\"Price\":21.67,\"Quantity\":1}]},{\"OrderID\":\"order104\",\"Product\":[{\"Product Name\":\"Bowler Hat\",\"ProductID\":858383,\"SKU\":\"040657863\",\"Description\":{\"Colour\":\"Purple\",\"Width\":300,\"Height\":200,\"Depth\":210,\"Weight\":0.75},\"Price\":34.45,\"Quantity\":4},{\"ProductID\":345664,\"SKU\":\"0406654603\",\"Product Name\":\"Cloak\",\"Description\":{\"Colour\":\"Black\",\"Width\":30,\"Height\":20,\"Depth\":210,\"Weight\":2},\"Price\":107.99,\"Quantity\":1}]}]}}";
-
 		String bootstrapServer = "127.0.0.1:9092";
 
 		Properties properties = createProducerProperties(bootstrapServer);
