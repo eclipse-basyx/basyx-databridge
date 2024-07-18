@@ -48,7 +48,7 @@ public class ITTestDataBridgeAASPollingConsumer extends DataBridgeSuiteAASPollin
 	
 		String publisherId = UUID.randomUUID().toString();
 		
-		return new MqttClient("tcp://" + BROKER_HOST+ ":1883", publisherId);
+		return new MqttClient("tcp://" + BROKER_HOST+ ":1883", publisherId, new MemoryPersistence());
 	}
 	
 	@Override

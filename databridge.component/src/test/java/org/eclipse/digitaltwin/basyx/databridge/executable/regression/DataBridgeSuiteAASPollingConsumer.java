@@ -30,6 +30,8 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.TimeUnit;
+
 import org.eclipse.basyx.aas.aggregator.api.IAASAggregator;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
@@ -53,7 +55,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 public abstract class DataBridgeSuiteAASPollingConsumer {
 	
 	protected abstract MqttClient getMqttClient() throws MqttException;
-	protected abstract IAASAggregator getAASAggregatorProxy();
+	protected abstract IAASAggregator getAASAggregatorProxy(); // FIXME: jungjan: This method is never used. Intended?
 	private static Logger logger = LoggerFactory.getLogger(DataBridgeSuiteAASPollingConsumer.class);
 	private static String user_name = "test1";
 	private static String password = "1234567";
@@ -81,7 +83,7 @@ public abstract class DataBridgeSuiteAASPollingConsumer {
 		
 		fetchExpectedValue(topic);
 		
-		assertEquals(receivedMessage, expectedValue);
+		assertEquals(expectedValue, receivedMessage);
 	}
 
 	
@@ -100,7 +102,6 @@ public abstract class DataBridgeSuiteAASPollingConsumer {
 
 				@Override
 				public void messageArrived(String topic, MqttMessage message) throws Exception {
-					
 					receivedMessage = new String(message.getPayload(), StandardCharsets.UTF_8);
 				}
 
@@ -109,7 +110,6 @@ public abstract class DataBridgeSuiteAASPollingConsumer {
 					
 				}
 			});
-			
 			mqttClient.subscribe(currentTopic);
 			waitForPropagation();
 			mqttClient.disconnect();
@@ -125,8 +125,8 @@ public abstract class DataBridgeSuiteAASPollingConsumer {
 		MqttClient mqttClient = getMqttClient();
 		
 		MqttConnectOptions connOpts = setUpMqttConnection(user_name, password);
-		connOpts.setCleanSession(true);
 		mqttClient.connect(connOpts);
+		connOpts.setCleanSession(true);
 		return mqttClient;
 	}
 	
@@ -138,7 +138,7 @@ public abstract class DataBridgeSuiteAASPollingConsumer {
 	}
 	
 	private static void waitForPropagation() throws InterruptedException {
-		Thread.sleep(6000);
+		TimeUnit.SECONDS.sleep(10);
 	}
 	
 	private String wrapStringValue(String value) {
