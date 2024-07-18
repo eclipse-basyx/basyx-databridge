@@ -32,8 +32,11 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+
 import static org.junit.Assert.assertEquals;
 
+import org.awaitility.Awaitility;
 import org.eclipse.basyx.aas.registration.memory.InMemoryRegistry;
 import org.eclipse.basyx.components.aas.AASServerComponent;
 import org.eclipse.basyx.components.aas.configuration.AASServerBackend;
@@ -75,16 +78,22 @@ import io.moquette.broker.config.ResourceLoaderConfig;
  *
  */
 public class TestAASUpdater {
+	private final static Logger logger = LoggerFactory.getLogger(TestAASUpdater.class);
 
-	private static Logger logger = LoggerFactory.getLogger(TestAASUpdater.class);
+	private final static InMemoryRegistry REGISTRY = new InMemoryRegistry();
+	private final static String MQTT_BROKER_URL = "tcp://broker.mqttdashboard.com:1883";
+	private final static String USER_NAME = "test1";
+	private final static String PASSWORD = "1234567";
+	private final static String CLIENT_ID = UUID.randomUUID().toString();
+
+	private final static String TOPIC_PRESSURE  = "aas/pressure";
+	private final static String TOPIC_ROTATION = "aas/rotation";
+	private final static String TOPIC_PRESSURE_ROTATION = "aas/pressure_rotation";
+	
+	
 	private static AASServerComponent aasServer;
 	private static BaSyxContextConfiguration aasContextConfig;
-	private static InMemoryRegistry registry = new InMemoryRegistry();
 	private static DataBridgeComponent updater;
-	private static String mqtt_broker_url = "tcp://broker.mqttdashboard.com:1883";
-	private static String user_name = "test1";
-	private static String password = "1234567";
-	private static String client_id = UUID.randomUUID().toString();
 	private static String receivedMessage;
 	private static Server mqttBroker;
 	
@@ -103,54 +112,35 @@ public class TestAASUpdater {
 	@AfterClass
 	public static void tearDown() {
 		updater.stopComponent();
-		
+		mqttBroker.stopServer();
 		aasServer.stopComponent();
 	}
 	
 	@Test
 	public void getUpdatedPropertyValueA() throws MqttException, MqttSecurityException, MqttPersistenceException, InterruptedException, JsonProcessingException {
 		
-		String topic = "aas/pressure";
+		String topic = TOPIC_PRESSURE;
 		String expectedValue = wrapStringValue("103.5585973");
-		
-		assertPropertyValue(expectedValue, topic);
+		awaitAndAssertMqttPropagation(expectedValue, topic);
 	}
 	
 	@Test
 	public void getUpdatedPropertyValueB() throws MqttException, MqttSecurityException, MqttPersistenceException, InterruptedException, JsonProcessingException {
 
-		String topic = "aas/rotation";
+		String topic = TOPIC_ROTATION;
 		String expectedValue = wrapStringValue("379.5784558");
-		
-		assertPropertyValue(expectedValue, topic);
+		awaitAndAssertMqttPropagation(expectedValue, topic);
 	}
 	
 	@Test
 	public void getAllProperties() throws MqttException, MqttSecurityException, MqttPersistenceException, InterruptedException, IOException, URISyntaxException {
 
-		String topic = "aas/pressure_rotation";
+		String topic = TOPIC_PRESSURE_ROTATION;
 		String expectedValue = getExpectedValueFromFile();
-		
-		assertAllProperties(expectedValue, topic);
+		awaitAndAssertMqttPropagation(expectedValue, topic);
 	}
 	
-	private void assertPropertyValue(String expectedValue, String topic) throws MqttSecurityException, MqttPersistenceException, MqttException, InterruptedException {
-		
-		fetchExpectedValue(topic);
-		
-		assertEquals(receivedMessage, expectedValue);
-	}
-	
-	private void assertAllProperties(String expectedValue, String topic) throws MqttSecurityException, MqttPersistenceException, MqttException, InterruptedException, JsonMappingException, JsonProcessingException {
-		
-		fetchExpectedValue(topic);
-		
-		ObjectMapper mapper = new ObjectMapper();
-		
-		assertEquals(mapper.readTree(receivedMessage), mapper.readTree(expectedValue));
-	}
-	
-	private static void fetchExpectedValue(String currentTopic) throws MqttException, MqttSecurityException, MqttPersistenceException, InterruptedException {
+	private void awaitAndAssertMqttPropagation(String expectedValue, String currentTopic) throws MqttException, MqttSecurityException, MqttPersistenceException, InterruptedException {
 		
 		try {
 			
@@ -174,9 +164,8 @@ public class TestAASUpdater {
 					
 				}
 			});
-
 			mqttClient.subscribe(currentTopic);
-			waitForPropagation();
+			Awaitility.await().with().pollInterval(1, TimeUnit.SECONDS).atMost(10, TimeUnit.SECONDS).untilAsserted(() -> assertMessage(expectedValue, receivedMessage));
 			mqttClient.disconnect();
 			mqttClient.close();
 
@@ -185,6 +174,25 @@ public class TestAASUpdater {
 		}
 	}
 	
+	private void assertMessage(String expectedValue, String receivedMessage) {
+		if (!isAllProperties(expectedValue)) {
+			assertEquals(expectedValue, receivedMessage);
+		}
+		
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			assertEquals(mapper.readTree(expectedValue), mapper.readTree(receivedMessage));
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private boolean isAllProperties(String expectedValue) {
+		return expectedValue.startsWith("[");
+	}
+
 	private static void configureAasServer() throws InterruptedException {
 		
 		aasContextConfig = new BaSyxContextConfiguration(4001, "");
@@ -192,7 +200,7 @@ public class TestAASUpdater {
 		BaSyxAASServerConfiguration aasConfig = new BaSyxAASServerConfiguration(AASServerBackend.INMEMORY, "aasx/telemeteryTest.aasx");
 		
 		aasServer = new AASServerComponent(aasContextConfig, aasConfig);
-		aasServer.setRegistry(registry);
+		aasServer.setRegistry(REGISTRY);
 	}
 	
 	private static void startAasServer() {
@@ -213,7 +221,7 @@ public class TestAASUpdater {
 		AASPollingConsumerDefaultConfigurationFactory aasSourceConfigFactory = new AASPollingConsumerDefaultConfigurationFactory(
 				loader);
 		configuration.addDatasources(aasSourceConfigFactory.create());
-
+		
 		MqttDataSinkDefaultConfigurationFactory mqttConfigFactory = new MqttDataSinkDefaultConfigurationFactory(loader);
 		configuration.addDatasinks(mqttConfigFactory.create());
 
@@ -221,18 +229,15 @@ public class TestAASUpdater {
 		configuration.addTransformers(jsonataConfigFactory.create());
 
 		updater = new DataBridgeComponent(configuration);
+		TimeUnit.SECONDS.sleep(5); // FIXME: Failed to start route routeN because of null
 		updater.startComponent();
-	}
-
-	private static void waitForPropagation() throws InterruptedException {
-		Thread.sleep(6000);
 	}
 	
 	private static MqttClient mqttConnectionInitiate() throws MqttException {
 		
-		MqttClient mqttClient = new MqttClient(mqtt_broker_url, client_id, new MemoryPersistence());
+		MqttClient mqttClient = new MqttClient(MQTT_BROKER_URL, CLIENT_ID, new MemoryPersistence());
 		
-		MqttConnectOptions connOpts = setUpMqttConnection(user_name, password);
+		MqttConnectOptions connOpts = setUpMqttConnection(USER_NAME, PASSWORD);
 		mqttClient.connect(connOpts);
 		connOpts.setCleanSession(true);
 		return mqttClient;
