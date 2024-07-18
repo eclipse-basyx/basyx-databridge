@@ -27,16 +27,12 @@ package org.eclipse.digitaltwin.basyx.databridge.examples.httppollingjsonatadele
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.eclipse.digitaltwin.basyx.databridge.core.component.DataBridgeComponent;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.factory.RoutesConfigurationFactory;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.core.RoutesConfiguration;
@@ -70,7 +66,6 @@ public class TestAASUpdater {
 	@Test
 	public void transformedResponseIsReturned() throws ClientProtocolException, IOException {
 		String actualValue = getContentFromDelegatedEndpoint();
-
 		assertEquals(EXPECTED_VALUE, actualValue);
 	}
 
@@ -105,17 +100,12 @@ public class TestAASUpdater {
 		return configuration;
 	}
 	
-	@SuppressWarnings("unchecked")
 	private String getContentFromDelegatedEndpoint() throws IOException {
 		CloseableHttpClient client = HttpClients.createDefault();
 		HttpGet request = new HttpGet("http://localhost:8090/valueA");
 		CloseableHttpResponse resp = client.execute(request);
-		ObjectMapper mapper = new ObjectMapper();
-		Map<String, Object> responseDataMap = mapper.readValue(resp.getEntity().getContent(), new TypeReference<Map<String, Object>>() {});
-		List<Map<String, Object>> objectsList = (List<Map<String, Object>>) responseDataMap.get("objects");
-		String content = String.valueOf(objectsList.get(0).get("value"));
 
-		return content;
+		return EntityUtils.toString(resp.getEntity());
 	}
 	
 	private static String getResponseBody() {
