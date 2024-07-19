@@ -1,7 +1,7 @@
 [
 	{
 		"uniqueId": "processId",
-		"queryPath": "ProcessId.jsonata",
+		"queryPath": "processId.jsonata",
 		"inputType": "JsonString",
 		"outputType": "JsonString"
 	},
