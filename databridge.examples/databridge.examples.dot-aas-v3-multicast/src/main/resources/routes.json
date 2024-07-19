@@ -3,7 +3,7 @@
 		"datasource": "mqttSource",
 		"transformers": 
 		[
-			"ProcessId",
+			"processId",
 			"processResult",
 			"processData",
 			"processDuration"
@@ -18,7 +18,7 @@
 		],
 		"datasinkMappingConfiguration":
 		{
-			"process/processId": ["ProcessId"],
+			"process/processId": ["processId"],
 			"process/processResult": ["processResult"],
 			"process/processData": ["processData"],
 			"process/processDuration": ["processData", "processDuration"]
