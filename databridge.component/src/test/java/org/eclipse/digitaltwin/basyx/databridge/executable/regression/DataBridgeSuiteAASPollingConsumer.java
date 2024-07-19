@@ -32,7 +32,6 @@ import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 
-import org.eclipse.basyx.aas.aggregator.api.IAASAggregator;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
@@ -55,7 +54,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 public abstract class DataBridgeSuiteAASPollingConsumer {
 	
 	protected abstract MqttClient getMqttClient() throws MqttException;
-	protected abstract IAASAggregator getAASAggregatorProxy(); // FIXME: jungjan: This method is never used. Intended?
 	private static Logger logger = LoggerFactory.getLogger(DataBridgeSuiteAASPollingConsumer.class);
 	private static String user_name = "test1";
 	private static String password = "1234567";

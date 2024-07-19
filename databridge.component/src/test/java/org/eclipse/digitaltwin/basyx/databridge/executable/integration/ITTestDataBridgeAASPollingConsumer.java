@@ -26,8 +26,6 @@ package org.eclipse.digitaltwin.basyx.databridge.executable.integration;
 
 import java.util.UUID;
 
-import org.eclipse.basyx.aas.aggregator.api.IAASAggregator;
-import org.eclipse.basyx.aas.aggregator.proxy.AASAggregatorProxy;
 import org.eclipse.digitaltwin.basyx.databridge.executable.regression.DataBridgeSuiteAASPollingConsumer;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -41,7 +39,6 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 public class ITTestDataBridgeAASPollingConsumer extends DataBridgeSuiteAASPollingConsumer {
 
 	private static String BROKER_HOST = "broker.mqttdashboard.com";
-	private static String HOST = "localhost";
 	
 	@Override
 	protected MqttClient getMqttClient() throws MqttException {
@@ -50,9 +47,5 @@ public class ITTestDataBridgeAASPollingConsumer extends DataBridgeSuiteAASPollin
 		
 		return new MqttClient("tcp://" + BROKER_HOST+ ":1883", publisherId, new MemoryPersistence());
 	}
-	
-	@Override
-	protected IAASAggregator getAASAggregatorProxy() {
-		return new AASAggregatorProxy("http://" + HOST + ":4001");
-	}
+
 }
