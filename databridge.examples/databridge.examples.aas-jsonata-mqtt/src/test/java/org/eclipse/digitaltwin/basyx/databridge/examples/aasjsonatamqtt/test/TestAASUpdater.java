@@ -221,7 +221,7 @@ public class TestAASUpdater {
 		AASPollingConsumerDefaultConfigurationFactory aasSourceConfigFactory = new AASPollingConsumerDefaultConfigurationFactory(
 				loader);
 		configuration.addDatasources(aasSourceConfigFactory.create());
-		
+
 		MqttDataSinkDefaultConfigurationFactory mqttConfigFactory = new MqttDataSinkDefaultConfigurationFactory(loader);
 		configuration.addDatasinks(mqttConfigFactory.create());
 

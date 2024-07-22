@@ -137,7 +137,6 @@ public class TestAASUpdater {
 		ConnectedAssetAdministrationShell aas = getAAS(deviceAASId);
 
 		ISubmodelElement updatedProp = getSubmodelElement(aas, "ConnectedSubmodel", propertyIdShort);
-		System.out.println(updatedProp.getValue());
 		return updatedProp.getValue();
 	}
 
