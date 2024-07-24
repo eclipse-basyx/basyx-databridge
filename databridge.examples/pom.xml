@@ -36,6 +36,7 @@
 		<module>databridge.examples.plc4x-jsonata-aas</module>
 		<module>databridge.examples.dot-aas-v3-api</module>
 		<module>databridge.examples.mqtt-aas_range_and_mlp</module>
+		<module>databridge.examples.sql-jsonata-aas</module>
 	</modules>
 	<packaging>pom</packaging>
 </project>
