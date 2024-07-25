@@ -1,0 +1,14 @@
+[
+  {
+    "idShort": "pressure",
+    "valueType": "xs:string",
+    "value": "103.5585973",
+    "modelType": "Property"
+  },
+  {
+    "idShort": "rotation",
+    "valueType": "xs:string",
+    "value": "379.5784558",
+    "modelType": "Property"
+  }
+]

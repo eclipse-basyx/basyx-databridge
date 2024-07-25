@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2022 the Eclipse BaSyx Authors
+ * Copyright (C) 2024 the Eclipse BaSyx Authors
  * 
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -22,34 +22,26 @@
  * 
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
-package org.eclipse.digitaltwin.basyx.databridge.httppolling.configuration;
-
-import org.eclipse.digitaltwin.basyx.databridge.core.configuration.entity.DataSourceConfiguration;
+package org.eclipse.digitaltwin.basyx.databridge.sql.configuration;
 
 /**
- * An implementation of httppolling consumer configuration
- * @author n14s - Niklas Mertens
- *
+ * @author jungjan
  */
-public class HttpPollingConsumerConfiguration extends DataSourceConfiguration {
-	public HttpPollingConsumerConfiguration() {}
-	private	String authUsername;
-	private String authPassword;
-	
-	public HttpPollingConsumerConfiguration(String uniqueId, String serverUrl, int serverPort, String authUsername, String authPassword) {
-		super(uniqueId, serverUrl, serverPort);
-		this.authUsername = authUsername;
-		this.authPassword = authPassword;
+import java.util.Arrays;
+
+public enum KnownDb {
+	MARIADB("mariadb"), POSTGRESQL("postgresql"), SQLITE("sqlite"), MYSQL("mysql");
+
+	public final String label;
+
+	KnownDb(String label) {
+		this.label = label;
 	}
 
-	@Override
-	public String getConnectionURI() {
-
-		if(!(authUsername == null || authPassword == null)) {
-			String dataSourceServerUrl = getServerUrl();
-			return dataSourceServerUrl + (dataSourceServerUrl.contains("?")? "&" : "?") + "authUsername=" + authUsername + "&authPassword=" + authPassword+"&authMethod=Basic&authenticationPreemptive=true";
-		}
-
-		return getServerUrl();
+	public static KnownDb fromLabel(String label) {
+		return Arrays.stream(values())
+				.filter(db -> db.label.equalsIgnoreCase(label))
+				.findFirst()
+				.orElseThrow(() -> new IllegalArgumentException("Unknown Database: " + label));
 	}
 }
