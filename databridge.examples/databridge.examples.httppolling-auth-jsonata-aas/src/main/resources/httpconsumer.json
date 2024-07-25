@@ -1,0 +1,14 @@
+[
+  {
+    "uniqueId": "httpsource1",
+    "serverUrl": "http://127.0.0.1:8070/value1",
+    "authUsername": "demoUsername",
+    "authPassword": "demoPassword"
+  },
+  {
+    "uniqueId": "httpsource2",
+    "serverUrl": "http://127.0.0.1:8070/value2",
+    "authUsername": "demoUsername",
+    "authPassword": "demoPassword"
+  }
+]

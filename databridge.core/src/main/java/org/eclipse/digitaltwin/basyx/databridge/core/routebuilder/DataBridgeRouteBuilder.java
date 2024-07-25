@@ -26,6 +26,7 @@ package org.eclipse.digitaltwin.basyx.databridge.core.routebuilder;
 
 import java.util.Map;
 
+import org.apache.camel.CamelContextAware;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.tooling.model.Strings;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.core.IRouteCreator;
@@ -37,7 +38,7 @@ import org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.core.Ro
  * This factory is used to create the apache camel routes for the data bridge
  * component
  *
- * @author fischer
+ * @author fischer, mateusmolina
  *
  */
 public class DataBridgeRouteBuilder extends RouteBuilder {
@@ -55,6 +56,8 @@ public class DataBridgeRouteBuilder extends RouteBuilder {
 		for (RouteConfiguration routeConfig : routesConfiguration.getRoutes()) {
 			IRouteCreator routeCreator = routeCreatorFactoryMap.get(routeConfig.getRouteTrigger()).create(this, routesConfiguration);
 
+			setCamelContextInRouteEntities();
+
 			routeCreator.addRouteToRouteBuilder(routeConfig);
 		}
 	}
@@ -69,5 +72,11 @@ public class DataBridgeRouteBuilder extends RouteBuilder {
 		}
 
 		return routesConfiguration;
+	}
+
+	private void setCamelContextInRouteEntities() {
+		routesConfiguration.getDatasinks().entrySet().forEach(c -> CamelContextAware.trySetCamelContext(c.getValue(), getCamelContext()));
+		routesConfiguration.getDatasources().entrySet().forEach(c -> CamelContextAware.trySetCamelContext(c.getValue(), getCamelContext()));
+		routesConfiguration.getTransformers().entrySet().forEach(c -> CamelContextAware.trySetCamelContext(c.getValue(), getCamelContext()));
 	}
 }

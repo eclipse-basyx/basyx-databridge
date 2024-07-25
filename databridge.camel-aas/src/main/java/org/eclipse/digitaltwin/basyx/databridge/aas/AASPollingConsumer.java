@@ -25,6 +25,7 @@
 
 package org.eclipse.digitaltwin.basyx.databridge.aas;
 
+import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -36,6 +37,13 @@ import java.util.concurrent.TimeUnit;
 import org.apache.camel.Exchange;
 import org.apache.camel.support.DefaultMessage;
 import org.apache.camel.support.PollingConsumerSupport;
+import org.apache.http.ParseException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.eclipse.basyx.submodel.metamodel.connected.ConnectedSubmodel;
 import org.eclipse.basyx.submodel.metamodel.connected.submodelelement.dataelement.ConnectedProperty;
 import org.eclipse.basyx.submodel.metamodel.facade.SubmodelElementMapCollectionConverter;
@@ -44,6 +52,7 @@ import org.eclipse.basyx.vab.coder.json.serialization.GSONTools;
 import org.eclipse.basyx.vab.modelprovider.VABElementProxy;
 import org.eclipse.basyx.vab.modelprovider.api.IModelProvider;
 import org.eclipse.basyx.vab.protocol.http.connector.HTTPConnectorFactory;
+import org.eclipse.digitaltwin.basyx.databridge.aas.api.ApiType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -143,17 +152,36 @@ public class AASPollingConsumer extends PollingConsumerSupport {
 	 * Get serialized metamodel
 	 * @return serialized meta model
 	 */
-	private String getSerializedMetamodel() {
-		
-		if (!getEndpoint().getPropertyPath().isEmpty()) {
-			ConnectedProperty prop = new ConnectedProperty(this.proxy);
-			return new GSONTools(new DefaultTypeFactory()).serialize(prop.getLocalCopy());
+	private String getSerializedMetamodel() throws IOException {
+		if(this.endpoint.getApi() == ApiType.BASYX) {
+			if (!getEndpoint().getPropertyPath().isEmpty()) {
+				ConnectedProperty prop = new ConnectedProperty(this.proxy);
+				return new GSONTools(new DefaultTypeFactory()).serialize(prop.getLocalCopy());
+			}
+
+			ConnectedSubmodel sm = new ConnectedSubmodel(this.proxy);
+			return new GSONTools(new DefaultTypeFactory()).serialize(SubmodelElementMapCollectionConverter.smToMap(sm.getLocalCopy()));
+		}else{
+			String metamodelUrl = getMetamodelUrl().substring(2);
+			return EntityUtils.toString(executeGetOnURL(metamodelUrl).getEntity(), "UTF-8");
 		}
-    	
-		ConnectedSubmodel sm = new ConnectedSubmodel(this.proxy);
-		return new GSONTools(new DefaultTypeFactory()).serialize(SubmodelElementMapCollectionConverter.smToMap(sm.getLocalCopy()));
 	}
-	
+
+	private static CloseableHttpResponse executeGetOnURL(String url) throws IOException {
+		CloseableHttpClient client = HttpClients.createDefault();
+		HttpGet getRequest = createGetRequestWithHeader(url);
+
+		return client.execute(getRequest);
+	}
+
+	private static HttpGet createGetRequestWithHeader(String url) {
+		HttpGet aasCreateRequest = new HttpGet(url);
+		aasCreateRequest.setHeader("Content-type", "application/json");
+		aasCreateRequest.setHeader("Accept", "application/json");
+
+		return aasCreateRequest;
+	}
+
 	/**
 	 * Get metamodel url
 	 * @return url
