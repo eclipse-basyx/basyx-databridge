@@ -36,7 +36,8 @@ public class TestrDatabeidgeMultipleDataSinks extends TestDataBridgeMqtt {
 	
 	@BeforeClass
 	public static void setUp() throws IOException {
-		TestDataBridgeMqtt.setUp();
+		TestDataBridgeMqtt.configureAndStartAASServer();
+		TestDataBridgeMqtt.startMqttBroker();
 		startUpdaterComponent();
 	}
 	

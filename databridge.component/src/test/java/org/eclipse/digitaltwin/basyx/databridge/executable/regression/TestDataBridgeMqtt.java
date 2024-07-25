@@ -71,7 +71,7 @@ public class TestDataBridgeMqtt extends DataBridgeSuiteMqtt {
 		startUpdaterComponent();
 	}
 
-	private static void startMqttBroker() throws IOException {
+	protected static void startMqttBroker() throws IOException {
 		mqttBroker = new Server();
 		
 		IResourceLoader classpathLoader = new ClasspathResourceLoader();
@@ -80,7 +80,7 @@ public class TestDataBridgeMqtt extends DataBridgeSuiteMqtt {
 		mqttBroker.startServer(classPathConfig);
 	}
 	
-	private static void configureAndStartAASServer() {
+	protected static void configureAndStartAASServer() {
 		BaSyxContextConfiguration aasContextConfig = new BaSyxContextConfiguration(4001, "");
 		
 		BaSyxAASServerConfiguration aasConfig = new BaSyxAASServerConfiguration(AASServerBackend.INMEMORY, "aasx/updatertest.aasx");
