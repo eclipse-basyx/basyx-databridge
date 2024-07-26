@@ -105,7 +105,9 @@ public class TestAASUpdater {
 		HttpGet request = new HttpGet("http://localhost:8090/valueA");
 		CloseableHttpResponse resp = client.execute(request);
 
-		return EntityUtils.toString(resp.getEntity());
+		String content = EntityUtils.toString(resp.getEntity());
+		client.close();
+		return content;
 	}
 	
 	private static String getResponseBody() {
