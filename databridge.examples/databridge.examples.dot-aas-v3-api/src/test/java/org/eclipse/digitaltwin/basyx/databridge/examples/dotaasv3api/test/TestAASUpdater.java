@@ -59,55 +59,55 @@ import io.moquette.broker.config.IResourceLoader;
 import io.moquette.broker.config.ResourceLoaderConfig;
 
 public class TestAASUpdater {
-	
+
 	private static final String PROPERTY_INTEGER_VALUE = "\"0.75\"";
 	private static final String PROPERTY_INTEGER_VALUE_PATH = "/submodels/c3VibW9kZWxJZA==/submodel-elements/DotAASV3ConformantApiSMC.DotAASV3ConformantApiProperty/$value";
 	private static final String PROPERTY_STRING_VALUE = "\"Bowler Hat\"";
 	private static final String PROPERTY_STRING_VALUE_PATH = "/submodels/c3VibW9kZWxJZA==/submodel-elements/DotAASV3ConformantApiSMC.DotAASV3ConformantApiStringProperty/$value";
 
 	private static Logger logger = LoggerFactory.getLogger(TestAASUpdater.class);
-	
+
 	private static DataBridgeComponent updater;
 	protected static Server mqttBroker;
-	
+
 	private static ClientAndServer mockServer;
 
 	@BeforeClass
 	public static void setUp() throws IOException {
 		configureAndStartMockserver();
-		
+
 		configureAndStartMqttBroker();
-		
+
 		configureAndStartUpdaterComponent();
 	}
-	
+
 	@AfterClass
 	public static void tearDown() {
 		updater.stopComponent();
 		mockServer.close();
 	}
-	
+
 	@Test
 	public void getDotAASV3ConformantPropertyIntegerValue() throws MqttSecurityException, MqttPersistenceException, MqttException, InterruptedException {
 		publishNewDatapoint("DotAASV3ConformantProperty");
-		
+
 		waitForPropagation();
-		
+
 		verifyPropertyValueUpdateRequestIntegerValue();
 	}
-	
+
 	@Test
 	public void getDotAASV3ConformantPropertyStringValue() throws MqttSecurityException, MqttPersistenceException, MqttException, InterruptedException {
 		publishNewDatapoint("DotAASV3ConformantPropertyStringValue");
-		
+
 		waitForPropagation();
-		
+
 		verifyPropertyValueUpdateRequestStringValue();
 	}
 
 	private static void configureAndStartMockserver() {
 		mockServer = ClientAndServer.startClientAndServer(4001);
-		
+
 		createExpectationForPatchRequestForIntegerValue();
 
 		createExpectationForPatchRequestForStringValue();
@@ -139,7 +139,7 @@ public class TestAASUpdater {
 
 	private void publishNewDatapoint(String topic) throws MqttException, MqttSecurityException, MqttPersistenceException {
 		logger.info("Publishing event to {}", topic);
-		
+
 		String json = "{\"Account\":{\"Account Name\":\"Firefly\",\"Order\":[{\"OrderID\":\"order103\",\"Product\":[{\"Product Name\":\"Bowler Hat\",\"ProductID\":858383,\"SKU\":\"0406654608\",\"Description\":{\"Colour\":\"Purple\",\"Width\":300,\"Height\":200,\"Depth\":210,\"Weight\":0.75},\"Price\":34.45,\"Quantity\":2},{\"Product Name\":\"Trilby hat\",\"ProductID\":858236,\"SKU\":\"0406634348\",\"Description\":{\"Colour\":\"Orange\",\"Width\":300,\"Height\":200,\"Depth\":210,\"Weight\":0.6},\"Price\":21.67,\"Quantity\":1}]},{\"OrderID\":\"order104\",\"Product\":[{\"Product Name\":\"Bowler Hat\",\"ProductID\":858383,\"SKU\":\"040657863\",\"Description\":{\"Colour\":\"Purple\",\"Width\":300,\"Height\":200,\"Depth\":210,\"Weight\":0.75},\"Price\":34.45,\"Quantity\":4},{\"ProductID\":345664,\"SKU\":\"0406654603\",\"Product Name\":\"Cloak\",\"Description\":{\"Colour\":\"Black\",\"Width\":30,\"Height\":20,\"Depth\":210,\"Weight\":2},\"Price\":107.99,\"Quantity\":1}]}]}}";
 		MqttClient mqttClient = new MqttClient("tcp://localhost:1884", "testClient", new MemoryPersistence());
 		mqttClient.connect();
@@ -154,36 +154,40 @@ public class TestAASUpdater {
 		final IConfig classPathConfig = new ResourceLoaderConfig(classpathLoader);
 		mqttBroker.startServer(classPathConfig);
 	}
-	
+
 	@SuppressWarnings("resource")
 	private static void createExpectationForPatchRequestForIntegerValue() {
-		new MockServerClient("localhost", 4001)
-				.when(request().withMethod("PATCH").withPath(PROPERTY_INTEGER_VALUE_PATH)
-						.withBody(PROPERTY_INTEGER_VALUE).withHeader("Content-Type", "application/json"))
+		new MockServerClient("localhost", 4001).when(request().withMethod("PATCH")
+				.withPath(PROPERTY_INTEGER_VALUE_PATH)
+				.withBody(PROPERTY_INTEGER_VALUE)
+				.withHeader("Content-Type", "application/json"))
 				.respond(response().withStatusCode(HttpStatus.SC_CREATED)
 						.withHeaders(new Header("Content-Type", "application/json; charset=utf-8")));
 	}
-	
+
 	@SuppressWarnings("resource")
 	private static void createExpectationForPatchRequestForStringValue() {
-		new MockServerClient("localhost", 4001)
-		.when(request().withMethod("PATCH").withPath(PROPERTY_STRING_VALUE_PATH)
-				.withBody(PROPERTY_STRING_VALUE).withHeader("Content-Type", "application/json"))
-		.respond(response().withStatusCode(HttpStatus.SC_CREATED)
-				.withHeaders(new Header("Content-Type", "application/json; charset=utf-8")));
+		new MockServerClient("localhost", 4001).when(request().withMethod("PATCH")
+				.withPath(PROPERTY_STRING_VALUE_PATH)
+				.withBody(PROPERTY_STRING_VALUE)
+				.withHeader("Content-Type", "application/json"))
+				.respond(response().withStatusCode(HttpStatus.SC_CREATED)
+						.withHeaders(new Header("Content-Type", "application/json; charset=utf-8")));
 	}
 
 	@SuppressWarnings("resource")
 	private void verifyPropertyValueUpdateRequestIntegerValue() {
 		new MockServerClient("localhost", 4001).verify(request().withMethod("PATCH")
-				.withPath(PROPERTY_INTEGER_VALUE_PATH).withHeader("Content-Type", "application/json")
+				.withPath(PROPERTY_INTEGER_VALUE_PATH)
+				.withHeader("Content-Type", "application/json")
 				.withBody(PROPERTY_INTEGER_VALUE), VerificationTimes.exactly(1));
 	}
-	
+
 	@SuppressWarnings("resource")
 	private void verifyPropertyValueUpdateRequestStringValue() {
 		new MockServerClient("localhost", 4001).verify(request().withMethod("PATCH")
-				.withPath(PROPERTY_STRING_VALUE_PATH).withHeader("Content-Type", "application/json")
+				.withPath(PROPERTY_STRING_VALUE_PATH)
+				.withHeader("Content-Type", "application/json")
 				.withBody(PROPERTY_STRING_VALUE), VerificationTimes.exactly(1));
 	}
 }

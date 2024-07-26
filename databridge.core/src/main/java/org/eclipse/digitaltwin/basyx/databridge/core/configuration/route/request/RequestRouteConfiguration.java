@@ -25,6 +25,7 @@
 package org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.request;
 
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.core.RouteConfiguration;
 import org.springframework.http.HttpMethod;
@@ -51,6 +52,10 @@ public class RequestRouteConfiguration extends RouteConfiguration {
 
 	public RequestRouteConfiguration(String datasource, List<String> transformers, List<String> datasinks) {
 		super(ROUTE_TRIGGER, datasource, transformers, datasinks);
+	}
+
+	public RequestRouteConfiguration(String datasource, List<String> transformers, List<String> datasinks, Map<String, String[]> datasinkMapping) {
+		super(ROUTE_TRIGGER, datasource, transformers, datasinks, datasinkMapping);
 	}
 
 	public RequestRouteConfiguration(RouteConfiguration configuration) {
@@ -85,7 +90,6 @@ public class RequestRouteConfiguration extends RouteConfiguration {
 	}
 
 	public String getRequestEndpointURI() {
-		return REQUEST_COMPONENT + ":" + REQUEST_PROTOCOL + "://" + getHost() + ":" + getPort() + getPath() + "?"
-				+ HTTP_METHOD_RESTRICT_PARAMETER;
+		return REQUEST_COMPONENT + ":" + REQUEST_PROTOCOL + "://" + getHost() + ":" + getPort() + getPath() + "?" + HTTP_METHOD_RESTRICT_PARAMETER;
 	}
 }

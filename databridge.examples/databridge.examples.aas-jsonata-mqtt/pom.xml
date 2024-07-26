@@ -38,7 +38,7 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>
 			<version>2.0.11</version>
-			<scope>test</scope>	
+			<scope>test</scope>
 		</dependency>
 
 		<dependency>
@@ -51,28 +51,28 @@
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
 			<artifactId>databridge.camel-aas</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
-			<scope>test</scope>	
+			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>com.fasterxml.jackson.datatype</groupId>
 			<artifactId>jackson-datatype-jsr310</artifactId>
 			<version>2.15.0</version>
-			<scope>test</scope>	
+			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
 			<artifactId>databridge.camel-timer</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
-			<scope>test</scope>	
+			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
 			<artifactId>databridge.camel-paho</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
-			<scope>test</scope>	
+			<scope>test</scope>
 		</dependency>
 
 		<!-- BaSyx SDK -->
@@ -149,7 +149,15 @@
 			<groupId>org.eclipse.basyx</groupId>
 			<artifactId>basyx.components.AASServer</artifactId>
 			<version>1.2.0</version>
-			<scope>test</scope>	
+			<scope>test</scope>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.awaitility/awaitility -->
+		<dependency>
+			<groupId>org.awaitility</groupId>
+			<artifactId>awaitility</artifactId>
+			<version>4.2.0</version>
+			<scope>test</scope>
 		</dependency>
 
 	</dependencies>

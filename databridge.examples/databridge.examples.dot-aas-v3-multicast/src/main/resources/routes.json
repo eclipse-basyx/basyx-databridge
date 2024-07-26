@@ -1,0 +1,28 @@
+[
+	{
+		"datasource": "mqttSource",
+		"transformers": 
+		[
+			"processId",
+			"processResult",
+			"processData",
+			"processDuration"
+		],
+		"datasinks":
+		[
+			"process/processId",
+			"process/processResult",
+			"process/processData",
+			"process/processData_raw",
+			"process/processDuration"
+		],
+		"datasinkMappingConfiguration":
+		{
+			"process/processId": ["processId"],
+			"process/processResult": ["processResult"],
+			"process/processData": ["processData"],
+			"process/processDuration": ["processData", "processDuration"]
+		},
+		"trigger": "event"
+	}
+]

@@ -1,0 +1,26 @@
+[
+	{
+		"uniqueId": "processId",
+		"queryPath": "processId.jsonata",
+		"inputType": "JsonString",
+		"outputType": "JsonString"
+	},
+	{
+		"uniqueId": "processResult",
+		"queryPath": "processResult.jsonata",
+		"inputType": "JsonString",
+		"outputType": "JsonString"
+	},
+	{
+		"uniqueId": "processData",
+		"queryPath": "processData.jsonata",
+		"inputType": "JsonString",
+		"outputType": "JsonString"
+	},
+	{
+		"uniqueId": "processDuration",
+		"queryPath": "processDuration.jsonata",
+		"inputType": "JsonString",
+		"outputType": "JsonString"
+	}
+]

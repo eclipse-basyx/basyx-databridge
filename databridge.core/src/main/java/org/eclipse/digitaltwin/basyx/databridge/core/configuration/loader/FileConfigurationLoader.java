@@ -95,6 +95,7 @@ public class FileConfigurationLoader {
 	 * file path and the resource loader
 	 * @return
 	 */
+	@SuppressWarnings("resource")
 	private InputStreamReader getJsonReader() {
 
 		InputStream stream = null;

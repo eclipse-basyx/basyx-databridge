@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2023 the Eclipse BaSyx Authors
+ * Copyright (C) 2024 the Eclipse BaSyx Authors
  * 
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -24,7 +24,14 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.request;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.model.MulticastDefinition;
 import org.apache.camel.model.RouteDefinition;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.delegator.handler.ResponseOkCodeHandler;
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.core.AbstractRouteCreator;
@@ -34,7 +41,7 @@ import org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.core.Ro
 /**
  * Configures and creates the request route
  *
- * @author danish
+ * @author danish, jungjan
  *
  */
 public class RequestRouteCreator extends AbstractRouteCreator {
@@ -45,21 +52,43 @@ public class RequestRouteCreator extends AbstractRouteCreator {
 	}
 
 	@Override
-	protected void configureRoute(RouteConfiguration routeConfig, String dataSourceEndpoint, String[] dataSinkEndpoints,
-			String[] dataTransformerEndpoints, String routeId) {
-		String delegatorEndpoint = ((RequestRouteConfiguration) routeConfig).getRequestEndpointURI();
-
-		RouteDefinition routeDefinition = createRoute(dataSourceEndpoint, routeId, delegatorEndpoint);
+	protected void configureRoute(RouteConfiguration routeConfig, String dataSourceEndpoint, String[] dataSinkEndpoints, String[] dataTransformerEndpoints, String routeId) {
+		RouteDefinition routeDefinition = startRouteDefinition((RequestRouteConfiguration) routeConfig, dataSourceEndpoint, routeId);
 
 		if (!(dataTransformerEndpoints == null || dataTransformerEndpoints.length == 0)) {
-			routeDefinition.to(dataTransformerEndpoints).log("Transformer : " + routeId);
+			routeDefinition.to(dataTransformerEndpoints)
+					.log("Transformer : " + routeId);
 		}
-
-		routeDefinition.bean(new ResponseOkCodeHandler());
+		routeDefinition.to(dataSinkEndpoints)
+				.bean(new ResponseOkCodeHandler());
 	}
 
-	private RouteDefinition createRoute(String dataSourceEndpoint, String routeId, String delegatorEndpoint) {
-		return getRouteBuilder().from(delegatorEndpoint).routeId(routeId).pollEnrich(dataSourceEndpoint, TIMEOUT)
+	@Override
+	protected void configureRoute(RouteConfiguration routeConfig, String dataSourceEndpoint, String[] dataSinkEndpoints, String[] dataTransformerEndpoints, Map<String, String[]> dataSinkMapping, String routeId) {
+		MulticastDefinition routeDefinition = startRouteDefinition((RequestRouteConfiguration) routeConfig, dataSourceEndpoint, routeId).multicast();
+		dataSinkMapping.forEach((dataSink, dataTransformers) -> routeDefinition.pipeline()
+				.to(dataTransformers)
+				.to(dataSink)
+				.to("log:" + routeId));
+
+		getUnmappedEndpoints(dataSinkEndpoints, dataSinkMapping).forEach(dataSink -> routeDefinition.to(dataSink)
+				.to("log: " + routeId));
+
+		routeDefinition.end()
+				.bean(new ResponseOkCodeHandler());
+	}
+
+	private List<String> getUnmappedEndpoints(String[] dataSinkEndpoints, Map<String, String[]> dataSinkMapping) {
+		return Arrays.stream(dataSinkEndpoints)
+				.filter(Predicate.not(dataSinkMapping::containsKey))
+				.collect(Collectors.toList());
+	}
+
+	private RouteDefinition startRouteDefinition(RequestRouteConfiguration requestRouteConfig, String dataSourceEndpoint, String routeId) {
+		String delegatorEndpoint = requestRouteConfig.getRequestEndpointURI();
+		return getRouteBuilder().from(delegatorEndpoint)
+				.routeId(routeId)
+				.pollEnrich(dataSourceEndpoint, TIMEOUT)
 				.log("Source : " + routeId);
 	}
 }

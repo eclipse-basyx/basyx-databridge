@@ -25,11 +25,12 @@
 package org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.event;
 
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.digitaltwin.basyx.databridge.core.configuration.route.core.RouteConfiguration;
 
 /**
- * A connection of a single route (source, transformer(s), sink(s))
+ * A connection of a single route (source, transformer(s), sink(s), sinkmapper(s)
  *
  * @author haque, fischer
  *
@@ -39,6 +40,10 @@ public class EventRouteConfiguration extends RouteConfiguration {
 
 	public EventRouteConfiguration(String datasource, List<String> transformers, List<String> datasinks) {
 		super(ROUTE_TRIGGER, datasource, transformers, datasinks);
+	}
+	
+	public EventRouteConfiguration(String datasource, List<String> transformers, List<String> datasinks, Map<String, String[]> datasinkMapping) {
+		super(ROUTE_TRIGGER, datasource, transformers, datasinks, datasinkMapping);
 	}
 
 	public EventRouteConfiguration(RouteConfiguration configuration) {
