@@ -32,7 +32,7 @@ import org.junit.BeforeClass;
 /**
  * @author jungjan
  */
-public class TestDatabeidgeMultipleDataSinks extends TestDataBridgeMqtt {
+public class TestDataBridgeMultipleDataSinks extends TestDataBridgeMqtt {
 	
 	@BeforeClass
 	public static void setUp() throws IOException {
