@@ -1,0 +1,16 @@
+[
+	{
+		"datasource": "sqlsource",
+		"transformers": [
+			"dataValueToJson",
+			"jsonataA"
+		],
+		"datasinks": [
+			"value"
+		],
+		"trigger": "timer",
+		"triggerData": {
+			"timerName": "timer1"
+		}
+	}
+]
