@@ -18,6 +18,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
 		<basyx.databridge.executable>org.eclipse.digitaltwin.basyx.databridge.component.DataBridgeExecutable</basyx.databridge.executable>
+		<docker.image.name>databridge</docker.image.name>
 	</properties>
 
 	<!-- Define additional plugins that are not included by default -->
@@ -58,13 +59,6 @@
 					<excludes>
 						<exclude>**/logback.xml</exclude>
 					</excludes>
-					<executions>
-						<execution>
-							<goals>
-								<goal>test-jar</goal>
-							</goals>
-						</execution>
-					</executions>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -87,106 +81,106 @@
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
 			<artifactId>databridge.camel-paho</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${revision}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
 			<artifactId>databridge.camel-aas</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${revision}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
 			<artifactId>databridge.camel-jsonata</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${revision}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
 			<artifactId>databridge.camel-activemq</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${revision}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
 			<artifactId>databridge.camel-hono</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${revision}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
 			<artifactId>databridge.camel-httppolling</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${revision}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
 			<artifactId>databridge.camel-kafka</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${revision}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
 			<artifactId>databridge.camel-opcua</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${revision}</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
 			<artifactId>databridge.camel-sql</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${revision}</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
 			<artifactId>databridge.camel-timer</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${revision}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
 			<artifactId>databridge.camel-jsonjackson</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${revision}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
 			<artifactId>databridge.camel-plc4x</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${revision}</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
 			<artifactId>databridge.examples.plc4x-jsonata-aas</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${revision}</version>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
 			<artifactId>databridge.examples.aas-jsonata-mqtt</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${revision}</version>
 			<scope>test</scope>
 		</dependency>
 		
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
 			<artifactId>databridge.examples.sql-jsonata-aas</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${revision}</version>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
 			<artifactId>databridge.examples.aas-jsonata-http</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${revision}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
 			<artifactId>databridge.examples.httpserver</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${revision}</version>
 		</dependency>
 
 		<dependency>
@@ -294,7 +288,7 @@
 		<profile>
 			<!-- "Docker" profile - do not build & install docker images by default 
 				Run "mvn install -Pdocker" in order to include docker -->
-			<id>docker</id>
+			<id>docker-push</id>
 			<build>
 				<plugins>
 					<!-- Read maven properties from file -->
@@ -340,28 +334,12 @@
 					<plugin>
 						<groupId>io.fabric8</groupId>
 						<artifactId>docker-maven-plugin</artifactId>
-						<version>0.43.2</version>
-						<configuration>
-							<images>
-								<image>
-									<name>${BASYX_IMAGE_NAME}:${BASYX_IMAGE_TAG}</name>
-									<build>
-										<contextDir>${project.basedir}</contextDir>
-										<args>
-											<JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
-										</args>
-									</build>
-								</image>
-							</images>
-							<verbose>true</verbose>
-						</configuration>
 						<executions>
 							<execution>
-								<id>docker:build</id>
-								<phase>package</phase>
-								<goals>
-									<goal>build</goal>
-								</goals>
+								<id>build-docker</id>
+							</execution>
+							<execution>
+								<id>push-docker</id>
 							</execution>
 						</executions>
 					</plugin>
@@ -376,8 +354,8 @@
 							<detachedMode>true</detachedMode>
 							<envFile>${project.basedir}/src/test/resources/.env</envFile>
 							<envVars>
-								<BASYX_IMAGE_TAG>${BASYX_IMAGE_TAG}</BASYX_IMAGE_TAG>
-								<BASYX_IMAGE_NAME>${BASYX_IMAGE_NAME}</BASYX_IMAGE_NAME>
+								<BASYX_IMAGE_TAG>${docker.image.tag}</BASYX_IMAGE_TAG>
+								<BASYX_IMAGE_NAME>${docker.namespace}/${docker.image.name}</BASYX_IMAGE_NAME>
 								<VOLUME_MAPPING>${project.basedir}/src/test/resources/mqtt</VOLUME_MAPPING>
 							</envVars>
 						</configuration>

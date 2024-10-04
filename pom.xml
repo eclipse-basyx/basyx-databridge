@@ -33,6 +33,7 @@
 			<url>https://opensource.org/licenses/MIT</url>
 		</license>
 	</licenses>
+
 	<developers>
 		<developer>
 			<organization>Fraunhofer-Gesellschaft zur Foerderung der angewandten Forschung e.V.</organization>
@@ -41,11 +42,17 @@
 			<email>frank.schnicke@iese.fraunhofer.de</email>
 		</developer>
 	</developers>
+
 	<properties>
 		<java.version>11</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<revision>0.0.1-SNAPSHOT</revision>
+		<revision>1.0.0-SNAPSHOT</revision>
+		<docker.provenance />
+		<docker.namespace>eclipsebasyx</docker.namespace>
+		<docker.image.name>NOT_DEFINED_IN_MODULE</docker.image.name>
+		<docker.image.tag>${revision}</docker.image.tag>
+		<docker.target.platforms>linux/amd64, linux/arm64/v8</docker.target.platforms>
 		<camel.version>3.21.0</camel.version>
 	</properties>
 
@@ -76,6 +83,70 @@
 				</executions>
 			</plugin>
 		</plugins>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>io.fabric8</groupId>
+					<artifactId>docker-maven-plugin</artifactId>
+					<version>0.45.1</version>
+					<configuration>
+						<images>
+							<image>
+								<name>
+									${docker.namespace}/${docker.image.name}:${docker.image.tag}</name>
+								<registry>docker.io</registry>
+								<build>
+									<contextDir>${project.basedir}</contextDir>
+									<args>
+									</args>
+									<labels>
+										<maven.version>${project.version}</maven.version>
+										<maven.build.timestamp>
+											${maven.build.timestamp}</maven.build.timestamp>
+									</labels>
+									<noCache>true</noCache>
+									<buildx>
+										<platforms>
+											${docker.target.platforms}
+										</platforms>
+									</buildx>
+								</build>
+							</image>
+						</images>
+						<verbose>true</verbose>
+					</configuration>
+					<executions>
+						<execution>
+							<id>build-docker</id>
+							<phase>package</phase>
+							<goals>
+								<goal>build</goal>
+							</goals>
+						</execution>
+						<execution>
+							<id>push-docker</id>
+							<phase>deploy</phase>
+							<goals>
+								<goal>build</goal>
+								<goal>push</goal>
+							</goals>
+							<configuration>
+								<images>
+									<image>
+										<build>
+											<buildx>
+												<platforms>
+													${docker.target.platforms}</platforms>
+											</buildx>
+										</build>
+									</image>
+								</images>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 	
 	<dependencyManagement>
@@ -89,4 +160,41 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
+
+	<profiles>
+		<profile>
+			<id>docker-push</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>io.fabric8</groupId>
+						<artifactId>docker-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>push-docker</id>
+								<phase>package</phase>
+								<goals>
+									<goal>build</goal>
+									<goal>push</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.eclipse.dash</groupId>
+						<artifactId>license-tool-plugin</artifactId>
+						<version>1.1.1-SNAPSHOT</version>
+						<executions>
+							<execution>
+								<id>license-check</id>
+								<goals>
+									<goal>license-check</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
