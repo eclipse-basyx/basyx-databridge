@@ -52,7 +52,7 @@
 		<docker.namespace>eclipsebasyx</docker.namespace>
 		<docker.image.name>NOT_DEFINED_IN_MODULE</docker.image.name>
 		<docker.image.tag>${revision}</docker.image.tag>
-		<docker.target.platforms>linux/amd64, linux/arm64/v8</docker.target.platforms>
+		<docker.target.platforms>linux/amd64, linux/arm64, linux/arm/v7</docker.target.platforms>
 		<camel.version>3.21.0</camel.version>
 	</properties>
 
