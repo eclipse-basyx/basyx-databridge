@@ -52,7 +52,7 @@
 		<dependency>
             <groupId>org.eclipse.digitaltwin.basyx</groupId>
             <artifactId>databridge.camel-httppolling</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${revision}</version>
         </dependency>
         
         <dependency>
@@ -70,7 +70,7 @@
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
 			<artifactId>databridge.camel-jsonata</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${revision}</version>
 		</dependency>
 		
 		<!-- https://mvnrepository.com/artifact/org.glassfish.main.javaee-api/javax.jms -->

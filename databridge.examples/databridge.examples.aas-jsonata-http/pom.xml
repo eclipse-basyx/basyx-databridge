@@ -58,28 +58,28 @@
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
 			<artifactId>databridge.camel-aas</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${revision}</version>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
 			<artifactId>databridge.camel-httppolling</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${revision}</version>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
 			<artifactId>databridge.camel-timer</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${revision}</version>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
 			<artifactId>databridge.examples.httpserver</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${revision}</version>
 		</dependency>
 
 		<!-- BaSyx SDK -->
@@ -135,7 +135,7 @@
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
 			<artifactId>databridge.camel-jsonata</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${revision}</version>
 		</dependency>
 
 		<dependency>
