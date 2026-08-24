@@ -1,0 +1,12 @@
+[
+	{
+		"uniqueId": "route_1",
+		"datasource": "ConnectedSubmodel/ConnectedProperty",
+		"transformers": ["jsonataValue"],
+		"datasinks": ["property1"],
+		"trigger": "timer",
+		"triggerData":{
+			"timerName": "timer1"
+		}
+	}
+]

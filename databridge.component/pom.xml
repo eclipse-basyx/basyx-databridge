@@ -257,6 +257,30 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		
+		<!-- Kafka for testing Kafka Consumer -->
+			<!-- https://mvnrepository.com/artifact/org.apache.kafka/kafka-clients -->
+			<dependency>
+				<groupId>org.apache.kafka</groupId>
+				<artifactId>kafka-clients</artifactId>
+				<version>3.4.0</version>
+				<scope>test</scope>
+			</dependency>
+	
+			<!-- https://mvnrepository.com/artifact/org.apache.kafka/kafka -->
+			<dependency>
+				<groupId>org.apache.kafka</groupId>
+				<artifactId>kafka_2.13</artifactId>
+				<version>3.4.0</version>
+				<scope>test</scope>
+			</dependency>
+			<!-- Zookeeper server -->
+			<dependency>
+				<groupId>org.apache.curator</groupId>
+				<artifactId>curator-test</artifactId>
+				<version>5.5.0</version>
+				<scope>test</scope>
+			</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.awaitility/awaitility -->
 		<dependency>

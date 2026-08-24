@@ -1,0 +1,14 @@
+[
+	{
+		"uniqueId": "property1",
+		"serverUrl": "localhost",
+		"serverPort": 9092,
+		"topic": "first-topic",
+		"groupId": "basyx-updater",
+		"seekTo": "BEGINNING",
+		"maxPublishRecords": 5000,
+		"producersCount": 1,
+		"bufferMemorySize": 33554432,
+		"maxRequestSize": 1048576
+	}
+]

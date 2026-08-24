@@ -1,44 +1,42 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.eclipse.digitaltwin.basyx</groupId>
-		<artifactId>databridge.parent</artifactId>
-		<version>${revision}</version>
-	</parent>
-	<artifactId>databridge.examples</artifactId>
-	<name>DataBridge Examples</name>
-
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-	</properties>
-
-	<modules>
-		<module>databridge.examples.aas-jsonata-mqtt</module>
-		<module>databridge.examples.dot-aas-v3-jsonata-mqtt</module>
-		<module>databridge.examples.aas-jsonata-http</module>
-		<module>databridge.examples.aas-jsonata-opcua</module>
-		<module>databridge.examples.aasserver</module>
-		<module>databridge.examples.kafkaproducer</module>
-		<module>databridge.examples.activemqproducer</module>
-		<module>databridge.examples.debsdatagenerator</module>
-		<module>databridge.examples.kafka-jsonata-aas</module>
-		<module>databridge.examples.hono-jsonata-aas</module>
-		<module>databridge.examples.kafka-jsonatamultiple-aas</module>
-		<module>databridge.examples.activemq-jsonata-aas</module>
-		<module>databridge.examples.mqtt-jsonata-aas</module>
-		<module>databridge.examples.httpserver</module>
-		<module>databridge.examples.opcua-jackson-jsonata-aas</module>
-		<module>databridge.examples.httppolling-jsonata-aas</module>
-		<module>databridge.examples.httppolling-jsonata-delegator</module>
-		<module>databridge.examples.httppolling-auth-jsonata-aas</module>
-		<module>databridge.examples.plc4x-jsonata-aas</module>
-		<module>databridge.examples.dot-aas-v3-api</module>
-		<module>databridge.examples.mqtt-aas_range_and_mlp</module>
-		<module>databridge.examples.dot-aas-v3-multicast</module>
-		<module>databridge.examples.dot-aas-v3-multiroute</module>
-		<module>databridge.examples.sql-jsonata-aas</module>
-	</modules>
-	<packaging>pom</packaging>
+<?xml version="1.0" encoding="UTF-8"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.eclipse.digitaltwin.basyx</groupId>
+    <artifactId>databridge.parent</artifactId>
+    <version>${revision}</version>
+  </parent>
+  <artifactId>databridge.examples</artifactId>
+  <name>DataBridge Examples</name>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+  </properties>
+  <modules>
+    <module>databridge.examples.aas-jsonata-mqtt</module>
+    <module>databridge.examples.dot-aas-v3-jsonata-mqtt</module>
+    <module>databridge.examples.aas-jsonata-http</module>
+    <module>databridge.examples.aas-jsonata-opcua</module>
+    <module>databridge.examples.aasserver</module>
+    <module>databridge.examples.kafkaproducer</module>
+    <module>databridge.examples.activemqproducer</module>
+    <module>databridge.examples.debsdatagenerator</module>
+    <module>databridge.examples.kafka-jsonata-aas</module>
+    <module>databridge.examples.hono-jsonata-aas</module>
+    <module>databridge.examples.kafka-jsonatamultiple-aas</module>
+    <module>databridge.examples.activemq-jsonata-aas</module>
+    <module>databridge.examples.mqtt-jsonata-aas</module>
+    <module>databridge.examples.httpserver</module>
+    <module>databridge.examples.opcua-jackson-jsonata-aas</module>
+    <module>databridge.examples.httppolling-jsonata-aas</module>
+    <module>databridge.examples.httppolling-jsonata-delegator</module>
+    <module>databridge.examples.httppolling-auth-jsonata-aas</module>
+    <module>databridge.examples.plc4x-jsonata-aas</module>
+    <module>databridge.examples.dot-aas-v3-api</module>
+    <module>databridge.examples.mqtt-aas_range_and_mlp</module>
+    <module>databridge.examples.dot-aas-v3-multicast</module>
+    <module>databridge.examples.dot-aas-v3-multiroute</module>
+    <module>databridge.examples.sql-jsonata-aas</module>
+    <module>databridge.examples.aas-jsonata-kafka</module>
+  </modules>
+  <packaging>pom</packaging>
 </project>
